@@ -33,12 +33,11 @@ Bienvenido al sitio web de la asignatura de **Análisis y Explotación de la Inf
   - [Diapositivas](./tema0/tema0.html)
 
 
-<!--
 
 ### Tema 1 : Programación en R
   - [Diapositivas](./tema1/tema1.html)
   
-
+<!--
   
 ### Tema 2 : Análisis Exploratorio de los Datos
 - 2.1: Visualización de datos
