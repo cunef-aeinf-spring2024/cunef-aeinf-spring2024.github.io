@@ -1,0 +1,98 @@
+---
+title: "**Análisis y Explotación de la Información**"
+subtitle: "CUNEF Universidad"
+date: "Página actualizada: `r format.Date(file.mtime('index.Rmd'),'%Y-%m-%d')`"
+output:
+  html_document:
+    css: ./index.css
+    toc: yes
+    toc_float: yes
+    fig_caption: no
+    seal : False
+    includes:
+      after_body: insert-logo.html
+  pdf_document:
+    toc: yes
+---
+
+
+<div class="title-logo"></div>
+
+```{r packages_setup, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = T, warning = F, message = F)
+knitr::opts_chunk$set(fig.width=8, fig.height=6) 
+```
+
+<br />
+
+Bienvenido al sitio web de la asignatura de **Análisis y Explotación de la Información** del primer cuatrimestre de 2023 en CUNEF Universidad. En este sitio web encontrarás el material y los laboratorios que usaremos durante el curso. La página se actualizará con frecuencia durante el cuatrimestre, así que acostúmbrate a actualizar la página.
+
+## **Contenido**
+
+### Tema 0 : Introducción
+  - [Diapositivas](./tema0/tema0.html)
+
+
+
+### Tema 1 : Programación en R
+  - [Diapositivas](./tema1/tema1.html)
+  
+
+  
+### Tema 2 : Análisis Exploratorio de los Datos
+- 2.1: Visualización de datos
+  - [Diapositivas](./tema2/tema2-1.html)
+ 
+
+- 2.2: Transformación de datos
+  - [Diapositivas](./tema2/tema2-2.html)
+
+ 
+- 2.3: Análisis Exploratorio de datos
+  - [Diapositivas](./tema2/tema2-3.html)
+ 
+
+### Tema 3 : Data Wrangling
+  - 3.1: Importación de datos
+    - [Diapositivas](./tema3/tema3-1.html)
+
+  - 3.2: Organización de datos
+    - [Diapositivas](./tema3/tema3-2.html)
+    
+  
+  - 3.3: Transformación de datos
+    - [Diapositivas](./tema3/tema3-3.html)
+
+
+
+### Tema 4 : Modelización
+  - [Diapositivas](./tema4/tema4.html)
+
+  
+### Tema 5 : Comunicación de Resultados
+  - [Diapositivas](./tema5/tema5.html)
+
+
+## **Laboratorios**
+
+
+### Lab 01 - Programación en R 
+  - [Ejercicios](./labs/lab1.html)
+
+### Lab 02 - Visualización 
+  - [Ejercicios](./labs/lab2.html)
+  
+### Lab 03 - Transformación
+  - [Ejercicios](./labs/lab3.html)
+
+### Lab 04 - Importación
+  - [Ejercicios](./labs/lab4.html)
+
+### Lab 05 - Data Wrangling
+  - [Ejercicios](./labs/lab5.html)
+  
+### Lab 06 - Strings, Factores y Fechas
+  - [Ejercicios](./labs/lab6.html)
+
+### Lab 07 - Modelos
+  - [Ejercicios](./labs/lab7.html)
