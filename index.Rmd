@@ -25,7 +25,7 @@ knitr::opts_chunk$set(fig.width=8, fig.height=6)
 
 <br />
 
-Bienvenido al sitio web de la asignatura de **Análisis y Explotación de la Información** del primer cuatrimestre de 2023 en CUNEF Universidad. En este sitio web encontrarás el material y los laboratorios que usaremos durante el curso. La página se actualizará con frecuencia durante el cuatrimestre, así que acostúmbrate a actualizar la página.
+Bienvenido al sitio web de la asignatura de **Análisis y Explotación de la Información** del segundo cuatrimestre de 2024 en CUNEF Universidad. En este sitio web encontrarás el material y los laboratorios que usaremos durante el curso. La página se actualizará con frecuencia durante el cuatrimestre, así que acostúmbrate a actualizar la página.
 
 ## **Contenido**
 
@@ -33,6 +33,7 @@ Bienvenido al sitio web de la asignatura de **Análisis y Explotación de la Inf
   - [Diapositivas](./tema0/tema0.html)
 
 
+<!--
 
 ### Tema 1 : Programación en R
   - [Diapositivas](./tema1/tema1.html)
@@ -96,3 +97,5 @@ Bienvenido al sitio web de la asignatura de **Análisis y Explotación de la Inf
 
 ### Lab 07 - Modelos
   - [Ejercicios](./labs/lab7.html)
+  
+-->
