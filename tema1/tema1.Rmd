@@ -298,7 +298,7 @@ Pregunta, ¿qué valores tiene por defecto la función `round()`?
 una_funcion <- function(){}
 ```
 
-* Función que genera 10 números entre 1 y 100 y devuelva su suma
+* Función que genera 2 números entre 1 y 100 y devuelva su suma
 
 --
 
@@ -408,11 +408,11 @@ library("tidyverse")
 ---
 ## Paquetes y ayudas
 
-* La mejor fuente de ayuda es internet
+* La mejor fuente de ayuda es internet.
 
-* Por ejemplo, [Stack Overflow](https://stackoverflow.co/)
+* Por ejemplo, [Stack Overflow](https://stackoverflow.co/).
 
-* Otro recurso interesante es [community.rstudio.com](https://community.rstudio.com)
+* Otro recurso interesante es [community.rstudio.com](https://community.rstudio.com).
 
 ---
 ## Ejercicio 2
@@ -540,7 +540,7 @@ a = 1:10
 attributes(a)
 ```
 
-Algunos atributos importantes: nombres y dimensión
+Algunos atributos importantes: nombres y dimensión.
 
 ---
 ## Atributos - Nombres
@@ -588,9 +588,9 @@ m
 ---
 ## Inciso: Clases
 
-Una clase es simplemente la huella de un objeto de R
+Una clase es simplemente la huella de un objeto de R.
 Representa el conjunto de propiedades o métodos que son comunes a todos los objetos de un tipo.
-La función ´class´ describe el tipo de clase correspondiente al objeto.
+La función `class` describe el tipo de clase correspondiente al objeto.
 
 ```{r}
 m <- array(1:12, dim = c(2,2,3))
@@ -628,7 +628,7 @@ class(fumador)
 ---
 ## 6. Listas
 
-Hemos visto que los vectores atómicos agrupan valores individuales.
+Hemos visto que los vectores atómicos agrupan valores individuales (del mismo tipos).
 Las listas almacenan objetos de R.
 ```{r}
 milista <- list(c("A", "B"), 1:10, Sys.time())
@@ -637,7 +637,7 @@ milista
 
 ---
 ## 7. Data Frames
-Versión bi-dimensional de una lista. Cada columna del data frame puede contener tipos de datos diferentes.
+Versión bi-dimensional de una lista. Distintas columnas del data frame puede pueden contener tipos de datos. No obstante, todos los datos de cada columna han de ser del mismo tipo.
 Un dataframe se crea especificando las columnas (que son vectores atómicos)
 
 ```{r}
@@ -935,6 +935,37 @@ if (x>7) {
   print(x)
 }
 ```
+
+---
+## 1. Condicionales
+
+La operación if-else puede realizarse en una línea con la función `ifelse`, que tiene la siguiente estructura.
+
+```{r eval=F}
+ifelse(condicion, valor si TRUE, valor si FALSE)
+```
+
+Por ejemplo
+
+```{r}
+x <- 4
+ifelse(x==3, "es tres", "no es tres")
+```
+
+---
+## 1. Condicionales
+
+La operación `ifelse`, a diferencia de `if`; **está vectorizada**.
+Esto quiere decir que se aplica elemento a elemento sobre vectores. Por ejemplo
+
+```{r}
+x <- sample(1:10, 5, replace=T)
+ifelse(x%%2==0, "Par", "Impar")
+```
+
+Con `if-else` esto daría error. 
+
+
 ---
 ## 2. Bucles
 
