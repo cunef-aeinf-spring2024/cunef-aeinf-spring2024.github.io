@@ -1,0 +1,211 @@
+---
+title: "Lab 05 - Data Wrangling"
+author: "Tu Nombre Aquí"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Ejercicio 1
+
+Utilizando la base de datos `diamonds`, visualiza la relación entre los siguientes
+pares de variables:
+
+* `cut` y `price`
+* `color` y `price`
+* `clarity` y `price`
+
+¿Encuentras un patrón atípico?
+
+**Pista**: el color de menor calidad para un diamante es J (ligeramente amarillo), la peor claridad es I1 y el peor corte es Fair.
+
+
+### Solución
+
+## Ejercicio 2
+
+Ajusta un modelo lineal donde la variable predictora sea `carat` (el peso de los diamantes ) y la variable dependiente sea `price`. Obtén el valor de los coeficientes e interprétalos. ¿Qué conclusión extraes?
+
+
+### Solución
+
+## Ejercicio 3
+
+Visualiza las predicciones del modelo anterior, así como los residuos.
+Extrae conclusiones.
+
+
+### Solución
+
+
+## Ejercicio 4
+
+Crea un nuevo conjunto de datos llamado `diamonds2` donde elimines todos los
+diamantes de carat mayor que 2.5. Añade dos variables a este conjunto de datos
+llamandas `lcarat` y `lprice` que correspondan respectivamente a logaritmo en base 
+dos de `carat` y `price`.
+
+### Solución
+
+
+## Ejercicio 5
+
+Utilizando los datos creados en el ejercicio anterior, ajusta un modelo lineal donde la variable predictora sea `lcarat` y la variable dependiente sea `lprice`. Obtén el valor de los coeficientes e interprétalos. Según este modelo, que le sucede al precio de un diamante si multiplico por dos su `carat`.
+
+### Solución
+
+## Ejercicio 6
+
+Visualiza las predicciones del modelo anterior, así como los residuos.
+Extrae conclusiones. ¿Se ajusta este modelo mejor que el anterior a los datos?
+
+### Solución
+
+
+## Ejercicio 7
+
+Utilizando la base de datos `diamonds2`, visualiza la relación entre las siguientes variables y el residuo calculado en el ejercicio anterior.
+* `cut` 
+* `color`
+* `clarity`
+
+¿Qué conclusión extraes?
+
+### Solución
+
+
+## Ejercicio 8
+
+Explora los datos `sim3`  de `modelr`. ¿De qué tipo son las variables `x1` y `x2`? ¿Y la `y`?
+Ajusta un modelo lineal con variable respuesta `y` y predictores `x1` y `x2`  y visualiza
+sus predicciones.
+
+Interpreta los coeficientes de este modelo.
+
+### Solución
+
+
+## Ejercicio 9
+
+Con los datos anteriores, ajusta el siguiente modelo
+
+$$
+y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_{12} x_1 x_2
+$$
+
+en R este modelo se corresponde con la fórmula `y ~ x1 * x2`.
+Visualiza las predicciones del modelo, e interpreta sus coeficientes.
+
+### Solución
+
+## Ejercicio 10
+
+Para este ejercicio necesitas cargar la librería `infer`
+
+```{r load-packages, warning = FALSE, message = FALSE}
+library(infer)
+```
+
+### Datos 
+
+
+La Encuesta Social General (GSS) recopila datos sobre la sociedad estadounidense contemporánea con el fin de comprender y explicar las tendencias y constantes en actitudes, comportamientos y atributos. Se han monitorizado cientos de tendencias desde 1972. 
+
+La GSS contiene un núcleo estándar de preguntas demográficas, de comportamiento y sobre actitudes, además de temas de interés especial. Entre los temas tratados se encuentran las libertades civiles, el crimen y la violencia, la tolerancia entre grupos, la moralidad, las prioridades nacionales de gasto, el bienestar psicológico, la movilidad social y el estrés y los eventos traumáticos.
+
+Analizaremos datos de la GSS de 2018 para entender cuánto tiempo pasan los adultos estadounidenses en el correo electrónico.
+
+```{r load-data, message = FALSE}
+gss_email <- read_csv("data/gss_email_2018.csv")
+```
+
+
+Utilizaremos la variable `email`: el número de minutos que los encuestados pasan en el correo electrónico semanalmente. 
+
+El objetivo de este ejercicio es calcular el intervalo de confianza del 95% para el tiempo medio que los americanos gastan en el correo.
+
+
+### 10.1
+
+Fija una semilla para controlar el proceso aleatorio.
+
+### 10.2
+
+Calcula la distribución bootstrap
+
+### 10.3
+
+Calcula y visualiza el IC
+
+### 10.4 
+
+Interpreta el resultado
+
+## Ejercicio 11
+
+Hasta ahora hemos trabajado únicamente con modelos en los que la variable respuesta es cuantitativa.
+Existen modelos análogos que se pueden utilizar para casos en los que la variable respuesta es cualitativa. Uno de estos modelos es la regresión logística.
+No explicaremos el funcionamiento de la regresión logística, pero vamos a aprender cómo se ajusta una regresión logística en R.
+
+Si nuestra variable respuesta `y` es cualitativa y tenemos, por ejemplo, dos predictores `x1` y `x2`, ajustamos una regresión logística como sigue:
+
+```{r, eval=F}
+log_reg <- glm( y ~ x1 + x2, data = data, family = binomial(link='logit'))
+```
+
+Vamos a utilizar una regresión logística para intentar predecir si los pasajeros del titanic sobrevivieron o no, utilizando como variables predictores por ejemplo el sexo, la edad, la clase de su ticket, etc.
+
+Primero instala la librería `titanic` y carga los datos:
+
+```{r}
+library(titanic)
+data("titanic_train")
+```
+
+Selecciona las variables Survived, Age, Sex, Embarked, SibSp, Parch, Fare, Pclass.
+Convierte a variables de tipo factor aquellas que consideres que son factores. Además
+añade una variable id que indique el número de fila. Guarda esto en un nuevo data frame llamado `titanic`.
+
+**Pista:** usa `?titanic_train` para ver qué significa cada variable.
+
+### Solución
+
+
+## Ejercicio 12
+
+Crea dos conjuntos de datos llamados `train` y `test`.
+El primero, debe contener observaciones (filas) seleccionadas al azar del dataframe
+titanic del ejercicio anterior. Su número de filas ha de ser el 70% del número de filas de titanic. El segundo conjunto de datos ha de contener todas las observaciones que están en el conjunto de datos titanic pero que no están en `train`.
+
+**Pista:** usa la función `sample_frac()`
+
+### Solución
+
+
+## Ejercicio 13
+
+Ajusta un modelo de regresión logística usando los datos `train` donde la variable
+respuesta sea `Survived` y la variable predictora sea `Sex`.
+
+### Solución
+
+
+## Ejercicio 14
+
+La predicción de una regresión logística es una probabilidad correspondiente a la probabilidad de que la variable respuesta tome valor 1 (en nuestro caso que el pasajero correspondiente sobreviva) según el modelo.
+
+Calcula las predicciones del modelo anterior sobre los datos `test`. Necesitarás añadir type="response" a la funcion add_predictions. Construye una nueva variable que tome valor 1 si la probabilidad predicha es mayor o igual a 0.5 y cero en caso contrario.
+
+Finalmente, calcula el procentaje de aciertos comparando la variable recién creada y la variable Survived.
+
+### Solución
+
+
+## Ejercicio 15
+
+Intenta mejorar el model anterior añadiendo más variables. ¿Qué variable crees que tiene más poder predictivo?
+
+### Solución

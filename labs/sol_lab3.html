@@ -11,7 +11,7 @@
 
 
 
-<title>Análisis y Explotación de la Información</title>
+<title>Lab 03 - Transformación</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1465,6 +1465,26 @@ padding-right: 0;
 padding-left: 90px;
 font-size: 13pt;
 }
+ol>li:before {
+
+content: "Question " counter(li)".";
+
+counter-increment: li;
+position: absolute;
+color: #222222;
+left: -0.5px;
+font-weight: bold;
+}
+ol ol>li:before {
+counter-reset: sub-item;
+
+
+position: absolute;
+color: #222222;
+left: -0.5px;
+font-weight: bold;
+padding-left: 90px;
+}
 .td {
 font-size: 10pt;
 }
@@ -1626,10 +1646,7 @@ border-radius: 0px;
 
 
 
-<h1 class="title toc-ignore"><strong>Análisis y Explotación de la
-Información</strong></h1>
-<h3 class="subtitle">CUNEF Universidad</h3>
-<h4 class="date">Página actualizada: 2024-02-02</h4>
+<h1 class="title toc-ignore">Lab 03 - Transformación</h1>
 
 </div>
 
@@ -1637,92 +1654,389 @@ Información</strong></h1>
 <div class="title-logo">
 
 </div>
-<p><br /></p>
-<p>Bienvenido al sitio web de la asignatura de <strong>Análisis y
-Explotación de la Información</strong> del segundo cuatrimestre de 2024
-en CUNEF Universidad. En este sitio web encontrarás el material y los
-laboratorios que usaremos durante el curso. La página se actualizará con
-frecuencia durante el cuatrimestre, así que acostúmbrate a actualizar la
-página.</p>
-<div id="contenido" class="section level2">
-<h2><strong>Contenido</strong></h2>
-<div id="tema-0-introducción" class="section level3">
-<h3>Tema 0 : Introducción</h3>
+<p>En este laboratorio trabajaremos con datos procedentes de una
+encuesta sobre los hábitos de los fumadores en el Reino Unido. Los datos
+poceden del National STEM Centre, Large Datasets from stats4schools, <a href="https://www.stem.org.uk/resources/elibrary/resource/28452/large-datasets-stats4schools">https://www.stem.org.uk/resources/elibrary/resource/28452/large-datasets-stats4schools</a>.</p>
+<p>Los datos se encuentran en la carpeta data del repositorio. Puedes
+cargarlos utilizando</p>
+<pre class="r"><code>library(tidyverse)
+fumar &lt;- read_csv(&quot;data/smoking.csv&quot;)</code></pre>
+<p>La variables recogidas son (entre paréntesis aparecen los niveles que
+toman):</p>
 <ul>
-<li><a href="./tema0/tema0.html">Diapositivas</a></li>
+<li><p><code>gender</code>: Género</p></li>
+<li><p><code>age</code>: Edad</p></li>
+<li><p><code>marital_status</code>: Estado civil (Divorced, Married,
+Separated, Single and Widowed)</p></li>
+<li><p><code>highest_qualification</code>: Nivel más alto de educación
+(A Levels, Degree, GCSE/CSE, GCSE/O Level, Higher/Sub Degree, No
+Qualification, ONC/BTEC y Other/Sub Degree)</p></li>
+<li><p><code>nationality</code>: Nacionalidad (British, English, Irish,
+Scottish, Welsh, Other, Refused y Unknown)</p></li>
+<li><p><code>ethnicity</code> : Etnia (Asian, Black, Chinese, Mixed,
+White y Refused Unknown)</p></li>
+<li><p><code>gross_income</code>: Salario bruto (Under 2,600, 2,600 to
+5,200, 5,200 to 10,400, 10,400 to 15,600, 15,600 to 20,800, 20,800 to
+28,600, 28,600 to 36,400, Above 36,400, Refused y Unknown)</p></li>
+<li><p><code>region</code>: Region (London, Midlands &amp; East Anglia,
+Scotland, South East, South West, The North y Wales)</p></li>
+<li><p><code>smoke</code> : Fumador (No y Yes)</p></li>
+<li><p><code>amt_weekends</code>: Número de cigarros diarios en fin de
+semana</p></li>
+<li><p><code>amt_weekdays</code>: Número de cigarros diarios entre
+semana</p></li>
+<li><p><code>type</code>: Tipo de cigarrilos (Packets, Hand-Rolled,
+Both/Mainly Packets y Both/Mainly Hand-Rolled)</p></li>
 </ul>
-</div>
-<div id="tema-1-programación-en-r" class="section level3">
-<h3>Tema 1 : Programación en R</h3>
-<ul>
-<li><a href="./tema1/tema1.html">Diapositivas</a></li>
-</ul>
-<!--
-  
-### Tema 2 : Análisis Exploratorio de los Datos
-- 2.1: Visualización de datos
-  - [Diapositivas](./tema2/tema2-1.html)
- 
-
-- 2.2: Transformación de datos
-  - [Diapositivas](./tema2/tema2-2.html)
-
- 
-- 2.3: Análisis Exploratorio de datos
-  - [Diapositivas](./tema2/tema2-3.html)
- 
-
-### Tema 3 : Data Wrangling
-  - 3.1: Importación de datos
-    - [Diapositivas](./tema3/tema3-1.html)
-
-  - 3.2: Organización de datos
-    - [Diapositivas](./tema3/tema3-2.html)
-    
-  
-  - 3.3: Transformación de datos
-    - [Diapositivas](./tema3/tema3-3.html)
-
-
-
-### Tema 4 : Modelización
-  - [Diapositivas](./tema4/tema4.html)
-
-  
-### Tema 5 : Comunicación de Resultados
-  - [Diapositivas](./tema5/tema5.html)
-
--->
+<div id="ejercicio-1" class="section level2">
+<h2>Ejercicio 1</h2>
+<p>¿Cuántas observaciones hay en el dataset para cada género? ¿Qué
+proporción de mujeres son fumadoras? ¿Y de hombres?</p>
+<div id="solución" class="section level3">
+<h3>Solución</h3>
+<pre class="r"><code>fumar %&gt;% group_by(gender, smoke) %&gt;% summarise(n = n()) %&gt;% 
+  mutate(proportion = n/sum(n)) </code></pre>
+<pre><code>## # A tibble: 4 × 4
+## # Groups:   gender [2]
+##   gender smoke     n proportion
+##   &lt;chr&gt;  &lt;chr&gt; &lt;int&gt;      &lt;dbl&gt;
+## 1 Female No      731      0.758
+## 2 Female Yes     234      0.242
+## 3 Male   No      539      0.742
+## 4 Male   Yes     187      0.258</code></pre>
+<p>El 24.2% de las mujeres son fumadoras.</p>
 </div>
 </div>
-<div id="laboratorios" class="section level2">
-<h2><strong>Laboratorios</strong></h2>
-<div id="lab-01---programación-en-r" class="section level3">
-<h3>Lab 01 - Programación en R</h3>
-<ul>
-<li><a href="./labs/lab1.html">Ejercicios</a></li>
-</ul>
-<!--
+<div id="ejercicio-2" class="section level2">
+<h2>Ejercicio 2</h2>
+<p>Selecciona la variable <code>amt_weekends</code>, ordenala de forma
+decreciente y muestra los primeros 10 valores. Haz lo mismo con
+<code>amt_weekdays</code>, ¿qué observas?</p>
+<div id="solución-1" class="section level3">
+<h3>Solución</h3>
+<pre class="r"><code>fumar %&gt;% select(amt_weekends) %&gt;%
+  arrange(desc(amt_weekends)) %&gt;% slice(1:10)</code></pre>
+<pre><code>## # A tibble: 10 × 1
+##    amt_weekends
+##           &lt;dbl&gt;
+##  1           60
+##  2           60
+##  3           50
+##  4           50
+##  5           45
+##  6           40
+##  7           40
+##  8           40
+##  9           40
+## 10           40</code></pre>
+<pre class="r"><code>fumar %&gt;% select(amt_weekdays) %&gt;%
+  arrange(desc(amt_weekdays)) %&gt;% slice(1:10)</code></pre>
+<pre><code>## # A tibble: 10 × 1
+##    amt_weekdays
+##           &lt;dbl&gt;
+##  1           55
+##  2           50
+##  3           50
+##  4           45
+##  5           40
+##  6           40
+##  7           40
+##  8           40
+##  9           40
+## 10           40</code></pre>
+</div>
+</div>
+<div id="ejercicio-3" class="section level2">
+<h2>Ejercicio 3</h2>
+<p>¿Qué valores únicos presenta la variable
+<code>gross_income</code>?</p>
+<p>Sustituye los valores Unknown con <code>NA</code> y vuelve a calcular
+los valores únicos de la variable.</p>
+<div id="solución-2" class="section level3">
+<h3>Solución</h3>
+<pre class="r"><code>fumar %&gt;% distinct(gross_income)</code></pre>
+<pre><code>## # A tibble: 10 × 1
+##    gross_income    
+##    &lt;chr&gt;           
+##  1 2,600 to 5,200  
+##  2 Under 2,600     
+##  3 28,600 to 36,400
+##  4 10,400 to 15,600
+##  5 15,600 to 20,800
+##  6 Above 36,400    
+##  7 5,200 to 10,400 
+##  8 Refused         
+##  9 20,800 to 28,600
+## 10 Unknown</code></pre>
+<pre class="r"><code>#
+fumar2 &lt;- fumar %&gt;% mutate(gross_income = ifelse(gross_income == &quot;Unknown&quot;, NA, gross_income))
 
-### Lab 02 - Visualización 
-  - [Ejercicios](./labs/lab2.html)
+fumar2 %&gt;% distinct(gross_income)</code></pre>
+<pre><code>## # A tibble: 10 × 1
+##    gross_income    
+##    &lt;chr&gt;           
+##  1 2,600 to 5,200  
+##  2 Under 2,600     
+##  3 28,600 to 36,400
+##  4 10,400 to 15,600
+##  5 15,600 to 20,800
+##  6 Above 36,400    
+##  7 5,200 to 10,400 
+##  8 Refused         
+##  9 20,800 to 28,600
+## 10 &lt;NA&gt;</code></pre>
+</div>
+</div>
+<div id="ejercicio-4" class="section level2">
+<h2>Ejercicio 4</h2>
+<p>Muestra las 10 últimas filas del dataset</p>
+<div id="solución-3" class="section level3">
+<h3>Solución</h3>
+<pre class="r"><code>fumar %&gt;% slice_tail(n = 10)</code></pre>
+<pre><code>## # A tibble: 10 × 12
+##    gender   age marital_s…¹ highe…² natio…³ ethni…⁴ gross…⁵ region smoke amt_w…⁶
+##    &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;   &lt;dbl&gt;
+##  1 Male      53 Single      No Qua… Scotti… White   20,800… Scotl… No         NA
+##  2 Female    63 Married     No Qua… British White   Refused Scotl… No         NA
+##  3 Male      35 Married     No Qua… Scotti… White   10,400… Scotl… Yes         3
+##  4 Male      78 Widowed     No Qua… Scotti… White   Refused Scotl… No         NA
+##  5 Female    31 Single      Other/… Scotti… White   5,200 … Scotl… No         NA
+##  6 Male      22 Single      No Qua… Scotti… White   2,600 … Scotl… No         NA
+##  7 Female    49 Divorced    Other/… English White   2,600 … Scotl… Yes        20
+##  8 Male      45 Married     Other/… Scotti… White   5,200 … Scotl… No         NA
+##  9 Female    51 Married     No Qua… English White   2,600 … Scotl… Yes        20
+## 10 Male      31 Married     Degree  Scotti… White   10,400… Scotl… No         NA
+## # … with 2 more variables: amt_weekdays &lt;dbl&gt;, type &lt;chr&gt;, and abbreviated
+## #   variable names ¹​marital_status, ²​highest_qualification, ³​nationality,
+## #   ⁴​ethnicity, ⁵​gross_income, ⁶​amt_weekends</code></pre>
+<pre class="r"><code>fumar %&gt;% slice( (nrow(fumar) - 9) : nrow(fumar))</code></pre>
+<pre><code>## # A tibble: 10 × 12
+##    gender   age marital_s…¹ highe…² natio…³ ethni…⁴ gross…⁵ region smoke amt_w…⁶
+##    &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;   &lt;dbl&gt;
+##  1 Male      53 Single      No Qua… Scotti… White   20,800… Scotl… No         NA
+##  2 Female    63 Married     No Qua… British White   Refused Scotl… No         NA
+##  3 Male      35 Married     No Qua… Scotti… White   10,400… Scotl… Yes         3
+##  4 Male      78 Widowed     No Qua… Scotti… White   Refused Scotl… No         NA
+##  5 Female    31 Single      Other/… Scotti… White   5,200 … Scotl… No         NA
+##  6 Male      22 Single      No Qua… Scotti… White   2,600 … Scotl… No         NA
+##  7 Female    49 Divorced    Other/… English White   2,600 … Scotl… Yes        20
+##  8 Male      45 Married     Other/… Scotti… White   5,200 … Scotl… No         NA
+##  9 Female    51 Married     No Qua… English White   2,600 … Scotl… Yes        20
+## 10 Male      31 Married     Degree  Scotti… White   10,400… Scotl… No         NA
+## # … with 2 more variables: amt_weekdays &lt;dbl&gt;, type &lt;chr&gt;, and abbreviated
+## #   variable names ¹​marital_status, ²​highest_qualification, ³​nationality,
+## #   ⁴​ethnicity, ⁵​gross_income, ⁶​amt_weekends</code></pre>
+</div>
+</div>
+<div id="ejercicio-5" class="section level2">
+<h2>Ejercicio 5</h2>
+<p>¿Cuál es la media de cigarrillos diarios entre semana que fuman los
+fumadores menores de 30? ¿Y los fines de semana? <strong>Nota</strong>:
+Si observas <code>NA</code> determina el posible origen de esos valores
+ausentes y su tratamiento,</p>
+<div id="solución-4" class="section level3">
+<h3>Solución</h3>
+<pre class="r"><code>fumar %&gt;% filter(age&lt;30, smoke==&quot;Yes&quot;) %&gt;%  summarise(mean = mean(amt_weekends))</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##    mean
+##   &lt;dbl&gt;
+## 1  14.4</code></pre>
+<pre class="r"><code>fumar %&gt;% filter(age&lt;30, smoke == &quot;Yes&quot;) %&gt;%   summarise(mean_we = mean(amt_weekends), mean_wd = mean(amt_weekdays))</code></pre>
+<pre><code>## # A tibble: 1 × 2
+##   mean_we mean_wd
+##     &lt;dbl&gt;   &lt;dbl&gt;
+## 1    14.4    10.4</code></pre>
+</div>
+</div>
+<div id="ejercicio-6" class="section level2">
+<h2>Ejercicio 6</h2>
+<p>Calcula media, mediana, y desviación estándar de cigarrillos/dia en
+fin de semana y entre semana por grupos de edad menor o igual a 20,
+20-30, …, &gt;90. Resume las conclusiones de los resultados
+observados.</p>
+<p><em>Nota</em>: Crea una nueva variable llamada <code>decada</code>
+utilizando la función <code>case_when</code>. Los niveles de esta
+variable han de ser
+<code>&quot;&lt;=20&quot;,&quot;20-30&quot;,&quot;30-40&quot;, &quot;40-50&quot;, &quot;50-60&quot;, &quot;60-70&quot;, &quot;70-80&quot;, &quot;80-90&quot;, &quot;&gt;90&quot;</code>.</p>
+<div id="solución-5" class="section level3">
+<h3>Solución</h3>
+<pre class="r"><code>fumar_new &lt;- fumar %&gt;% mutate(decada=case_when(age&lt;=20 ~&quot;&lt;=20&quot;,
+                    age&gt;20 &amp; age&lt;=30 ~ &quot;20-30&quot;,
+                    age&gt;30 &amp; age&lt;=40 ~ &quot;30-40&quot;,
+                    age&gt;40 &amp; age&lt;=50 ~ &quot;40-50&quot;,
+                    age&gt;50 &amp; age&lt;=60 ~ &quot;50-60&quot;,
+                    age&gt;60 &amp; age&lt;=70 ~ &quot;60-70&quot;,
+                    age&gt;70 &amp; age&lt;=80 ~ &quot;70-80&quot;,
+                    age&gt;80 &amp; age&lt;=90 ~ &quot;80-90&quot;,
+                    TRUE ~ &quot;&gt;90&quot;))
+
+fumar_new %&gt;% filter(smoke == &quot;Yes&quot;) %&gt;% 
+  group_by(decada) %&gt;%
+  summarise(mean_we = mean(amt_weekends), 
+            mean_wd = mean(amt_weekdays),
+            median_we = median(amt_weekends),
+            median_wd = median(amt_weekdays),
+            sd_we = sd(amt_weekends),
+            sd_wd = sd(amt_weekdays) )</code></pre>
+<pre><code>## # A tibble: 9 × 7
+##   decada mean_we mean_wd median_we median_wd sd_we sd_wd
+##   &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 &lt;=20     14.9    10.6         15        10  7.43  5.70
+## 2 &gt;90       0       3            0         3 NA    NA   
+## 3 20-30    13.9    10.3         12        10  8.61  6.26
+## 4 30-40    16.2    12.8         15        10 10.9   9.14
+## 5 40-50    18.6    15.8         20        15  9.31  9.57
+## 6 50-60    18.7    17.1         20        15  9.97 10.1 
+## 7 60-70    16.4    16.3         18        15  9.07 10.8 
+## 8 70-80    16.6    15.5         15        12 12.3  12.5 
+## 9 80-90     5.33    5.33         6         6  2.08  2.08</code></pre>
+</div>
+</div>
+<div id="ejercicio-7" class="section level2">
+<h2>Ejercicio 7</h2>
+<p>Ordena las distintas etnias en orden decreciente de proporción de
+fumadores en la muestra. Excluye aquellas observaciones con etnia
+desconocida o no declarada.</p>
+<div id="solución-6" class="section level3">
+<h3>Solución</h3>
+<pre class="r"><code>fumar %&gt;% filter(! (ethnicity %in% c(&quot;Unknown&quot;, &quot;Refused&quot;)) ) %&gt;%
+  group_by(ethnicity, smoke) %&gt;% 
+  summarize(n = n()) %&gt;%
+  mutate(prop_smokers = n/sum(n)) %&gt;%
+  filter(smoke == &quot;Yes&quot;) %&gt;%
+  arrange(desc(prop_smokers))</code></pre>
+<pre><code>## # A tibble: 5 × 4
+## # Groups:   ethnicity [5]
+##   ethnicity smoke     n prop_smokers
+##   &lt;chr&gt;     &lt;chr&gt; &lt;int&gt;        &lt;dbl&gt;
+## 1 Mixed     Yes       5        0.357
+## 2 White     Yes     390        0.25 
+## 3 Black     Yes       8        0.235
+## 4 Asian     Yes       8        0.195
+## 5 Chinese   Yes       5        0.185</code></pre>
+</div>
+</div>
+<div id="ejercicio-8" class="section level2">
+<h2>Ejercicio 8</h2>
+<p>¿Qué tipos de tabaco son más populares en las distintas franjas de
+salario bruto? ¿Y en las distintas franjas de edad?</p>
+<p><em>Nota</em>: utiliza la variable decada creada anteriormente</p>
+<div id="solución-7" class="section level3">
+<h3>Solución</h3>
+<pre class="r"><code>fumar %&gt;% filter(smoke == &quot;Yes&quot;) %&gt;% group_by(gross_income, type) %&gt;%
+  summarise(n = n()) %&gt;%
+  mutate(prop_type = n/sum(n))</code></pre>
+<pre><code>## # A tibble: 28 × 4
+## # Groups:   gross_income [10]
+##    gross_income     type                        n prop_type
+##    &lt;chr&gt;            &lt;chr&gt;                   &lt;int&gt;     &lt;dbl&gt;
+##  1 10,400 to 15,600 Both/Mainly Hand-Rolled     3    0.0361
+##  2 10,400 to 15,600 Both/Mainly Packets         8    0.0964
+##  3 10,400 to 15,600 Hand-Rolled                14    0.169 
+##  4 10,400 to 15,600 Packets                    58    0.699 
+##  5 15,600 to 20,800 Both/Mainly Packets         5    0.111 
+##  6 15,600 to 20,800 Hand-Rolled                13    0.289 
+##  7 15,600 to 20,800 Packets                    27    0.6   
+##  8 2,600 to 5,200   Both/Mainly Hand-Rolled     1    0.0156
+##  9 2,600 to 5,200   Both/Mainly Packets         6    0.0938
+## 10 2,600 to 5,200   Hand-Rolled                16    0.25  
+## # … with 18 more rows</code></pre>
+<pre class="r"><code>fumar_new %&gt;% filter(smoke == &quot;Yes&quot;) %&gt;% group_by(decada, type) %&gt;%
+  summarise(n = n()) %&gt;%
+  mutate(prop_type = n/sum(n))</code></pre>
+<pre><code>## # A tibble: 28 × 4
+## # Groups:   decada [9]
+##    decada type                        n prop_type
+##    &lt;chr&gt;  &lt;chr&gt;                   &lt;int&gt;     &lt;dbl&gt;
+##  1 &lt;=20   Both/Mainly Hand-Rolled     2    0.0909
+##  2 &lt;=20   Both/Mainly Packets         3    0.136 
+##  3 &lt;=20   Hand-Rolled                 3    0.136 
+##  4 &lt;=20   Packets                    14    0.636 
+##  5 &gt;90    Packets                     1    1     
+##  6 20-30  Both/Mainly Packets        11    0.126 
+##  7 20-30  Hand-Rolled                11    0.126 
+##  8 20-30  Packets                    65    0.747 
+##  9 30-40  Both/Mainly Hand-Rolled     4    0.0385
+## 10 30-40  Both/Mainly Packets        15    0.144 
+## # … with 18 more rows</code></pre>
+</div>
+</div>
+<div id="ejercicio-9" class="section level2">
+<h2>Ejercicio 9</h2>
+<p>¿Cuál es la diferencia entre estos dos códigos?</p>
+<pre class="r"><code>fumar %&gt;% count(gender, smoke) %&gt;% mutate(prop=n/sum(n))</code></pre>
+<pre class="r"><code>fumar %&gt;% group_by(gender, smoke) %&gt;% summarise(n=n()) %&gt;%
+  mutate(prop=n/sum(n))</code></pre>
+<div id="solución-8" class="section level3">
+<h3>Solución</h3>
+<p>En el primero no se agrupa y por tanto el porcentaje mostrado es
+sobre el total. En el segundo, al hacer <code>group_by</code>, el
+porcentaje mostrado es sobre los individuos de cada grupo.</p>
+</div>
+</div>
+<div id="ejercicio-10" class="section level2">
+<h2>Ejercicio 10</h2>
+<p>¿Entre la gente que no está casada, cuántos cigarros/día entre semana
+se fuman de media por nivel de estudios?</p>
+<div id="solución-9" class="section level3">
+<h3>Solución</h3>
+<pre class="r"><code>fumar %&gt;% filter(smoke == &quot;Yes&quot;, marital_status != &quot;Married&quot;) %&gt;% 
+  group_by(highest_qualification) %&gt;%
+  summarise(mean = mean(amt_weekdays))</code></pre>
+<pre><code>## # A tibble: 8 × 2
+##   highest_qualification  mean
+##   &lt;chr&gt;                 &lt;dbl&gt;
+## 1 A Levels              13.3 
+## 2 Degree                 9.61
+## 3 GCSE/CSE              14.9 
+## 4 GCSE/O Level          11.7 
+## 5 Higher/Sub Degree     14.6 
+## 6 No Qualification      15.6 
+## 7 ONC/BTEC              11.3 
+## 8 Other/Sub Degree      14.2</code></pre>
+</div>
+</div>
+<div id="ejercicio-11" class="section level2">
+<h2>Ejercicio 11</h2>
+<p>En numerosas ocasiones, ante la presencia de valores ausentes, es
+útil substituírlos por un valor. A este proceso se le conoce como
+imputación. Una de las técnicas más comunes de imputación de variables
+categóricas, consiste en substituír los valores ausentes por el valor
+más probable en cierto segmento de la población (la moda).</p>
+<p>Por ejemplo, podemos sustituír los valores desconocidos o no
+declarados de la variable <code>ethnicity</code> por la etnia más
+frecuente en los datos, y asumir que el porcentaje de error será
+pequeño. Una estrategia quizás más inteligente es sustituír los valores
+desconocidos o no declarados de la variable <code>ethnicity</code> por
+la etnia más prevalente en la nación correspondiente. En este ejercicio,
+has de realizar esto último. Para ello, ayudate de la siguiente función
+para el cálculo de la moda.</p>
+<pre class="r"><code>calc_mode &lt;- function(x){
   
-### Lab 03 - Transformación
-  - [Ejercicios](./labs/lab3.html)
-
-### Lab 04 - Importación
-  - [Ejercicios](./labs/lab4.html)
-
-### Lab 05 - Data Wrangling
-  - [Ejercicios](./labs/lab5.html)
+  x &lt;- x[!x %in% c(&quot;Refused&quot;, &quot;Unkown&quot;)]
+  distinct_values &lt;- unique(x)
+  distinct_tabulate &lt;- tabulate(match(x, distinct_values))
+  distinct_values[which.max(distinct_tabulate)]
   
-### Lab 06 - Strings, Factores y Fechas
-  - [Ejercicios](./labs/lab6.html)
-
-### Lab 07 - Modelos
-  - [Ejercicios](./labs/lab7.html)
-  
--->
+}</code></pre>
+<p><em>Nota</em>: Excluye las observaciones con nacionalidad no conocida
+o no declarada. ¿Qué sucede si las incluyes?</p>
+<div id="solución-10" class="section level3">
+<h3>Solución</h3>
+<pre class="r"><code>fumar %&gt;% filter(!nationality %in%  c(&quot;Unknown&quot;, &quot;Refused&quot;)) %&gt;% 
+  group_by(nationality) %&gt;% 
+  mutate(ethnicity_nona = if_else(ethnicity %in% c(&quot;Unknown&quot;, &quot;Refused&quot;), 
+                         calc_mode(ethnicity), 
+                         ethnicity))  %&gt;% 
+  filter(ethnicity %in% c(&quot;Unknown&quot;, &quot;Refused&quot;)) %&gt;%
+  select(nationality, ethnicity, ethnicity_nona)</code></pre>
+<pre><code>## # A tibble: 3 × 3
+## # Groups:   nationality [3]
+##   nationality ethnicity ethnicity_nona
+##   &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt;         
+## 1 Other       Refused   White         
+## 2 British     Unknown   White         
+## 3 Welsh       Unknown   White</code></pre>
 </div>
 </div>
 

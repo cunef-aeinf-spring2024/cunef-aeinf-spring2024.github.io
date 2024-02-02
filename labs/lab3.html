@@ -11,7 +11,7 @@
 
 
 
-<title>Análisis y Explotación de la Información</title>
+<title>Lab 03 - Transformación</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1465,6 +1465,26 @@ padding-right: 0;
 padding-left: 90px;
 font-size: 13pt;
 }
+ol>li:before {
+
+content: "Question " counter(li)".";
+
+counter-increment: li;
+position: absolute;
+color: #222222;
+left: -0.5px;
+font-weight: bold;
+}
+ol ol>li:before {
+counter-reset: sub-item;
+
+
+position: absolute;
+color: #222222;
+left: -0.5px;
+font-weight: bold;
+padding-left: 90px;
+}
 .td {
 font-size: 10pt;
 }
@@ -1626,10 +1646,7 @@ border-radius: 0px;
 
 
 
-<h1 class="title toc-ignore"><strong>Análisis y Explotación de la
-Información</strong></h1>
-<h3 class="subtitle">CUNEF Universidad</h3>
-<h4 class="date">Página actualizada: 2024-02-02</h4>
+<h1 class="title toc-ignore">Lab 03 - Transformación</h1>
 
 </div>
 
@@ -1637,93 +1654,129 @@ Información</strong></h1>
 <div class="title-logo">
 
 </div>
-<p><br /></p>
-<p>Bienvenido al sitio web de la asignatura de <strong>Análisis y
-Explotación de la Información</strong> del segundo cuatrimestre de 2024
-en CUNEF Universidad. En este sitio web encontrarás el material y los
-laboratorios que usaremos durante el curso. La página se actualizará con
-frecuencia durante el cuatrimestre, así que acostúmbrate a actualizar la
-página.</p>
-<div id="contenido" class="section level2">
-<h2><strong>Contenido</strong></h2>
-<div id="tema-0-introducción" class="section level3">
-<h3>Tema 0 : Introducción</h3>
+<p>En este laboratorio trabajaremos con datos procedentes de una
+encuesta sobre los hábitos de los fumadores en el Reino Unido. Los datos
+poceden del National STEM Centre, Large Datasets from stats4schools, <a href="https://www.stem.org.uk/resources/elibrary/resource/28452/large-datasets-stats4schools">https://www.stem.org.uk/resources/elibrary/resource/28452/large-datasets-stats4schools</a>.</p>
+<p>Los datos se encuentran en la carpeta data del repositorio. Puedes
+cargarlos utilizando</p>
+<pre class="r"><code>library(tidyverse)
+fumar &lt;- read_csv(&quot;data/smoking.csv&quot;)</code></pre>
+<p>La variables recogidas son (entre paréntesis aparecen los niveles que
+toman):</p>
 <ul>
-<li><a href="./tema0/tema0.html">Diapositivas</a></li>
+<li><p><code>gender</code>: Género</p></li>
+<li><p><code>age</code>: Edad</p></li>
+<li><p><code>marital_status</code>: Estado civil (Divorced, Married,
+Separated, Single and Widowed)</p></li>
+<li><p><code>highest_qualification</code>: Nivel más alto de educación
+(A Levels, Degree, GCSE/CSE, GCSE/O Level, Higher/Sub Degree, No
+Qualification, ONC/BTEC y Other/Sub Degree)</p></li>
+<li><p><code>nationality</code>: Nacionalidad (British, English, Irish,
+Scottish, Welsh, Other, Refused y Unknown)</p></li>
+<li><p><code>ethnicity</code> : Etnia (Asian, Black, Chinese, Mixed,
+White y Refused Unknown)</p></li>
+<li><p><code>gross_income</code>: Salario bruto (Under 2,600, 2,600 to
+5,200, 5,200 to 10,400, 10,400 to 15,600, 15,600 to 20,800, 20,800 to
+28,600, 28,600 to 36,400, Above 36,400, Refused y Unknown)</p></li>
+<li><p><code>region</code>: Region (London, Midlands &amp; East Anglia,
+Scotland, South East, South West, The North y Wales)</p></li>
+<li><p><code>smoke</code> : Fumador (No y Yes)</p></li>
+<li><p><code>amt_weekends</code>: Número de cigarros diarios en fin de
+semana</p></li>
+<li><p><code>amt_weekdays</code>: Número de cigarros diarios entre
+semana</p></li>
+<li><p><code>type</code>: Tipo de cigarrilos (Packets, Hand-Rolled,
+Both/Mainly Packets y Both/Mainly Hand-Rolled)</p></li>
 </ul>
+<div id="ejercicio-1" class="section level2">
+<h2>Ejercicio 1</h2>
+<p>¿Cuántas observaciones hay en el dataset para cada género? ¿Qué
+proporción de mujeres son fumadoras? ¿Y de hombres?</p>
 </div>
-<div id="tema-1-programación-en-r" class="section level3">
-<h3>Tema 1 : Programación en R</h3>
-<ul>
-<li><a href="./tema1/tema1.html">Diapositivas</a></li>
-</ul>
-<!--
-  
-### Tema 2 : Análisis Exploratorio de los Datos
-- 2.1: Visualización de datos
-  - [Diapositivas](./tema2/tema2-1.html)
- 
-
-- 2.2: Transformación de datos
-  - [Diapositivas](./tema2/tema2-2.html)
-
- 
-- 2.3: Análisis Exploratorio de datos
-  - [Diapositivas](./tema2/tema2-3.html)
- 
-
-### Tema 3 : Data Wrangling
-  - 3.1: Importación de datos
-    - [Diapositivas](./tema3/tema3-1.html)
-
-  - 3.2: Organización de datos
-    - [Diapositivas](./tema3/tema3-2.html)
-    
-  
-  - 3.3: Transformación de datos
-    - [Diapositivas](./tema3/tema3-3.html)
-
-
-
-### Tema 4 : Modelización
-  - [Diapositivas](./tema4/tema4.html)
-
-  
-### Tema 5 : Comunicación de Resultados
-  - [Diapositivas](./tema5/tema5.html)
-
--->
+<div id="ejercicio-2" class="section level2">
+<h2>Ejercicio 2</h2>
+<p>Selecciona la variable <code>amt_weekends</code>, ordenala de forma
+decreciente y muestra los primeros 10 valores. Haz lo mismo con
+<code>amt_weekdays</code>, ¿qué observas?</p>
 </div>
+<div id="ejercicio-3" class="section level2">
+<h2>Ejercicio 3</h2>
+<p>¿Qué valores únicos presenta la variable
+<code>gross_income</code>?</p>
+<p>Sustituye los valores Unknown con <code>NA</code> y vuelve a calcular
+los valores únicos de la variable.</p>
 </div>
-<div id="laboratorios" class="section level2">
-<h2><strong>Laboratorios</strong></h2>
-<div id="lab-01---programación-en-r" class="section level3">
-<h3>Lab 01 - Programación en R</h3>
-<ul>
-<li><a href="./labs/lab1.html">Ejercicios</a></li>
-</ul>
-<!--
-
-### Lab 02 - Visualización 
-  - [Ejercicios](./labs/lab2.html)
-  
-### Lab 03 - Transformación
-  - [Ejercicios](./labs/lab3.html)
-
-### Lab 04 - Importación
-  - [Ejercicios](./labs/lab4.html)
-
-### Lab 05 - Data Wrangling
-  - [Ejercicios](./labs/lab5.html)
-  
-### Lab 06 - Strings, Factores y Fechas
-  - [Ejercicios](./labs/lab6.html)
-
-### Lab 07 - Modelos
-  - [Ejercicios](./labs/lab7.html)
-  
--->
+<div id="ejercicio-4" class="section level2">
+<h2>Ejercicio 4</h2>
+<p>Muestra las 10 últimas filas del dataset</p>
 </div>
+<div id="ejercicio-5" class="section level2">
+<h2>Ejercicio 5</h2>
+<p>¿Cuál es la media de cigarrillos diarios entre semana que fuman los
+menores de 30? ¿Y los fines de semana? <strong>Nota</strong>: Si
+observas <code>NA</code> determina el posible origen de esos valores
+ausentes y su tratamiento,</p>
+</div>
+<div id="ejercicio-6" class="section level2">
+<h2>Ejercicio 6</h2>
+<p>Calcula media, mediana, y desviación estándar de cigarrillos/dia en
+fin de semana y entre semana por grupos de edad menor o igual a 20,
+20-30, …, &gt;90. Resume las conclusiones de los resultados
+observados.</p>
+<p><em>Nota</em>: Crea una nueva variable llamada <code>decada</code>
+utilizando la función <code>case_when</code>. Los niveles de esta
+variable han de ser
+<code>&quot;&lt;=20&quot;,&quot;20-30&quot;,&quot;30-40&quot;, &quot;40-50&quot;, &quot;50-60&quot;, &quot;60-70&quot;, &quot;70-80&quot;, &quot;80-90&quot;, &quot;&gt;90&quot;</code>.</p>
+</div>
+<div id="ejercicio-7" class="section level2">
+<h2>Ejercicio 7</h2>
+<p>Ordena las distintas etnias en orden decreciente de proporción de
+fumadores en la muestra. Excluye aquellas observaciones con etnia
+desconocida o no declarada.</p>
+</div>
+<div id="ejercicio-8" class="section level2">
+<h2>Ejercicio 8</h2>
+<p>¿Qué tipos de tabaco son más populares en las distintas franjas de
+salario bruto? ¿Y en las distintas franjas de edad?</p>
+<p><em>Nota</em>: utiliza la variable decada creada anteriormente</p>
+</div>
+<div id="ejercicio-9" class="section level2">
+<h2>Ejercicio 9</h2>
+<p>¿Cuál es la diferencia entre estos dos códigos?</p>
+<pre class="r"><code>fumar %&gt;% count(gender, smoke) %&gt;% mutate(prop=n/sum(n))</code></pre>
+<pre class="r"><code>fumar %&gt;% group_by(gender, smoke) %&gt;% summarise(n=n()) %&gt;%
+  mutate(prop=n/sum(n))</code></pre>
+</div>
+<div id="ejercicio-10" class="section level2">
+<h2>Ejercicio 10</h2>
+<p>¿Entre la gente que no está casada, cuántos cigarros/día entre semana
+se fuman de media por nivel de estudios?</p>
+</div>
+<div id="ejercicio-11" class="section level2">
+<h2>Ejercicio 11</h2>
+<p>En numerosas ocasiones, ante la presencia de valores ausentes, es
+útil substituírlos por un valor. A este proceso se le conoce como
+imputación. Una de las técnicas más comunes de imputación de variables
+categóricas, consiste en substituír los valores ausentes por el valor
+más probable en cierto segmento de la población (la moda).</p>
+<p>Por ejemplo, podemos sustituír los valores desconocidos o no
+declarados de la variable <code>ethnicity</code> por la etnia más
+frecuente en los datos, y asumir que el porcentaje de error será
+pequeño. Una estrategia quizás más inteligente es sustituír los valores
+desconocidos o no declarados de la variable <code>ethnicity</code> por
+la etnia más prevalente en la nación correspondiente. En este ejercicio,
+has de realizar esto último. Para ello, ayudate de la siguiente función
+para el cálculo de la moda.</p>
+<pre class="r"><code>calc_mode &lt;- function(x){
+  
+  x &lt;- x[!x %in% c(&quot;Refused&quot;, &quot;Unkown&quot;)]
+  distinct_values &lt;- unique(x)
+  distinct_tabulate &lt;- tabulate(match(x, distinct_values))
+  distinct_values[which.max(distinct_tabulate)]
+  
+}</code></pre>
+<p><em>Nota</em>: Excluye las observaciones con nacionalidad no conocida
+o no declarada. ¿Qué sucede si las incluyes?</p>
 </div>
 
 

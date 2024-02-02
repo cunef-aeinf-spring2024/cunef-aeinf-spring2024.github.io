@@ -1,0 +1,97 @@
+---
+title: "Lab 04 - Importación"
+author: "Tu Nombre Aquí"
+date: "2023-09-05"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Ejercicio 1
+
+Simula la lectura de un conjunto de datos escritos en csv que contenga cuatro variables:
+nombre, edad, género y fumador (con valores posibles si/no), y dos observaciones la tuya y la de 
+un amigo/a. Incluye una línea de metadatos al principio con un comentario que describa los datos.
+Por ejemplo:
+
+
+```{r}
+datos <- "# Datos de Ana y Pedro
+nombre,edad,genero,fuma
+Pedro,29,hombre,no
+Ana,26,mujer,si"
+```
+
+
+Lee los datos en un tibble. A continuación, guárdalos en formato csv dentro de una carpeta que se llama `data`.
+Una vez guardados, vuelve a leerlos (esta vez desde el fichero).
+Finalmente, guárdalos de nuevo en formato excel.
+
+
+
+## Ejercicio 2
+
+Federal Reserve Economic Data (FRED) es una base de datos mantenida por la Reserva Federal de St. Louis (USA). Contiene casi un millón de series de datos en el tiempo que muestran la evolución de diferentes medidas económicas.
+
+Accede a la web de FRED [https://fred.stlouisfed.org/](https://fred.stlouisfed.org/). Exporta los datos sobre la evolución del IPC Mediano en csv (en inglés Median Consumer Price Index).
+Cárgalos en R y haz lo siguiente:
+
+* Representa gráficamente la evolución del IPC Mediano desde el año 2000.
+
+* ¿En qué fecha se alcanzó el máximo IPC Mediano? ¿Y el mínimo? 
+
+
+## Ejercicio 3
+
+Our World in Data es una inicitiva de la Universidad de Oxford que pretende liberar datos acerca de múltiples fenómenos sociales. En particular ofrece resultados empíricos acerca del cambio de condiciones de vida en el planeta a lo largo del tiempo. Los datos son de diversos ámbitos: económico, social, judicial, ecológico, etc.
+
+¿Cuántas veces has escuchado, en la cena de nochevieja, a un familiar decir: "en mis tiempos se vivía mejor, no había tanto paro!"? Bien, en esta práctica haremos uso de Our World in Data junto con R para que puedas rebatir esos comentarios con datos empíricos. 
+
+Lo primero que has de hacer es acceder a la página [https://ourworldindata.org/](https://ourworldindata.org/). Verás una pestaña que dice "Browse by Topic". Busca en esa pestaña un tópico de interés.
+Al seleccionarlo, llegarás a un artículo que, seguramente, contendrá alguna gráfica. En el gráfico aparecerá una pestaña Download, púlsala y descarga los datos en csv.
+
+Una vez descargados, cárgalos en R e intenta reproducir el gráfico que aparece en el artículo.
+
+Aquí os pongo un ejemplo con datos sobre la evolución del precio del gas en diferentes regiones.
+La gráfica es esta:
+[https://ourworldindata.org/grapher/natural-gas-prices](https://ourworldindata.org/grapher/natural-gas-prices).
+
+
+
+## Ejercicio 4
+
+Busca en FRED algún dato de tu interés. Descárgalo en **excel**, impórtalo en R,
+construye una gráfica y extrae alguna conclusión.
+
+## Ejercicio 5
+
+Parsea cada una de estas fechas/horas
+
+```{r}
+d1 <- "January 01, 2010"
+d2 <- "2015-Mar-07"
+d3 <- "06-Jun-2017"
+d4 <- c("August 19 (2015)", "July 1 (2015)")
+d5 <- "12/30/14" # Dec 30, 2014
+t1 <- "1705"
+t2 <- "11:15:10.12 PM"
+```
+
+
+## Ejercicio 6
+
+Elabora un código que haga lo siguiente:
+
+* Compruebe si existe una carpeta llamada "datos_paro", si no existe, ha de crearla.
+
+* Descargue los datos de desempleo de España de FRED (en FRED estos datos se denominan: "Unemployment Rate: Aged 15-74: All Persons for Spain") y los guarde en la carpeta "datos_paro".
+
+* Lea los datos recién descargados.
+
+* Si la tasa de desempleo más reciente es inferior a 10 % imprima el mensaje
+`"La tasa de desempleo ha bajado del 10%"`, de lo contrario, se imprimirá
+`"La tasa de desempleo se mantiente por encima del 10%"`
+
+

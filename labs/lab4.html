@@ -11,7 +11,7 @@
 
 
 
-<title>Análisis y Explotación de la Información</title>
+<title>Lab 04 - Importación de datos</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1465,6 +1465,26 @@ padding-right: 0;
 padding-left: 90px;
 font-size: 13pt;
 }
+ol>li:before {
+
+content: "Question " counter(li)".";
+
+counter-increment: li;
+position: absolute;
+color: #222222;
+left: -0.5px;
+font-weight: bold;
+}
+ol ol>li:before {
+counter-reset: sub-item;
+
+
+position: absolute;
+color: #222222;
+left: -0.5px;
+font-weight: bold;
+padding-left: 90px;
+}
 .td {
 font-size: 10pt;
 }
@@ -1626,10 +1646,7 @@ border-radius: 0px;
 
 
 
-<h1 class="title toc-ignore"><strong>Análisis y Explotación de la
-Información</strong></h1>
-<h3 class="subtitle">CUNEF Universidad</h3>
-<h4 class="date">Página actualizada: 2024-02-02</h4>
+<h1 class="title toc-ignore">Lab 04 - Importación de datos</h1>
 
 </div>
 
@@ -1637,93 +1654,92 @@ Información</strong></h1>
 <div class="title-logo">
 
 </div>
-<p><br /></p>
-<p>Bienvenido al sitio web de la asignatura de <strong>Análisis y
-Explotación de la Información</strong> del segundo cuatrimestre de 2024
-en CUNEF Universidad. En este sitio web encontrarás el material y los
-laboratorios que usaremos durante el curso. La página se actualizará con
-frecuencia durante el cuatrimestre, así que acostúmbrate a actualizar la
-página.</p>
-<div id="contenido" class="section level2">
-<h2><strong>Contenido</strong></h2>
-<div id="tema-0-introducción" class="section level3">
-<h3>Tema 0 : Introducción</h3>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<div id="ejercicio-1" class="section level2">
+<h2>Ejercicio 1</h2>
+<p>Simula la lectura de un conjunto de datos escritos en csv que
+contenga cuatro variables: nombre, edad, género y fumador (con valores
+posibles si/no), y dos observaciones la tuya y la de un amigo/a. Incluye
+una línea de metadatos al principio con un comentario que describa los
+datos. Por ejemplo:</p>
+<pre class="r"><code>datos &lt;- &quot;# Datos de Ana y Pedro
+nombre,edad,genero,fuma
+Pedro,29,hombre,no
+Ana,26,mujer,si&quot;</code></pre>
+<p>Lee los datos en un tibble. A continuación, guárdalos en formato csv
+dentro de una carpeta que se llama <code>data</code>. Una vez guardados,
+vuelve a leerlos (esta vez desde el fichero). Finalmente, guárdalos de
+nuevo en formato excel.</p>
+</div>
+<div id="ejercicio-2" class="section level2">
+<h2>Ejercicio 2</h2>
+<p>Federal Reserve Economic Data (FRED) es una base de datos mantenida
+por la Reserva Federal de St. Louis (USA). Contiene casi un millón de
+series de datos en el tiempo que muestran la evolución de diferentes
+medidas económicas.</p>
+<p>Accede a la web de FRED <a href="https://fred.stlouisfed.org/">https://fred.stlouisfed.org/</a>.
+Exporta los datos sobre la evolución del IPC Mediano en csv (en inglés
+Median Consumer Price Index). Cárgalos en R y haz lo siguiente:</p>
 <ul>
-<li><a href="./tema0/tema0.html">Diapositivas</a></li>
+<li><p>Representa gráficamente la evolución del IPC Mediano desde el año
+2000.</p></li>
+<li><p>¿En qué fecha se alcanzó el máximo IPC Mediano? ¿Y el
+mínimo?</p></li>
 </ul>
 </div>
-<div id="tema-1-programación-en-r" class="section level3">
-<h3>Tema 1 : Programación en R</h3>
+<div id="ejercicio-3" class="section level2">
+<h2>Ejercicio 3</h2>
+<p>Our World in Data es una inicitiva de la Universidad de Oxford que
+pretende liberar datos acerca de múltiples fenómenos sociales. En
+particular ofrece resultados empíricos acerca del cambio de condiciones
+de vida en el planeta a lo largo del tiempo. Los datos son de diversos
+ámbitos: económico, social, judicial, ecológico, etc.</p>
+<p>¿Cuántas veces has escuchado, en la cena de nochevieja, a un familiar
+decir: “en mis tiempos se vivía mejor, no había tanto paro!”? Bien, en
+esta práctica haremos uso de Our World in Data junto con R para que
+puedas rebatir esos comentarios con datos empíricos.</p>
+<p>Lo primero que has de hacer es acceder a la página <a href="https://ourworldindata.org/">https://ourworldindata.org/</a>.
+Verás una pestaña que dice “Browse by Topic”. Busca en esa pestaña un
+tópico de interés. Al seleccionarlo, llegarás a un artículo que,
+seguramente, contendrá alguna gráfica. En el gráfico aparecerá una
+pestaña Download, púlsala y descarga los datos en csv.</p>
+<p>Una vez descargados, cárgalos en R e intenta reproducir el gráfico
+que aparece en el artículo.</p>
+<p>Aquí os pongo un ejemplo con datos sobre la evolución del precio del
+gas en diferentes regiones. La gráfica es esta: <a href="https://ourworldindata.org/grapher/natural-gas-prices">https://ourworldindata.org/grapher/natural-gas-prices</a>.</p>
+</div>
+<div id="ejercicio-4" class="section level2">
+<h2>Ejercicio 4</h2>
+<p>Busca en FRED algún dato de tu interés. Descárgalo en
+<strong>excel</strong>, impórtalo en R, construye una gráfica y extrae
+alguna conclusión.</p>
+</div>
+<div id="ejercicio-5" class="section level2">
+<h2>Ejercicio 5</h2>
+<p>Parsea cada una de estas fechas/horas</p>
+<pre class="r"><code>d1 &lt;- &quot;January 01, 2010&quot;
+d2 &lt;- &quot;2015-Mar-07&quot;
+d3 &lt;- &quot;06-Jun-2017&quot;
+d4 &lt;- c(&quot;August 19 (2015)&quot;, &quot;July 1 (2015)&quot;)
+d5 &lt;- &quot;12/30/14&quot; # Dec 30, 2014
+t1 &lt;- &quot;1705&quot;
+t2 &lt;- &quot;11:15:10.12 PM&quot;</code></pre>
+</div>
+<div id="ejercicio-6" class="section level2">
+<h2>Ejercicio 6</h2>
+<p>Elabora un código que haga lo siguiente:</p>
 <ul>
-<li><a href="./tema1/tema1.html">Diapositivas</a></li>
+<li><p>Compruebe si existe una carpeta llamada “datos_paro”, si no
+existe, ha de crearla.</p></li>
+<li><p>Descargue los datos de desempleo de España de FRED (en FRED estos
+datos se denominan: “Unemployment Rate: Aged 15-74: All Persons for
+Spain”) y los guarde en la carpeta “datos_paro”.</p></li>
+<li><p>Lea los datos recién descargados.</p></li>
+<li><p>Si la tasa de desempleo más reciente es inferior a 10 % imprima
+el mensaje <code>&quot;La tasa de desempleo ha bajado del 10%&quot;</code>, de lo
+contrario, se imprimirá
+<code>&quot;La tasa de desempleo se mantiente por encima del 10%&quot;</code></p></li>
 </ul>
-<!--
-  
-### Tema 2 : Análisis Exploratorio de los Datos
-- 2.1: Visualización de datos
-  - [Diapositivas](./tema2/tema2-1.html)
- 
-
-- 2.2: Transformación de datos
-  - [Diapositivas](./tema2/tema2-2.html)
-
- 
-- 2.3: Análisis Exploratorio de datos
-  - [Diapositivas](./tema2/tema2-3.html)
- 
-
-### Tema 3 : Data Wrangling
-  - 3.1: Importación de datos
-    - [Diapositivas](./tema3/tema3-1.html)
-
-  - 3.2: Organización de datos
-    - [Diapositivas](./tema3/tema3-2.html)
-    
-  
-  - 3.3: Transformación de datos
-    - [Diapositivas](./tema3/tema3-3.html)
-
-
-
-### Tema 4 : Modelización
-  - [Diapositivas](./tema4/tema4.html)
-
-  
-### Tema 5 : Comunicación de Resultados
-  - [Diapositivas](./tema5/tema5.html)
-
--->
-</div>
-</div>
-<div id="laboratorios" class="section level2">
-<h2><strong>Laboratorios</strong></h2>
-<div id="lab-01---programación-en-r" class="section level3">
-<h3>Lab 01 - Programación en R</h3>
-<ul>
-<li><a href="./labs/lab1.html">Ejercicios</a></li>
-</ul>
-<!--
-
-### Lab 02 - Visualización 
-  - [Ejercicios](./labs/lab2.html)
-  
-### Lab 03 - Transformación
-  - [Ejercicios](./labs/lab3.html)
-
-### Lab 04 - Importación
-  - [Ejercicios](./labs/lab4.html)
-
-### Lab 05 - Data Wrangling
-  - [Ejercicios](./labs/lab5.html)
-  
-### Lab 06 - Strings, Factores y Fechas
-  - [Ejercicios](./labs/lab6.html)
-
-### Lab 07 - Modelos
-  - [Ejercicios](./labs/lab7.html)
-  
--->
-</div>
 </div>
 
 

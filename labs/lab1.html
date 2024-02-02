@@ -11,7 +11,7 @@
 
 
 
-<title>Análisis y Explotación de la Información</title>
+<title>Lab 01 - Programación en R</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1465,6 +1465,26 @@ padding-right: 0;
 padding-left: 90px;
 font-size: 13pt;
 }
+ol>li:before {
+
+content: "Question " counter(li)".";
+
+counter-increment: li;
+position: absolute;
+color: #222222;
+left: -0.5px;
+font-weight: bold;
+}
+ol ol>li:before {
+counter-reset: sub-item;
+
+
+position: absolute;
+color: #222222;
+left: -0.5px;
+font-weight: bold;
+padding-left: 90px;
+}
 .td {
 font-size: 10pt;
 }
@@ -1626,10 +1646,7 @@ border-radius: 0px;
 
 
 
-<h1 class="title toc-ignore"><strong>Análisis y Explotación de la
-Información</strong></h1>
-<h3 class="subtitle">CUNEF Universidad</h3>
-<h4 class="date">Página actualizada: 2024-02-02</h4>
+<h1 class="title toc-ignore">Lab 01 - Programación en R</h1>
 
 </div>
 
@@ -1637,93 +1654,85 @@ Información</strong></h1>
 <div class="title-logo">
 
 </div>
-<p><br /></p>
-<p>Bienvenido al sitio web de la asignatura de <strong>Análisis y
-Explotación de la Información</strong> del segundo cuatrimestre de 2024
-en CUNEF Universidad. En este sitio web encontrarás el material y los
-laboratorios que usaremos durante el curso. La página se actualizará con
-frecuencia durante el cuatrimestre, así que acostúmbrate a actualizar la
-página.</p>
-<div id="contenido" class="section level2">
-<h2><strong>Contenido</strong></h2>
-<div id="tema-0-introducción" class="section level3">
-<h3>Tema 0 : Introducción</h3>
+<div id="ejercicio-1" class="section level2">
+<h2>Ejercicio 1</h2>
+<p>Escribe una función que devuelva <span class="math inline">\(k\)</span> números, donde cada número es la suma
+de <span class="math inline">\(n\)</span> números escogidos al azar
+entre 1 y 100 (con reemplazamiento), divido entre n.</p>
+<p>Pinta un histograma con los resultados de <span class="math inline">\(k=10000\)</span> para <span class="math inline">\(n=1\)</span>, <span class="math inline">\(n=2\)</span>, <span class="math inline">\(n=10\)</span> y <span class="math inline">\(n=100\)</span>. Pista: puedes usar la función
+<code>hist()</code>.</p>
+<p>¿Qué observas?</p>
+</div>
+<div id="ejercicio-2" class="section level2">
+<h2>Ejercicio 2</h2>
+<p>Utiliza la ayuda de la función <code>replicate()</code> para conocer
+su funcionamiento. Resuelve el Ejercicio 1 sin usar un bucle (si es que
+lo habías usado).</p>
+</div>
+<div id="ejercicio-3" class="section level2">
+<h2>Ejercicio 3</h2>
+<p>La base de datos <code>mtcars</code> de R contiene información
+extraída de la <em>1974 Motor Trend US magazine</em> acerca de 10
+aspectos de diseño de rendimiento de 32 vehículos. Usando esta base de
+datos, calcula</p>
+<p><strong>Pregunta 1.</strong> La diferencia entre el consumo medio de
+los vehículos de transmisión automática y los de transmisión manual.</p>
+<p><strong>Pregunta 2.</strong> La misma diferencia pero únicamente para
+vehículos de más de 3000 lbs.</p>
+<p>Pista: la ayuda ?mtcars te puede ser útil</p>
+</div>
+<div id="ejercicio-4" class="section level2">
+<h2>Ejercicio 4</h2>
+<p>Utilizando un bucle <code>for</code> y un <code>if</code>, suma los
+números pares entre 1 y 100 (ambos incluidos).</p>
+</div>
+<div id="ejercicio-5" class="section level2">
+<h2>Ejercicio 5</h2>
+<p>Calcula la ganancia esperada de la estrategia de ruleta que consiste
+en apostar 10 euros siempre al rojo.</p>
+<p>Para ello:</p>
 <ul>
-<li><a href="./tema0/tema0.html">Diapositivas</a></li>
+<li><p>Crea una función llamada <code>spin()</code> que devuelva un
+número muestreado al azar entre 0 y 36 (ambos incluidos).</p></li>
+<li><p>Crea otra función llamada <code>compute_gain()</code> que tenga
+un argumento <code>q</code> referido a la cantidad de dinero de la
+apuesta, con valor por defecto de 10. Esta función, ha de generar un
+tirada de la ruleta y, en función del resultado, calcular la ganancia y
+devolverla. Recuerda que</p>
+<ul>
+<li>Los números (32, 19, 21, 25, 34, 27, 36, 30, 23, 5, 16, 1, 14, 9,
+18, 7, 12, 3) tienen color rojo.</li>
+<li>Los números (15, 4, 2, 17, 6, 13, 11, 8, 10, 24, 33, 20, 31, 22, 29,
+28, 35, 26) tienen color negro.</li>
+<li>El cero no tiene color.</li>
+</ul></li>
+<li><p>Por último, crea un bucle que simule <code>K=10.000</code>
+partidas de la ruleta, almacena la ganancia generada en cada una,
+creando así un vector de tamaño <span class="math inline">\(K\)</span>.
+Llama <code>ganancias</code> a este vector. Calcula su media. ¿Qué
+observas?</p></li>
 </ul>
 </div>
-<div id="tema-1-programación-en-r" class="section level3">
-<h3>Tema 1 : Programación en R</h3>
-<ul>
-<li><a href="./tema1/tema1.html">Diapositivas</a></li>
-</ul>
-<!--
-  
-### Tema 2 : Análisis Exploratorio de los Datos
-- 2.1: Visualización de datos
-  - [Diapositivas](./tema2/tema2-1.html)
- 
+<div id="ejercicio-6" class="section level2">
+<h2>Ejercicio 6</h2>
+<p>Utiliza el siguiente código para representar las ganancia acumulada
+frente al número de partida. Necesitarás haber creado el vector
+<code>ganancias</code> del ejercicio anterior y haber definido el
+parámetro <code>K</code> (número de partidas). Extrae una conclusión del
+gráfico.</p>
+<pre class="r"><code>library(ggplot2)
 
-- 2.2: Transformación de datos
-  - [Diapositivas](./tema2/tema2-2.html)
+results = data.frame(Partida = 1:K, Ganancia_Acumulada = cumsum(ganancias) )
 
- 
-- 2.3: Análisis Exploratorio de datos
-  - [Diapositivas](./tema2/tema2-3.html)
- 
+p &lt;- ggplot(results, aes(x=Partida, y=Ganancia_Acumulada)) +  
+  geom_line() + theme_minimal()
 
-### Tema 3 : Data Wrangling
-  - 3.1: Importación de datos
-    - [Diapositivas](./tema3/tema3-1.html)
-
-  - 3.2: Organización de datos
-    - [Diapositivas](./tema3/tema3-2.html)
-    
-  
-  - 3.3: Transformación de datos
-    - [Diapositivas](./tema3/tema3-3.html)
-
-
-
-### Tema 4 : Modelización
-  - [Diapositivas](./tema4/tema4.html)
-
-  
-### Tema 5 : Comunicación de Resultados
-  - [Diapositivas](./tema5/tema5.html)
-
--->
+p</code></pre>
 </div>
-</div>
-<div id="laboratorios" class="section level2">
-<h2><strong>Laboratorios</strong></h2>
-<div id="lab-01---programación-en-r" class="section level3">
-<h3>Lab 01 - Programación en R</h3>
-<ul>
-<li><a href="./labs/lab1.html">Ejercicios</a></li>
-</ul>
-<!--
-
-### Lab 02 - Visualización 
-  - [Ejercicios](./labs/lab2.html)
-  
-### Lab 03 - Transformación
-  - [Ejercicios](./labs/lab3.html)
-
-### Lab 04 - Importación
-  - [Ejercicios](./labs/lab4.html)
-
-### Lab 05 - Data Wrangling
-  - [Ejercicios](./labs/lab5.html)
-  
-### Lab 06 - Strings, Factores y Fechas
-  - [Ejercicios](./labs/lab6.html)
-
-### Lab 07 - Modelos
-  - [Ejercicios](./labs/lab7.html)
-  
--->
-</div>
+<div id="ejercicio-7" class="section level2">
+<h2>Ejercicio 7</h2>
+<p>Repite los dos ejercicios anteriores pero esta vez evaluando
+cualquier otra estrategia que se te ocurra. ¿Qué conclusión extraes?</p>
 </div>
 
 
