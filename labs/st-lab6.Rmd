@@ -1,0 +1,137 @@
+---
+title: "Lab 05 - Data Wrangling"
+author: "Tu Nombre Aquí"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(nycflights13)
+library(lubridate)
+library(tidyquant)
+```
+
+
+## Ejercicio 1
+
+En la base de datos `flights` las variables `dep_time`, `arr_time`, `sched_dep_time`
+y `sched_arr_time` contienen las horas en format de tres o cuatro dígitos.
+Así, 830 son las 8 y media de la mañana y 2030 las ocho y media de la tarde.
+Una posbilidad para extraer la hora y los minutos de estas fechas es la siguiente:
+
+```{r}
+time <- 2030
+hora <- time%/%100
+minutos <- time%%100
+print(hora)
+print(minutos)
+```
+
+Entiende y describe el funcionamiento de estas líneas de código. Crea un dataframe llamado `flights_dt` en el que las variables `dep_time`, `arr_time`, `sched_dep_time`
+y `sched_arr_time` contengan las fechas exactas a las que se refieren en formato `datetime`.
+
+### Solución
+
+
+## Ejercicio 2
+
+Visualiza la distribución de vuelos según el **día de la semana** en el que despegan.
+¿Qué conclusión extraes?
+
+### Solución
+
+
+## Ejercicio 3
+
+Visualiza la distribución de vuelos según el **minuto** en el que despegan y según el **minuto**
+de la hora prevista para el despegue.
+¿Qué patrón aparece? ¿Cómo lo explicarías?
+
+### Solución
+
+
+## Ejercicio 4
+
+Crea una nueva variable que corresponda a la diferencia entre `arr_time` y
+`dep_time`. 
+Visualiza la covariación entre esta variable y `air_time`.
+¿Qué observas? ¿Qué está sucediendo?
+
+### Solución
+
+## Ejercicio 5
+
+Repite la visualización anterior, pero usando un color diferente para cada zona 
+horaria del aeropuerto de destino. ¿Qué observas?
+
+**Pista**: la zona horaria de los diferentes aeropuertos está en la 
+base de datos `airport` y se llama `tzone`.
+
+
+### Solución
+
+
+## Ejercicio 6
+
+La libraría `tidyquant` se puede utilizar para importar a R infinidad de datos económicos. En particular, se puede usar para importar datos sobre el precio
+de diferentes acciones.
+
+Extraer el histórico de precios de AMZN desde el año 2000 es muy sencillo:
+
+```{r}
+prices  <- tq_get("AMZN", get = "stock.prices", from = " 2000-01-01")
+prices 
+```
+
+Crea una visualización para que permita estudiar la variación del precio de 
+apertura de la acción de AMZN en el tiempo. ¿En qué fechas se alcazan precios de 
+apertura máximos y mínimos?
+
+Al inicio de la pandemia, a causa de la cuarentena obligatoria establecida por
+numerosos países, las expectativas del mercado sobre Amazon se dispararon.
+Imagina que hubiéses comprado acciones de Amazon el día 2 de Marzo de 2020 por
+un valor de 5000 euros. Calcula las ganancias netas obtenidas si hubieses vendido
+esas acciones un año después. (Utiliza los precios de apertura).
+
+### Solución
+
+
+## Ejercicio 7
+
+Al usar expresiones regulares, el signo `+` indica repetición.
+Así, si queremos detectar un patrón que se repite un número indefinido de veces,
+por ejemplo, detectar todas las C en CCCCCCCMMD, lo haremos como sigue.
+
+```{r}
+str_view("CCCCCCCMMD", pattern = "C+")
+```
+Además, la función `str_extract` permite extraer los patrones detectados. Por ejemplo
+```{r}
+str_extract("CCCCCCCMMD", pattern = "C+")
+```
+
+Usando expresiones regulares, extrae las edades de las siguientes frases.
+El resultado debe ser un vector que contenga los números 57, 36, 23 y 1.
+```{r}
+x1 <- "El paciente tiene 57 años"
+x2 <- "La edad de mi hermana es 36 años"
+x3 <- "A sus 23 años, tenía talla 36"
+x4 <- "Tan solo tiene 1 año!"
+
+datos <- c(x1,x2,x3,x4)
+```
+
+
+### Solución
+
+## Ejercicio 8
+Usando los datos `gss_cat` de tidyverse, visualiza la distribución de la variable `rincome`.
+Para mejorar la visualización, recodifica los niveles de esta variable para que sean
+`Unknown`, `<$15000` y `>$15000`.
+
+### Solución
+

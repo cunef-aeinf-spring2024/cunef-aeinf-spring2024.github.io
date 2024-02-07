@@ -1,0 +1,77 @@
+---
+title: "Lab 01 - Programación en R"
+author: "Tu Nombre Aquí"
+date: "2024-02-02"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Ejercicio 1
+
+Escribe una función que devuelva $k$ números, donde cada número es
+la suma de $n$ números escogidos al azar entre 1 y 100 (con reemplazamiento), divido entre n.
+
+Pinta un histograma con los resultados de $k=10000$ para $n=1$, $n=2$, $n=10$ y $n=100$.
+Pista: puedes usar la función `hist()`.
+
+¿Qué observas?
+
+
+## Ejercicio 2
+
+Utiliza la ayuda de la función `replicate()` para conocer su funcionamiento.
+Resuelve el Ejercicio 1 sin usar un bucle (si es que lo habías usado).
+
+
+## Ejercicio 3
+
+La base de datos `mtcars` de R contiene información extraída de la *1974 Motor Trend US magazine* acerca de 10 aspectos de diseño de rendimiento de 32 vehículos. 
+Usando esta base de datos, calcula 
+
+**Pregunta 1.** La diferencia entre el consumo medio de los vehículos de transmisión automática y los de transmisión manual.
+
+**Pregunta 2.** La misma diferencia pero únicamente para vehículos de más de 3000 lbs.
+
+Pista: la ayuda ?mtcars te puede ser útil
+
+## Ejercicio 4
+
+Utilizando un bucle `for` y un `if`, suma los números pares entre 1 y 100 (ambos incluidos).
+
+## Ejercicio 5
+
+Calcula la ganancia esperada de la estrategia de ruleta que consiste en apostar 10 euros siempre al rojo.
+
+Para ello:
+
+  - Crea una función llamada `spin()` que devuelva un número muestreado al azar entre 0 y 36 (ambos incluidos).
+  - Crea otra función llamada `compute_gain()` que tenga un argumento `q` referido a la cantidad de dinero de la apuesta, con valor por defecto de 10. Esta función, ha de generar un tirada de la ruleta y, en función del resultado, calcular la ganancia y devolverla. Recuerda que
+  
+    * Los números (32, 19, 21, 25, 34, 27, 36, 30, 23, 5, 16, 1, 14, 9, 18, 7, 12, 3) tienen color rojo.
+    * Los números (15, 4, 2, 17, 6, 13, 11, 8, 10, 24, 33, 20, 31, 22, 29, 28, 35, 26) tienen color negro.
+    * El cero no tiene color.
+    
+  - Por último, crea un bucle que simule `K=10.000` partidas de la ruleta, almacena la ganancia generada en cada una, creando así un vector de tamaño $K$. Llama `ganancias` a este vector. Calcula su media. ¿Qué observas?
+  
+## Ejercicio 6
+
+Utiliza el siguiente código para representar las ganancia acumulada frente al número de partida. Necesitarás haber creado el vector `ganancias` del ejercicio anterior y haber definido el parámetro `K` (número de partidas). Extrae una conclusión del gráfico.
+
+```{r, eval=F}
+library(ggplot2)
+
+results = data.frame(Partida = 1:K, Ganancia_Acumulada = cumsum(ganancias) )
+
+p <- ggplot(results, aes(x=Partida, y=Ganancia_Acumulada)) +  
+  geom_line() + theme_minimal()
+
+p
+```
+
+
+## Ejercicio 7
+
+Repite los dos ejercicios anteriores pero esta vez evaluando cualquier otra estrategia  que se te ocurra. ¿Qué conclusión extraes?

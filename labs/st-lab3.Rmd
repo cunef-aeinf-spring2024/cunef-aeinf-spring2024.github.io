@@ -1,0 +1,147 @@
+---
+title: "Lab 03 - Transformación"
+author: "Tu Nombre Aquí"
+date: "2023-09-05"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+En este laboratorio trabajaremos con datos procedentes de una encuesta sobre los hábitos de los fumadores en el Reino Unido. Los datos poceden del National STEM Centre, Large Datasets from stats4schools, [https://www.stem.org.uk/resources/elibrary/resource/28452/large-datasets-stats4schools](https://www.stem.org.uk/resources/elibrary/resource/28452/large-datasets-stats4schools).
+
+Los datos se encuentran en la carpeta data del repositorio. Puedes cargarlos utilizando
+
+```{r load-data, message=FALSE, eval=TRUE}
+library(tidyverse)
+fumar <- read_csv("data/smoking.csv")
+```
+La variables recogidas son (entre paréntesis aparecen los niveles que toman):
+
+* `gender`: Género
+
+* `age`: Edad
+
+*  `marital_status`: Estado civil (Divorced, Married, Separated, Single and Widowed)
+
+* `highest_qualification`: Nivel más alto de educación (A Levels, Degree, GCSE/CSE, GCSE/O Level, Higher/Sub Degree, No Qualification, ONC/BTEC y Other/Sub Degree)
+
+* `nationality`: Nacionalidad (British, English, Irish, Scottish, Welsh, Other, Refused y Unknown)
+
+* `ethnicity` : Etnia  (Asian, Black, Chinese, Mixed, White y Refused Unknown)
+
+* `gross_income`: Salario bruto (Under 2,600, 2,600 to 5,200, 5,200 to 10,400, 10,400 to 15,600, 15,600 to 20,800, 20,800 to 28,600, 28,600 to 36,400, Above 36,400, Refused y Unknown)
+
+* `region`: Region (London, Midlands & East Anglia, Scotland, South East, South West, The North y Wales)
+
+* `smoke` : Fumador (No y Yes)
+
+* `amt_weekends`: Número de cigarros diarios en fin de semana
+
+* `amt_weekdays`:  Número de cigarros diarios entre semana
+
+* `type`: Tipo de cigarrilos (Packets, Hand-Rolled, Both/Mainly Packets y Both/Mainly Hand-Rolled)
+
+
+
+## Ejercicio 1
+
+¿Cuántas observaciones hay en el dataset para cada género? ¿Qué proporción de mujeres son fumadoras? ¿Y de hombres?
+
+
+## Ejercicio 2
+
+Selecciona la variable `amt_weekends`, ordenala de forma decreciente y muestra los primeros 10 valores.
+Haz lo mismo con  `amt_weekdays`, ¿qué observas?
+
+
+## Ejercicio 3
+
+¿Qué valores únicos presenta la variable `gross_income`?
+
+Sustituye los valores Unknown con `NA` y vuelve a calcular los valores únicos de la variable.
+
+
+## Ejercicio 4 
+
+Muestra las 10 últimas filas del dataset
+
+
+## Ejercicio 5
+
+¿Cuál es la media de cigarrillos diarios entre semana que fuman los menores de 30? ¿Y los fines de semana? 
+**Nota**: Si observas `NA` determina  el posible origen de esos valores ausentes y su tratamiento,
+
+
+## Ejercicio 6
+
+Calcula media, mediana, y desviación estándar de cigarrillos/dia en fin de semana y entre semana por grupos de edad menor o igual a 20, 20-30, ..., >90. 
+Resume las conclusiones de los resultados observados.
+
+*Nota*: Crea una nueva variable llamada `decada` utilizando la función `case_when`.
+Los niveles de esta variable han de ser
+`"<=20","20-30","30-40", "40-50", "50-60", "60-70", "70-80", "80-90", ">90"`.
+
+
+
+## Ejercicio 7
+
+Ordena las distintas etnias en orden decreciente de proporción de fumadores en la muestra. Excluye aquellas observaciones con etnia desconocida o no declarada.
+
+
+## Ejercicio 8
+
+¿Qué tipos de tabaco son más populares en las distintas franjas de salario bruto? ¿Y en las distintas franjas de edad?
+
+*Nota*: utiliza la variable decada creada anteriormente
+
+
+## Ejercicio 9
+
+¿Cuál es la diferencia entre estos dos códigos?
+
+```{r, eval=F}
+fumar %>% count(gender, smoke) %>% mutate(prop=n/sum(n))
+```
+
+```{r, eval=F}
+fumar %>% group_by(gender, smoke) %>% summarise(n=n()) %>%
+  mutate(prop=n/sum(n))
+```
+
+
+## Ejercicio 10
+
+¿Entre la gente que no está casada, cuántos cigarros/día entre semana se fuman de media por nivel de estudios?
+
+
+## Ejercicio 11
+
+En numerosas ocasiones, ante la presencia de valores ausentes, es útil substituírlos
+por un valor. A este proceso se le conoce como imputación.
+Una de las técnicas más comunes de imputación de variables categóricas, consiste
+en substituír los valores ausentes por el valor más probable en cierto 
+segmento de la población (la moda).
+
+Por ejemplo, podemos sustituír los valores desconocidos o no declarados de la variable `ethnicity`
+por la etnia más frecuente en los datos, y asumir que el porcentaje de error será pequeño.
+Una estrategia quizás más inteligente es sustituír los valores desconocidos o no declarados de la variable `ethnicity` por la etnia más prevalente en la nación correspondiente. En este ejercicio,
+has de realizar esto último. Para ello, ayudate de la siguiente función
+para el cálculo de la moda.
+
+```{r}
+calc_mode <- function(x){
+  
+  x <- x[!x %in% c("Refused", "Unkown")]
+  distinct_values <- unique(x)
+  distinct_tabulate <- tabulate(match(x, distinct_values))
+  distinct_values[which.max(distinct_tabulate)]
+  
+}
+```
+
+*Nota*: Excluye las observaciones con nacionalidad no conocida o no declarada.
+¿Qué sucede si las incluyes?
+
+

@@ -301,13 +301,13 @@ knitr::include_graphics("img/r-rstudio.png")
 
 ## Presentación
 
-* Análisis y Explotación de la Información. Grado en Ingeniería Informática
+* Análisis y Explotación de la Información. 
 
 * Profesor: Roi Naveiro
 
 * Email: roi.naveiro@cunef.edu
 
-* Web del curso: [https://cunef-aeinf-fall2023.github.io/](https://cunef-aeinf-fall2023.github.io/)
+* Web del curso: [https://cunef-aeinf-spring2024.github.io/](https://cunef-aeinf-spring2024.github.io/)
 
 ---
 
