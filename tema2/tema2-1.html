@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Tema 2.1</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Roi Naveiro" />
+    <script src="libs/header-attrs-2.25/header-attrs.js"></script>
+    <link rel="stylesheet" href="ds_slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+
+class: center, middle, inverse, title-slide
+
+&lt;div class="title-logo"&gt;&lt;/div&gt;
+
+&lt;br&gt;
+# Análisis y Explotación de la Información
+
+## Tema 2 - Análisis Exploratorio de los Datos
+
+### 2.1 Visualización 
+
+&lt;br&gt;
+.pull-left[
+### Roi Naveiro
+]
+---
+
+## Análisis Exploratioro de los Datos
+
+* El arte de observar los datos, generar hipótesis y testearlas.
+
+* **Objetivo**: generar preguntas prometedoras para, posteriormente, explorarlas en mayor profunidad
+
+&lt;img src="img/data-science-explore.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+## tidyverse
+
+Queremos analizar los datos de forma **reproducible**
+
+.pull-left[
+![](img/tidyverse.png)
+]
+
+.pull-right[
+.center[
+[tidyverse.org](https://www.tidyverse.org/)
+]
+
+- Tidyverse es una colección de paquetes de R para ciencia de datos
+- Todos los paquetes comparten una filosofía y una gramática comunes
+]
+
+
+---
+class: center, middle, inverse
+
+# El objeto tibble
+
+---
+## El objeto tibble
+
+* Todos los paquetes de tidyverse trabajan con tibbles
+
+* El objeto tibble es similar al data frame que hemos visto
+
+* No obstante, incluye algunas novedades que lo hacen especialmente conveniente para el análisis de datos.
+
+* Antes de empezar, debemos cargar la librería `tidyverse`
+
+
+```r
+library(tidyverse)
+```
+---
+## Creación de tibbles
+
+* Podemos crear un tibble desde un dataframe
+
+
+```r
+as_tibble(iris)
+```
+
+```
+## # A tibble: 150 × 5
+##    Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+##           &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;  
+##  1          5.1         3.5          1.4         0.2 setosa 
+##  2          4.9         3            1.4         0.2 setosa 
+##  3          4.7         3.2          1.3         0.2 setosa 
+##  4          4.6         3.1          1.5         0.2 setosa 
+##  5          5           3.6          1.4         0.2 setosa 
+##  6          5.4         3.9          1.7         0.4 setosa 
+##  7          4.6         3.4          1.4         0.3 setosa 
+##  8          5           3.4          1.5         0.2 setosa 
+##  9          4.4         2.9          1.4         0.2 setosa 
+## 10          4.9         3.1          1.5         0.1 setosa 
+## # ℹ 140 more rows
+```
+
+---
+## Creación de tibbles
+
+* Podemos crear un tibble desde vectores, de manera similar a cómo hicimos con dataframes
+
+
+```r
+dt &lt;- tibble(
+  p = c("A", "B", "C", "D", "E"),
+  x = 1:5,
+  y = 2,
+  z = x + y
+)
+dt
+```
+
+```
+## # A tibble: 5 × 4
+##   p         x     y     z
+##   &lt;chr&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 A         1     2     3
+## 2 B         2     2     4
+## 3 C         3     2     5
+## 4 D         4     2     6
+## 5 E         5     2     7
+```
+
+---
+## Creación de tibbles
+
+* Podemos dar nombres complejos a las columnas de un tibble
+
+
+```r
+dt &lt;- tibble(
+  `Número de :)` = 1:5,
+  ` ` = 2,
+  `300` = 300
+)
+dt
+```
+
+```
+## # A tibble: 5 × 3
+##   `Número de :)`   ` ` `300`
+##            &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1              1     2   300
+## 2              2     2   300
+## 3              3     2   300
+## 4              4     2   300
+## 5              5     2   300
+```
+
+---
+## Tibbles vs Data Frames
+
+### Printing
+
+Los tibble tienen un método `print` refinado que por defecto solo muestra las 10 primeras filas
+
+
+```r
+iris
+```
+
+```
+##     Sepal.Length Sepal.Width Petal.Length Petal.Width    Species
+## 1            5.1         3.5          1.4         0.2     setosa
+## 2            4.9         3.0          1.4         0.2     setosa
+## 3            4.7         3.2          1.3         0.2     setosa
+## 4            4.6         3.1          1.5         0.2     setosa
+## 5            5.0         3.6          1.4         0.2     setosa
+## 6            5.4         3.9          1.7         0.4     setosa
+## 7            4.6         3.4          1.4         0.3     setosa
+## 8            5.0         3.4          1.5         0.2     setosa
+## 9            4.4         2.9          1.4         0.2     setosa
+## 10           4.9         3.1          1.5         0.1     setosa
+## 11           5.4         3.7          1.5         0.2     setosa
+## 12           4.8         3.4          1.6         0.2     setosa
+## 13           4.8         3.0          1.4         0.1     setosa
+## 14           4.3         3.0          1.1         0.1     setosa
+## 15           5.8         4.0          1.2         0.2     setosa
+## 16           5.7         4.4          1.5         0.4     setosa
+## 17           5.4         3.9          1.3         0.4     setosa
+## 18           5.1         3.5          1.4         0.3     setosa
+## 19           5.7         3.8          1.7         0.3     setosa
+## 20           5.1         3.8          1.5         0.3     setosa
+## 21           5.4         3.4          1.7         0.2     setosa
+## 22           5.1         3.7          1.5         0.4     setosa
+## 23           4.6         3.6          1.0         0.2     setosa
+## 24           5.1         3.3          1.7         0.5     setosa
+## 25           4.8         3.4          1.9         0.2     setosa
+## 26           5.0         3.0          1.6         0.2     setosa
+## 27           5.0         3.4          1.6         0.4     setosa
+## 28           5.2         3.5          1.5         0.2     setosa
+## 29           5.2         3.4          1.4         0.2     setosa
+## 30           4.7         3.2          1.6         0.2     setosa
+## 31           4.8         3.1          1.6         0.2     setosa
+## 32           5.4         3.4          1.5         0.4     setosa
+## 33           5.2         4.1          1.5         0.1     setosa
+## 34           5.5         4.2          1.4         0.2     setosa
+## 35           4.9         3.1          1.5         0.2     setosa
+## 36           5.0         3.2          1.2         0.2     setosa
+## 37           5.5         3.5          1.3         0.2     setosa
+## 38           4.9         3.6          1.4         0.1     setosa
+## 39           4.4         3.0          1.3         0.2     setosa
+## 40           5.1         3.4          1.5         0.2     setosa
+## 41           5.0         3.5          1.3         0.3     setosa
+## 42           4.5         2.3          1.3         0.3     setosa
+## 43           4.4         3.2          1.3         0.2     setosa
+## 44           5.0         3.5          1.6         0.6     setosa
+## 45           5.1         3.8          1.9         0.4     setosa
+## 46           4.8         3.0          1.4         0.3     setosa
+## 47           5.1         3.8          1.6         0.2     setosa
+## 48           4.6         3.2          1.4         0.2     setosa
+## 49           5.3         3.7          1.5         0.2     setosa
+## 50           5.0         3.3          1.4         0.2     setosa
+## 51           7.0         3.2          4.7         1.4 versicolor
+## 52           6.4         3.2          4.5         1.5 versicolor
+## 53           6.9         3.1          4.9         1.5 versicolor
+## 54           5.5         2.3          4.0         1.3 versicolor
+## 55           6.5         2.8          4.6         1.5 versicolor
+## 56           5.7         2.8          4.5         1.3 versicolor
+## 57           6.3         3.3          4.7         1.6 versicolor
+## 58           4.9         2.4          3.3         1.0 versicolor
+## 59           6.6         2.9          4.6         1.3 versicolor
+## 60           5.2         2.7          3.9         1.4 versicolor
+## 61           5.0         2.0          3.5         1.0 versicolor
+## 62           5.9         3.0          4.2         1.5 versicolor
+## 63           6.0         2.2          4.0         1.0 versicolor
+## 64           6.1         2.9          4.7         1.4 versicolor
+## 65           5.6         2.9          3.6         1.3 versicolor
+## 66           6.7         3.1          4.4         1.4 versicolor
+## 67           5.6         3.0          4.5         1.5 versicolor
+## 68           5.8         2.7          4.1         1.0 versicolor
+## 69           6.2         2.2          4.5         1.5 versicolor
+## 70           5.6         2.5          3.9         1.1 versicolor
+## 71           5.9         3.2          4.8         1.8 versicolor
+## 72           6.1         2.8          4.0         1.3 versicolor
+## 73           6.3         2.5          4.9         1.5 versicolor
+## 74           6.1         2.8          4.7         1.2 versicolor
+## 75           6.4         2.9          4.3         1.3 versicolor
+## 76           6.6         3.0          4.4         1.4 versicolor
+## 77           6.8         2.8          4.8         1.4 versicolor
+## 78           6.7         3.0          5.0         1.7 versicolor
+## 79           6.0         2.9          4.5         1.5 versicolor
+## 80           5.7         2.6          3.5         1.0 versicolor
+## 81           5.5         2.4          3.8         1.1 versicolor
+## 82           5.5         2.4          3.7         1.0 versicolor
+## 83           5.8         2.7          3.9         1.2 versicolor
+## 84           6.0         2.7          5.1         1.6 versicolor
+## 85           5.4         3.0          4.5         1.5 versicolor
+## 86           6.0         3.4          4.5         1.6 versicolor
+## 87           6.7         3.1          4.7         1.5 versicolor
+## 88           6.3         2.3          4.4         1.3 versicolor
+## 89           5.6         3.0          4.1         1.3 versicolor
+## 90           5.5         2.5          4.0         1.3 versicolor
+## 91           5.5         2.6          4.4         1.2 versicolor
+## 92           6.1         3.0          4.6         1.4 versicolor
+## 93           5.8         2.6          4.0         1.2 versicolor
+## 94           5.0         2.3          3.3         1.0 versicolor
+## 95           5.6         2.7          4.2         1.3 versicolor
+## 96           5.7         3.0          4.2         1.2 versicolor
+## 97           5.7         2.9          4.2         1.3 versicolor
+## 98           6.2         2.9          4.3         1.3 versicolor
+## 99           5.1         2.5          3.0         1.1 versicolor
+## 100          5.7         2.8          4.1         1.3 versicolor
+## 101          6.3         3.3          6.0         2.5  virginica
+## 102          5.8         2.7          5.1         1.9  virginica
+## 103          7.1         3.0          5.9         2.1  virginica
+## 104          6.3         2.9          5.6         1.8  virginica
+## 105          6.5         3.0          5.8         2.2  virginica
+## 106          7.6         3.0          6.6         2.1  virginica
+## 107          4.9         2.5          4.5         1.7  virginica
+## 108          7.3         2.9          6.3         1.8  virginica
+## 109          6.7         2.5          5.8         1.8  virginica
+## 110          7.2         3.6          6.1         2.5  virginica
+## 111          6.5         3.2          5.1         2.0  virginica
+## 112          6.4         2.7          5.3         1.9  virginica
+## 113          6.8         3.0          5.5         2.1  virginica
+## 114          5.7         2.5          5.0         2.0  virginica
+## 115          5.8         2.8          5.1         2.4  virginica
+## 116          6.4         3.2          5.3         2.3  virginica
+## 117          6.5         3.0          5.5         1.8  virginica
+## 118          7.7         3.8          6.7         2.2  virginica
+## 119          7.7         2.6          6.9         2.3  virginica
+## 120          6.0         2.2          5.0         1.5  virginica
+## 121          6.9         3.2          5.7         2.3  virginica
+## 122          5.6         2.8          4.9         2.0  virginica
+## 123          7.7         2.8          6.7         2.0  virginica
+## 124          6.3         2.7          4.9         1.8  virginica
+## 125          6.7         3.3          5.7         2.1  virginica
+## 126          7.2         3.2          6.0         1.8  virginica
+## 127          6.2         2.8          4.8         1.8  virginica
+## 128          6.1         3.0          4.9         1.8  virginica
+## 129          6.4         2.8          5.6         2.1  virginica
+## 130          7.2         3.0          5.8         1.6  virginica
+## 131          7.4         2.8          6.1         1.9  virginica
+## 132          7.9         3.8          6.4         2.0  virginica
+## 133          6.4         2.8          5.6         2.2  virginica
+## 134          6.3         2.8          5.1         1.5  virginica
+## 135          6.1         2.6          5.6         1.4  virginica
+## 136          7.7         3.0          6.1         2.3  virginica
+## 137          6.3         3.4          5.6         2.4  virginica
+## 138          6.4         3.1          5.5         1.8  virginica
+## 139          6.0         3.0          4.8         1.8  virginica
+## 140          6.9         3.1          5.4         2.1  virginica
+## 141          6.7         3.1          5.6         2.4  virginica
+## 142          6.9         3.1          5.1         2.3  virginica
+## 143          5.8         2.7          5.1         1.9  virginica
+## 144          6.8         3.2          5.9         2.3  virginica
+## 145          6.7         3.3          5.7         2.5  virginica
+## 146          6.7         3.0          5.2         2.3  virginica
+## 147          6.3         2.5          5.0         1.9  virginica
+## 148          6.5         3.0          5.2         2.0  virginica
+## 149          6.2         3.4          5.4         2.3  virginica
+## 150          5.9         3.0          5.1         1.8  virginica
+```
+
+---
+## Tibbles vs Data Frames
+
+### Printing
+
+Los tibble tienen un método `print` refinado que por defecto solo muestra las 10 primeras filas
+
+
+```r
+dt &lt;- as_tibble(iris)
+```
+
+---
+## Tibbles vs Data Frames
+
+### Printing
+
+Esto es así para no sobrecargar la consola con los prints. ¿Y si necesitamos más de 10 filas? ¡PIPES!
+
+
+```r
+dt %&gt;% print(n=11, width=Inf)
+```
+
+```
+## # A tibble: 150 × 5
+##    Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+##           &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;  
+##  1          5.1         3.5          1.4         0.2 setosa 
+##  2          4.9         3            1.4         0.2 setosa 
+##  3          4.7         3.2          1.3         0.2 setosa 
+##  4          4.6         3.1          1.5         0.2 setosa 
+##  5          5           3.6          1.4         0.2 setosa 
+##  6          5.4         3.9          1.7         0.4 setosa 
+##  7          4.6         3.4          1.4         0.3 setosa 
+##  8          5           3.4          1.5         0.2 setosa 
+##  9          4.4         2.9          1.4         0.2 setosa 
+## 10          4.9         3.1          1.5         0.1 setosa 
+## 11          5.4         3.7          1.5         0.2 setosa 
+## # ℹ 139 more rows
+```
+
+---
+## Tibbles vs Data Frames
+
+### Printing
+
+En RStudio, esto nos permite explorar el dataframe en una pantalla diferente.
+
+
+```r
+dt %&gt;% View()
+```
+
+---
+## Tibbles vs Data Frames
+
+### Subsetting
+
+Para seleccionar una única variable usar `$` (por nombre) o `[[` (por nombre o posición)
+
+```r
+# Extraer por nombre
+dt$Species[1:10]
+```
+
+```
+##  [1] setosa setosa setosa setosa setosa setosa setosa setosa setosa setosa
+## Levels: setosa versicolor virginica
+```
+
+```r
+# Extraer por posicion
+dt[[5]][1:10]
+```
+
+```
+##  [1] setosa setosa setosa setosa setosa setosa setosa setosa setosa setosa
+## Levels: setosa versicolor virginica
+```
+
+
+---
+## Tibbles vs Data Frames
+
+### Subsetting
+
+También en pipe
+
+```r
+dt %&gt;% .$Species
+```
+
+```
+##   [1] setosa     setosa     setosa     setosa     setosa     setosa    
+##   [7] setosa     setosa     setosa     setosa     setosa     setosa    
+##  [13] setosa     setosa     setosa     setosa     setosa     setosa    
+##  [19] setosa     setosa     setosa     setosa     setosa     setosa    
+##  [25] setosa     setosa     setosa     setosa     setosa     setosa    
+##  [31] setosa     setosa     setosa     setosa     setosa     setosa    
+##  [37] setosa     setosa     setosa     setosa     setosa     setosa    
+##  [43] setosa     setosa     setosa     setosa     setosa     setosa    
+##  [49] setosa     setosa     versicolor versicolor versicolor versicolor
+##  [55] versicolor versicolor versicolor versicolor versicolor versicolor
+##  [61] versicolor versicolor versicolor versicolor versicolor versicolor
+##  [67] versicolor versicolor versicolor versicolor versicolor versicolor
+##  [73] versicolor versicolor versicolor versicolor versicolor versicolor
+##  [79] versicolor versicolor versicolor versicolor versicolor versicolor
+##  [85] versicolor versicolor versicolor versicolor versicolor versicolor
+##  [91] versicolor versicolor versicolor versicolor versicolor versicolor
+##  [97] versicolor versicolor versicolor versicolor virginica  virginica 
+## [103] virginica  virginica  virginica  virginica  virginica  virginica 
+## [109] virginica  virginica  virginica  virginica  virginica  virginica 
+## [115] virginica  virginica  virginica  virginica  virginica  virginica 
+## [121] virginica  virginica  virginica  virginica  virginica  virginica 
+## [127] virginica  virginica  virginica  virginica  virginica  virginica 
+## [133] virginica  virginica  virginica  virginica  virginica  virginica 
+## [139] virginica  virginica  virginica  virginica  virginica  virginica 
+## [145] virginica  virginica  virginica  virginica  virginica  virginica 
+## Levels: setosa versicolor virginica
+```
+
+---
+## Tibbles vs Data Frames
+
+Convertir de nuevo a data frame
+
+```r
+class( as.data.frame(dt) )
+```
+
+```
+## [1] "data.frame"
+```
+
+
+---
+class: center, middle, inverse
+
+## Visualización
+
+---
+
+## Visualización
+
+Creación y estudio de representaciones visuales de los datos
+
+* En esta parte del curso nos centraremos en aprender a manejar `ggplot2` un paquete de tidyverse realmente útil para la visualización
+
+* EDA incluye, además de visualización, la manipulación de datos
+
+* EDA combina la visualización y la manipulación con la curiosidad y el escepticismo de cada uno para preguntar y responder cuestiones interesantes acerca de los datos
+
+---
+
+## ggplot2 
+
+- **ggplot2** es el paquete de visualización de tidyverse
+-  `gg` significa Grammar of Graphics
+- Está inspirado en el libreo **Grammar of Graphics** de Leland Wilkinson
+
+&lt;img src="img/grammar-of-graphics.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+GG: herramienta que permite describir de forma secuencial los componentes de un gráfico
+
+
+
+---
+## Visualización
+
+Primero cargamos las librerías necesarias
+
+
+```r
+library(tidyverse)
+library(gapminder)
+```
+
+Ojeamos los datos
+
+
+
+
+```r
+glimpse(gapminder)
+```
+
+```
+## Rows: 1,704
+## Columns: 6
+## $ country   &lt;fct&gt; "Afghanistan", "Afghanistan", "Afghanist…
+## $ continent &lt;fct&gt; Asia, Asia, Asia, Asia, Asia, Asia, Asia…
+## $ year      &lt;int&gt; 1952, 1957, 1962, 1967, 1972, 1977, 1982…
+## $ lifeExp   &lt;dbl&gt; 28.801, 30.332, 31.997, 34.020, 36.088, …
+## $ pop       &lt;int&gt; 8425333, 9240934, 10267083, 11537966, 13…
+## $ gdpPercap &lt;dbl&gt; 779.4453, 820.8530, 853.1007, 836.1971, …
+```
+
+---
+
+class: center, middle, inverse
+
+# Visualización: Visualizando la relación entre PIB per capita  y esperanza de vida
+
+---
+
+
+## Primera visualización
+
+¿Qué hace cada línea?
+
+```r
+*gapminder67 &lt;- gapminder %&gt;% filter(year == "1967")
+ggplot(gapminder67, 
+     aes(gdpPercap, lifeExp, size = pop, color = continent)) + 
+     geom_point() +
+     scale_x_log10()  # convert to log scale
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-16-1.png" angle=90 style="display: block; margin: auto;" /&gt;
+
+
+---
+
+## Primera visualización
+
+¿Qué hace cada línea?
+
+
+```r
+gapminder67 &lt;- gapminder %&gt;% filter(year == "1967") 
+ggplot(gapminder67,  
+     aes(gdpPercap, lifeExp, size = pop, color = continent)) +  
+*    geom_point() +
+     scale_x_log10()  # convert to log scale
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-17-1.png" angle=90 style="display: block; margin: auto;" /&gt;
+
+---
+
+## Primera visualización
+
+¿Qué hace cada línea?
+
+
+```r
+gapminder67 &lt;- gapminder %&gt;% filter(year == "1967") 
+*ggplot(gapminder67,
+*    aes(gdpPercap, lifeExp, size = pop, color = continent)) +
+     geom_point() + 
+     scale_x_log10()  
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-18-1.png" angle=90 style="display: block; margin: auto;" /&gt;
+
+---
+
+## Funcionamiento `ggplot2`
+
+- La estructura del código de `ggplot2` es la siguiente
+
+
+```r
+ggplot(data = [dataset], 
+       mapping = aes(x = [x-variable], y = [y-variable])) +
+   geom_xxx() +
+   otras opciones
+```
+
+* El `mapping`  define como las variables son mapeadas a propiedades visuales del gráfico.
+
+Documentación [ggplot2.tidyverse.org](http://ggplot2.tidyverse.org/)
+
+---
+## Funcionamiento `ggplot2`
+
+- Alternativamente
+
+
+```r
+ggplot(data = [dataset]) +
+   geom_xxx( mapping = aes(x = [x-variable], y = [y-variable]) ) +
+   other options
+```
+
+
+---
+## Paso a Paso
+
+Ojeamos los datos
+
+
+
+
+```r
+glimpse(gapminder)
+```
+
+```
+## Rows: 1,704
+## Columns: 6
+## $ country   &lt;fct&gt; "Afghanistan", "Afghanistan", "Afghanist…
+## $ continent &lt;fct&gt; Asia, Asia, Asia, Asia, Asia, Asia, Asia…
+## $ year      &lt;int&gt; 1952, 1957, 1962, 1967, 1972, 1977, 1982…
+## $ lifeExp   &lt;dbl&gt; 28.801, 30.332, 31.997, 34.020, 36.088, …
+## $ pop       &lt;int&gt; 8425333, 9240934, 10267083, 11537966, 13…
+## $ gdpPercap &lt;dbl&gt; 779.4453, 820.8530, 853.1007, 836.1971, …
+```
+
+Miramos `?gapminder`
+
+---
+## Paso a Paso
+
+```r
+gapminder67 &lt;- gapminder %&gt;% filter(year == "1967") 
+gapminder67
+```
+
+```
+## # A tibble: 142 × 6
+##    country     continent  year lifeExp      pop gdpPercap
+##    &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+##  1 Afghanistan Asia       1967    34.0 11537966      836.
+##  2 Albania     Europe     1967    66.2  1984060     2760.
+##  3 Algeria     Africa     1967    51.4 12760499     3247.
+##  4 Angola      Africa     1967    36.0  5247469     5523.
+##  5 Argentina   Americas   1967    65.6 22934225     8053.
+##  6 Australia   Oceania    1967    71.1 11872264    14526.
+##  7 Austria     Europe     1967    70.1  7376998    12835.
+##  8 Bahrain     Asia       1967    59.9   202182    14805.
+##  9 Bangladesh  Asia       1967    43.5 62821884      721.
+## 10 Belgium     Europe     1967    70.9  9556500    13149.
+## # ℹ 132 more rows
+```
+
+
+---
+## Paso a Paso
+
+```r
+ggplot(gapminder67, aes(x = gdpPercap, y = lifeExp) ) +  
+     geom_point() 
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-24-1.png" angle=90 style="display: block; margin: auto;" /&gt;
+
+¿Cómo describirías la relación entre pib per capita y esperanza de vida?
+
+---
+## Paso a Paso
+
+```r
+ggplot(gapminder67, aes(x = gdpPercap, y = lifeExp) ) +  
+     geom_point() +
+*    scale_x_log10()
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-25-1.png" angle=90 style="display: block; margin: auto;" /&gt;
+
+¿Cómo describirías la relación entre pib per capita y esperanza de vida?
+
+
+---
+## Variables adicionales
+
+Es posible que queramos representar más de dos variables. Podemos hacerlo a través de otros elementos
+del gráfico (en mapping usamos solo x e y, podemos añadir más)
+
+* **aesthetics**: 
+
+  * shape
+  * color
+  * size
+  * alpha (transparencia)
+
+* **faceting**: varias gráficas
+
+---
+class: center, middle, inverse
+
+# Visualización: Aesthetics
+
+---
+
+## Aesthetics
+
+Las siguientes características visuales del gráfico pueden ser utilizadas para representar 
+una variable extra
+
+* shape
+* color
+* size
+* alpha (transparencia)
+
+---
+## Representamos el continente
+
+
+```r
+*ggplot(gapminder67, mapping = aes(x = gdpPercap, y = lifeExp, color = continent) ) +
+     geom_point() +
+     scale_x_log10()
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-26-1.png" angle=90 style="display: block; margin: auto;" /&gt;
+
+---
+## Representamos el continente
+
+
+```r
+*ggplot(gapminder67, mapping = aes(x = gdpPercap, y = lifeExp, color = continent,
+*                       shape = continent) ) +
+     geom_point() +
+     scale_x_log10()
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-27-1.png" angle=90 style="display: block; margin: auto;" /&gt;
+
+---
+## Representamos el continente y la población
+
+
+```r
+*ggplot(gapminder67, mapping = aes(x = gdpPercap, y = lifeExp, color = continent,
+*                       shape = continent, size = pop) ) +
+     geom_point() +
+     scale_x_log10()
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-28-1.png" angle=90 style="display: block; margin: auto;" /&gt;
+
+---
+## Representamos el continente y la población
+
+
+```r
+ggplot(gapminder67, mapping = aes(x = gdpPercap, y = lifeExp, color = continent, 
+                        shape = continent, size = pop) ) +  
+*    geom_point(size=3) +
+     scale_x_log10()
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-29-1.png" angle=90 style="display: block; margin: auto;" /&gt;
+
+---
+## Resumen
+- Variables contínuas
+- Variables discretas
+
+.small[
+aesthetics    | discreta                 | contínua
+------------- | ------------------------ | ------------
+color         | diferentes colores       | gradiente
+size          | pasos discretros         | mapeo linear entre variable y radio
+shape         | diferentes formas        | no funciona
+
+]
+
+&lt;br&gt;
+
+.alert[`aes` para representar variables usando características del gráfico
+
+`geom_xxx` para definir característica del gráfico
+]
+
+---
+class: center, middle, inverse
+
+# Visualización: Faceting
+
+---
+
+## Faceting
+
+Múltiples gráficas en función de variable
+
+
+```r
+ggplot(data = gapminder67, aes(x = gdpPercap, y = lifeExp)) + 
+  geom_point() +
+  labs(title = "PIB per Cápita vs Esperanza de Vida",
+       subtitle = "Por continente",
+       x = "PIB per Cápita ($)", y =  "Esperanza de vida (años)") +
+* facet_grid(. ~ continent)
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-30-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Faceting
+
+Múltiples gráficas en función de variable
+
+
+```r
+ggplot(data = gapminder67, aes(x = gdpPercap, y = lifeExp)) + 
+  geom_point() +
+  labs(title = "PIB per Cápita vs Esperanza de Vida",
+       subtitle = "Por continente",
+       x = "PIB per Cápita ($)", y =  "Esperanza de vida (años)") +
+* facet_grid(continent ~ .)
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-31-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Faceting
+
+Múltiples gráficas en función de variable
+
+
+```r
+ggplot(data = gapminder67, aes(x = gdpPercap, y = lifeExp)) + 
+  geom_point() +
+  labs(title = "PIB per Cápita vs Esperanza de Vida",
+       subtitle = "Por continente",
+       x = "PIB per Cápita ($)", y =  "Esperanza de vida (años)") +
+* facet_wrap(continent ~ .)
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-32-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Faceting
+
+Múltiples gráficas en función de variable
+
+
+```r
+ggplot(data = gapminder67, aes(x = gdpPercap, y = lifeExp)) + 
+  geom_point() +
+  labs(title = "PIB per Cápita vs Esperanza de Vida",
+       subtitle = "Por continente",
+       x = "PIB per Cápita ($)", y =  "Esperanza de vida (años)") +
+* facet_wrap(continent ~ ., scales = "free_x")
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-33-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# Faceting - Resumen
+
+
+- `facet_grid()`: 
+    - Red 2d
+    - `filas ~ columnas`
+    - `.` para evitar una de ellas
+
+--
+
+- `facet_wrap()`: 1d 
+    - fijar escalas con `scales = ` ("free_x", "free_y", "free")
+
+---
+
+## Ejercicio 1
+
+
+Utilizando los datos de la librería `gapminder`:
+
+* Filtra las obserevaciones correspondientes a los años 1957, 1967, 1977, 1987, 1997, 2007
+
+* Representa la relación entre PIB per cápita y esperanza de vida por continentes y por años
+en diferentes gráficas usando **faceting**. El tamaño de los puntos ha de ser proporcional a la población.
+El color debe reflejar el continente. 
+
+* ¿Qué conlusiones extraes?
+
+
+---
+class: middle, center
+
+# Visualización: distintos tipos de datos
+
+---
+
+## Número de variables a visualizar
+
+- .vocab[Análisis de datos univariante]: distribución de una variable
+
+&lt;br&gt; 
+
+- .vocab[Análisis de datos bivariante]: relación entre dos variables
+
+&lt;br&gt; 
+
+- .vocab[Análisis de datos multivariantes]: relación entre varias variables, generalmente enfocándose en dos y condicionando por el resto
+
+
+---
+
+## Tipos de variables
+
+- .vocab[Variables numéricas] pueden ser .vocab[contínuas] o .vocab[discretas] 
+    - *altura* es ?
+    - *número de cigarros diarios* es ?
+    - *distancia* es ?
+
+--
+
+- .vocab[Variables categóricas], a su vez incluyen .vocab[ordinales] si existe un orden natural
+entre sus niveles o .vocab[no ordinales]
+    - *color de ojos*  es ?
+    - *talla de camiseta* es ?
+
+Según tipo de variable tendremos un tipo de representación
+
+---
+class: center, middle
+
+# Visualización: datos univariantes numéricos
+
+---
+
+## ¿Cómo podemos describir datos númericos univariantes?
+
+- .vocab[Forma:]
+    - asimetría: simétrico, asimétrico a la derecha, asimétrica a la izquierda
+    - número de modas: unimodal, bimodal, multimodal, uniforme
+    
+- .vocab[Centralidad:] media, mediana, moda
+
+- .vocab[Dispersión:] rango, desviación estándar, rango inter-cuartílico
+
+- .vocab[Outliers:] existen datos raros 
+
+---
+
+## ¿Por qué visualizarlos?
+
+
+```r
+library(Tmisc)
+```
+
+.pull-left[
+
+```
+##    set  x     y
+## 1    I 10  8.04
+## 2    I  8  6.95
+## 3    I 13  7.58
+## 4    I  9  8.81
+## 5    I 11  8.33
+## 6    I 14  9.96
+## 7    I  6  7.24
+## 8    I  4  4.26
+## 9    I 12 10.84
+## 10   I  7  4.82
+## 11   I  5  5.68
+## 12  II 10  9.14
+## 13  II  8  8.14
+## 14  II 13  8.74
+## 15  II  9  8.77
+```
+]
+.pull-right[
+
+```
+##    set  x     y
+## 23 III 10  7.46
+## 24 III  8  6.77
+## 25 III 13 12.74
+## 26 III  9  7.11
+## 27 III 11  7.81
+## 28 III 14  8.84
+## 29 III  6  6.08
+## 30 III  4  5.39
+## 31 III 12  8.15
+## 32 III  7  6.42
+## 33 III  5  5.73
+## 34  IV  8  6.58
+## 35  IV  8  5.76
+## 36  IV  8  7.71
+## 37  IV  8  8.84
+```
+]
+
+---
+
+## Resumiendo Anscombe's quartet
+
+
+```r
+quartet %&gt;%
+  group_by(set) %&gt;%
+  summarise(
+    mean_x = mean(x), mean_y = mean(y),
+    sd_x = sd(x), sd_y = sd(y),
+    r = cor(x, y)
+  )
+```
+
+```
+## # A tibble: 4 × 6
+##   set   mean_x mean_y  sd_x  sd_y     r
+##   &lt;fct&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 I          9   7.50  3.32  2.03 0.816
+## 2 II         9   7.50  3.32  2.03 0.816
+## 3 III        9   7.5   3.32  2.03 0.816
+## 4 IV         9   7.50  3.32  2.03 0.817
+```
+
+---
+
+## Visualizando Anscombe's quartet
+
+
+```r
+ggplot(quartet, aes(x = x, y = y)) +
+  geom_point() +
+  facet_wrap(~ set, ncol = 4)
+```
+
+&lt;img src="tema2-1_files/figure-html/quartet-plot-1.png" width="75%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Visualizando datos numéricos univariantes
+Histograma - ¿Qué revela este gráfico? (Apuestas...)
+
+
+```r
+ggplot(gapminder67, mapping = aes(x = gdpPercap)) + 
+*    geom_histogram(binwidth = 1000)
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-35-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Visualizando datos numéricos univariantes
+Histograma - ¿Qué revela este gráfico? (Apuestas...)
+
+
+```r
+ggplot(gapminder67, mapping = aes(x = gdpPercap)) + 
+*    geom_histogram(bins = 100)
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-36-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Visualizando datos numéricos univariantes
+A veces útil
+
+
+```r
+ggplot(gapminder67, mapping = aes(x = gdpPercap)) + 
+*    geom_density()
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-37-1.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+class: center, middle
+
+## Visualización: datos univariantes categóricos
+
+---
+## Visualización de datos univariantes categóricos
+
+Gráfico de barras 
+
+```r
+ggplot(gapminder67, mapping = aes(x = continent)) + 
+* geom_bar()
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-38-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+class: center, middle
+
+## Visualización: datos bivariantes
+
+---
+
+## Visualización: datos bivariantes contínuo - categórico
+
+
+```r
+ggplot(gapminder67, mapping = aes(x = continent, y = gdpPercap)) + 
+* geom_boxplot()
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-39-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+## Visualización: datos bivariantes contínuo - categórico
+&lt;img src="img/boxplot.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+## Visualización: datos bivariantes contínuo - continuo
+
+A veces queda bien añadir un ajuste
+
+```r
+ggplot(gapminder67, aes(x = gdpPercap, y = lifeExp) ) +  
+     geom_point() +
+     scale_x_log10() +
+*    geom_smooth()
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-41-1.png" angle=90 style="display: block; margin: auto;" /&gt;
+
+---
+## Visualización: datos bivariantes categórico - categórico
+
+Dataset `diamonds`
+
+
+```r
+ggplot(data = diamonds, mapping = aes(x = clarity, fill = cut)) + 
+* geom_bar()
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-42-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+## Visualización: datos bivariantes categórico - categórico
+
+Dataset `diamonds`
+
+
+```r
+ggplot(data = diamonds, mapping = aes(x = clarity, fill = cut)) + 
+* geom_bar(position = "fill") +
+  labs(y = "proportion") 
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-43-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+class: center, middle
+
+## Visualización: transformaciones estadísticas
+
+---
+
+## Transformaciones estadísticas
+
+Los gráficos como histogramas, gráficos de barras o boxplots realizan transformaciones a los datos antes de representarlos
+
+* Gráficos de barras e histogramas: parcelan los datos y representan un número por cada parcela
+
+* Smoothers: ajustan un modelo y representan predicciones generadas por el mismo
+
+* Boxplots: calculan un resumen de la distribución y lo pintan en determinado formato
+
+El argumento para especificar el estadistico de resumen es  `stat`. Puedes ver su valor por defect en, e.g. `?geom_bar`
+
+---
+
+## Transformaciones estadísticas
+
+
+```r
+ggplot(data = diamonds) + 
+* geom_bar(mapping = aes(x = cut))
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-44-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Transformaciones estadísticas
+
+
+```r
+ggplot(data = diamonds) + 
+* geom_bar(mapping = aes(x = cut, y = stat(prop), group = 1) )
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-45-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+## Transformaciones estadísticas
+
+Podemos crear estadísticos propios
+
+
+```r
+ggplot(data = diamonds) + 
+* stat_summary(
+*   mapping = aes(x = cut, y = depth),
+*   fun.min = min,
+*   fun.max = max,
+*   fun = median
+  )
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-46-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+
+---
+class: center, middle
+
+## Visualización: ajuste de posición
+
+---
+## Ajustes de posición
+
+
+```r
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = clarity) )
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-47-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+El apilamiento se realiza automáticamente con el ajuste de posición especificado a través de la variable
+`position`
+
+---
+## Ajustes de posición - "identity"
+
+
+```r
+ggplot(data = diamonds, mapping = aes(x = cut, fill = clarity)) + 
+* geom_bar(alpha = 1/5, position = "identity")
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-48-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+## Ajustes de posición - "fill"
+
+¿Para qué es bueno este tipo de gráfico?
+
+
+```r
+ggplot(data = diamonds, mapping = aes(x = cut, fill = clarity)) + 
+* geom_bar(position = "fill")
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-49-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+## Ajustes de posición - "dodge"
+
+¿Y este?
+
+
+```r
+ggplot(data = diamonds, mapping = aes(x = cut, fill = clarity)) + 
+* geom_bar(position = "dodge")
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-50-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+class: center, middle
+
+## Visualización: coordenadas
+
+---
+
+##  Coordenadas
+
+Por defecto `ggplot2` usa coordenadas Cartesianas. Las coordenadas pueden modificarse con 
+`coord_xxx()`
+
+.pull-left[
+
+```r
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+  geom_boxplot()
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-51-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+]
+.pull-right[
+
+```r
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+  geom_boxplot() +
+* coord_flip()
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-52-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+##  Coordenadas
+
+`coord_quickmap()` calcula el ratio correcto para mapas
+
+.pull-left[
+
+```r
+library(maps)
+nz &lt;- map_data("nz")
+
+ggplot(nz, aes(long, lat, group = group)) +
+  geom_polygon(fill = "white", colour = "black")
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-53-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+]
+.pull-right[
+
+```r
+ggplot(nz, aes(long, lat, group = group)) +
+  geom_polygon(fill = "white", colour = "black") +
+* coord_quickmap()
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-54-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+##  Coordenadas
+
+`coord_polar()`
+
+.pull-left[
+
+```r
+bar &lt;- ggplot(data = diamonds) + 
+  geom_bar(
+    mapping = aes(x = cut, fill = cut), 
+    show.legend = FALSE,
+    width = 1
+  ) + 
+  theme(aspect.ratio = 1) +
+  labs(x = NULL, y = NULL)
+
+*bar + coord_flip()
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-55-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+]
+.pull-right[
+
+```r
+*bar + coord_polar()
+```
+
+&lt;img src="tema2-1_files/figure-html/unnamed-chunk-56-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+]
+---
+## Resumen
+
+
+```r
+ggplot(data = &lt;DATA&gt;) + 
+  &lt;GEOM_FUNCTION&gt;(
+     mapping = aes(&lt;MAPPINGS&gt;),
+     stat = &lt;STAT&gt;, 
+     position = &lt;POSITION&gt;
+  ) +
+  &lt;COORDINATE_FUNCTION&gt; +
+  &lt;FACET_FUNCTION&gt;
+```
+
+---
+class: center, middle
+
+## Visualización: consejos
+
+---
+## Consejos
+
+[https://blog.csgsolutions.com/6-tips-for-creating-effective-data-visualizations](https://blog.csgsolutions.com/6-tips-for-creating-effective-data-visualizations)
+---
+
+
+## Bibliografía
+
+* [R for Data Science](https://r4ds.had.co.nz/), Wickham and Grolemund (2016)
+
+* [ggplot2.tidyverse.org](http://ggplot2.tidyverse.org/)
+
+* [Data Visualization, A practical introduction](https://socviz.co/), Healy (2018)
+
+* [ggplot2.tidyverse.org](https://ggplot2.tidyverse.org/)
+
+* `ggplot2` [cheat sheet](https://diegokoz.github.io/intro_ds/fuentes/ggplot2-cheatsheet-2.1-Spanish.pdf)
+
+* [Top 50 `ggplot2` visualizations](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html)
+
+* [How the BBC uses `ggplot2`](https://medium.com/bbc-visual-and-data-journalism/how-the-bbc-visual-and-data-journalism-team-works-with-graphics-in-r-ed0b35693535)
+
+* [ggplot2: Elegant Graphics for Data Analysis](https://ggplot2-book.org/)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": true,
+"highlightStyle": "github",
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+<style>
+.logo {
+  background-image: url(img/logo2.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  width: 110px;
+  height: 128px;
+  z-index: 0;
+}
+</style>
+
+<style>
+  .title-logo {
+    background-image: url(img/logo2.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 1em;
+    left: 20em;
+    width: 110px;
+    height: 128px;
+    z-index: 0;
+  }
+  </style>
+
+<script>
+document
+  .querySelectorAll(
+    '.remark-slide-content' +
+    ':not(.title-slide)' +
+    // add additional classes to exclude here, e.g.
+    // ':not(.inverse)' +
+    ':not(.hide-logo)' 
+
+  )
+  .forEach(el => {
+    el.innerHTML += '<div class="logo"></div>';
+  });
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

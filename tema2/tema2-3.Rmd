@@ -1,0 +1,521 @@
+---
+title: "Tema 2.3"
+author: "Roi Naveiro"
+date: ""
+output: 
+   xaringan::moon_reader:
+    css: "ds_slides.css"
+    lib_dir: libs
+    seal: false
+    includes:
+      after_body: insert-logo.html
+    nature: 
+      highlightLines: true
+      highlightStyle: github
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%"  
+---
+
+
+
+```{r packages_setup, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = T, warning = F, message = F)
+knitr::opts_chunk$set(fig.width=7, fig.height=5, fig.align='center') 
+```
+
+class: center, middle, inverse, title-slide
+
+<div class="title-logo"></div>
+
+<br>
+
+# Análisis y Explotación de la Información
+
+## Tema 2 - Análisis Exploratorio de los Datos
+
+### 2.3 Análisis Exploratorio de los Datos
+
+<br>
+.pull-left[
+### Roi Naveiro
+]
+---
+
+## Análisis Exploratioro de los Datos
+
+* Aprenderemos cómo explorar los datos de forma sistemática...
+
+* ...usando las herramientas aprendidas (visualización y transformación)
+
+* El Análisis Exploratior de los datos es un ciclo que consiste en
+
+  1. Generar preguntas sobre los datos
+  2. Responderlas visualizanddo, transformando y modelizando
+  3. Usar lo aprendido para refinar preguntas o crear nuevas cuestiones
+
+---
+
+## Análisis Exploratioro de los Datos
+
+* **Objetivo**: desarrollar entendimiento acerca de los datos
+
+* Útil hacerlo a través de preguntas
+
+  - Permiten centrarnos en una parte de los datos
+  - Perimten decidir qué gráficos, modelos y transformaciones utilizar
+  
+* Proceso **creativo**
+
+---
+
+## Análisis Exploratioro de los Datos
+
+* Proceso **creativo**: no hay reglas para determinar qué preguntas son las más útiles.
+
+* Dos tipos de preguntas (casi siempre) interesantes:
+
+  - ¿Qué tipo de variación está presente en mis variables?
+  - ¿Qué tipo de co-variación aparece **entre** mis variables?
+  
+---
+## Un poco de jerga
+
+* **Variable**: propiedad que puede ser medida
+* **Valor**: estado de la variable cuando se mide. ¡Puede cambiar si se repite la medida!
+* **Observación**: conjunto de medidas tomadas en condiciones similares (e.g. sobre un mismo sujeto). Varios valores, cada uno asociado a diferentes variables
+* **Datos Tabulares**: conjunto de valores, cada uno asociado a una variable y una observación. Variables en columnas, observaciones en filas.
+
+
+---
+class: center, middle, inverse
+
+## EDA: Variación
+
+---
+## Variación
+
+*Variación es la tendencia de los valores de una variable a cambiar de medida a medida*
+
+Esta variación puede estar asociada a distintos fenómenos:
+
+- **Error de medición** al medir una cantidad constante (velocidad de la luz)
+- Medición de misma variable en **diferentes sujetos**
+- Medición de una misma variable, en el mismo sujeto, en **tiempos diferentes**
+- ...
+
+El patrón de variación da información interesante...
+
+... que se destila visualizado la **distribución de valores de la variable**
+
+---
+
+## Variación: variable categórica
+
+Recordemos cómo visualizar la distribución de una **variable categórica**
+
+```{r}
+library(ggplot2)
+# Representamos número de marchas en datos mtcars
+ggplot(data=mtcars, aes(x=gear)) + 
+  geom_bar() + 
+  labs(x = "Número de marchas")
+```
+
+---
+## Variación: variable categórica
+
+La altura de las barras muestran el número de observaciones. 
+¿Cómo obtendrías este número?
+
+--
+
+```{r}
+library(tidyverse)
+mtcars %>% group_by(gear)  %>% summarise(n())
+```
+
+---
+## Variación: variable contínua
+
+También habíamos visto cómo visualizar la distribución de variables contínuas
+```{r}
+ggplot(data=iris, aes(x=Petal.Length)) + 
+  geom_histogram(bins = 20) + 
+  labs(x = "Longitud del Pétalo (cm)")
+```
+
+
+
+---
+## Variación
+
+¿Qué debemos buscar en gráficos de variación? ¿Qué preguntas hacer?
+
+* Valores típicos
+
+* Valores atípicos
+
+---
+## Variación: valores típicos
+
+- ¿Qué valores son los más comunes?
+
+- ¿Cuáles los menos comunes?
+
+- ¿Existe algún patrón inusual?
+
+---
+## Ejemplo: longitud de pétalo
+
+```{r}
+ggplot(data=iris, aes(x=Petal.Length)) + 
+  geom_histogram() + 
+  labs(x = "Longitud del Pétalo (cm)")
+```
+
+---
+## Ejemplo: longitud de pétalo
+
+Los *clusters* de valores similares sugieren que existen subgrupos en los datos. Para entenderlos, conviene preguntarse
+
+* ¿Qué tienen en común las observaciones de cada subgrupo?
+
+* ¿Qué diferencia a las observaciones de distintos subgrupos?
+
+* ¿Cómo podemos explicar los subgrupos?
+
+--
+
+* Existe un grupo de flores con pétalos cortos (<2cm) y otro con pétalos largos (>2cm)
+
+* ¿Explica la variable especie esta separación?
+
+---
+## Variación: variable contínua
+
+* Si se quieren visualizar varios histogramas en la misma gráfica, se pueden usar colores
+
+* A veces más claro usar `geom_freqpoly()`
+
+* Igual que histograma, pero pintado con lineas poligonales
+
+---
+## Variación: variable contínua
+
+```{r}
+ggplot(data=iris, aes(x=Petal.Length, fill=Species)) + 
+  geom_histogram(bins = 20) + 
+  labs(x = "Longitud del Pétalo (cm)")
+```
+
+
+---
+## Variación: variable contínua
+
+```{r}
+ggplot(data=iris, aes(x=Petal.Length, color=Species)) + 
+  geom_freqpoly() + 
+  labs(x = "Longitud del Pétalo (cm)")
+```
+
+---
+## Variación: valores atípicos
+
+* Encontrar **valores atípicos** (outliers) Tan importante como estudiar los valores típicos
+
+* Valores atípicos:
+
+  - A veces, errores de medida
+  - Otras, importantes descubrimientos!
+  
+---
+## Ejemplo: anchura de los diamantes
+
+Estudiemos la distribución de la anchura de los diamantes en el dataset `diamonds` (más información en `?diamonds`)
+
+```{r}
+ggplot(diamonds, aes(x=y)) +
+  geom_histogram(binwidth = 0.5)
+```
+
+---
+## Ejemplo: anchura de los diamantes
+
+Aparentemente nada raro, pero...
+
+```{r}
+ggplot(diamonds, aes(x=y)) +
+  geom_histogram(binwidth = 0.5) + 
+  coord_cartesian( ylim = c(0,50) )
+```
+
+---
+## Ejemplo: anchura de los diamantes
+
+Parece ser que hay valores atípicos en torno al 0, 30 y 60.
+
+Vamos a extraerlos con `filter`
+--
+
+```{r}
+diamonds %>%
+  filter(y < 3 | y > 20) 
+```
+
+---
+## Ejemplo: anchura de los diamantes
+
+- Parece que hay diamantes de medida 0. Datos incorrectos.
+
+- Hay diamantes muy grandes, pero no demasiado caros...
+
+---
+## Variación: valores atípicos
+
+- Suele ser útil repetir análisis con y sin outliers, para medir su efecto
+
+- Si el efecto es mínimo y no sabemos su origen, reemplazar con `NA`
+
+- Si no, solo quitarlos de manera **justificada** e informar de ello
+
+---
+class: center, middle, inverse
+
+## EDA: Valores ausentes
+
+---
+## Valores atípicos
+
+Ante valores atípicos que se quieran eliminar, dos opciones:
+
+- Eliminar fila entera (mucha pérdida de información)
+
+```{r}
+diamonds2 <- diamonds %>%
+  filter(y>=3 & y<=20)
+```
+
+- Reemplazar valores atípicos con `NA`
+
+```{r}
+diamonds2 <- diamonds %>%
+  mutate(y = ifelse(y<3 | y>20, NA, y))
+```
+
+- **NOTA**: primer argumento de `ifelse()` es lógico, segundo valor si `TRUE` y tercero, valor si `FALSE`
+
+---
+## Valores ausentes
+
+Los valores ausentes se indican con un warning
+```{r, warning=T}
+ggplot(data=diamonds2, mapping = aes(x=x, y=y))+
+  geom_point()
+```
+
+---
+## Valores ausentes
+
+Puede eliminarse con `na.rm = TRUE`
+```{r, warning=T}
+ggplot(data=diamonds2, mapping = aes(x=x, y=y))+
+  geom_point(na.rm = T)
+```
+
+
+---
+class: center, middle, inverse
+
+## EDA: Covariación
+
+---
+
+## Covariación
+
+- Tendencia de los valores de dos o más variables a cambiar conjuntamente
+
+- La manera de visualizar covariación, depende del tipo de variables (como vimos)
+
+  * Categórica - Contínua
+  * Categórica - Categórica
+  * Contínua - Contínua
+  
+  
+---
+
+## Covariación: Categórica - Contínua
+
+```{r}
+ggplot(data=diamonds, aes(x=price, color=cut)) + 
+  geom_freqpoly()
+```
+
+---
+
+## Covariación: Categórica - Contínua
+
+`..density..` pinta densidad en eje y, que es la cuenta estandarizada para que el área de cada polígono sea 1
+```{r}
+ggplot(data=diamonds, aes(x=price, y=..density.., color=cut)) + 
+  geom_freqpoly()
+```
+
+---
+
+## Covariación: Categórica - Contínua
+
+¿Qué otra forma hay de visualizar covariación entre variables categóricas y contínuas?
+--
+
+```{r}
+ggplot(data = mpg, aes(x = class, y = hwy)) + 
+  geom_boxplot()
+```
+
+---
+
+## Covariación: Categórica - Contínua
+
+A veces, conviene reordenar...
+
+```{r}
+ggplot(data = mpg, aes(x = reorder(class, hwy, FUN = median), y = hwy)) + #<<
+  geom_boxplot()
+```
+
+---
+
+## Covariación: Categórica - Categórica
+
+Habíamos visto diagramas de barras. Otra forma:
+
+```{r}
+ggplot(data = diamonds, aes(x = cut, y = color)) + 
+  geom_count() #<<
+```
+---
+
+## Covariación: Categórica - Categórica
+
+¿Cómo harías esto con `dplyr`?
+--
+
+```{r}
+diamonds %>%
+  group_by(color, cut) %>%
+  summarise(n = n())
+```
+---
+
+## Covariación: Categórica - Categórica
+
+También sirve
+
+```{r}
+diamonds %>%
+  count(color, cut) 
+```
+
+---
+## Covariación: Categórica - Categórica
+
+Con esto
+
+```{r, fig.width=6, fig.height=4}
+diamonds %>%
+  count(color, cut) %>%
+  ggplot(aes(x = color, y = cut, fill = n))+ 
+  geom_tile() #<<
+```
+
+---
+## Covariación: Contínua - Contínua
+
+- Vimos cómo hacerlo con `geom_point()`
+
+- En datasets muy grandes, puntos solapan
+
+- ¿Idea? Usar `aplha`
+
+---
+## Covariación: Contínua - Contínua
+
+```{r}
+ggplot(data=diamonds, aes(x = carat, y = price)) + 
+  geom_point(alpha = 0.01) #<<
+```
+
+---
+## Covariación: Contínua - Contínua
+
+Mejor
+
+```{r}
+ggplot(data=diamonds, aes(x = carat, y = price)) + 
+  geom_bin2d() #<<
+```
+
+
+---
+## Covariación: Contínua - Contínua
+
+Mejor
+
+```{r}
+# install.packages("hexbin")
+ggplot(data=diamonds, aes(x = carat, y = price)) + 
+  geom_hex() #<<
+```
+
+---
+## Covariación: Contínua - Contínua
+
+Otra opción
+
+```{r}
+ggplot(data=diamonds, aes(x = carat, y = price, )) + 
+  geom_boxplot(aes(group = cut_width(carat, 0.1)) ) #<<
+```
+
+
+---
+## Covariación: Contínua - Contínua
+
+Otra opción (mismo número de puntos por cada bin)
+
+```{r}
+ggplot(data=diamonds, aes(x = carat, y = price, )) + 
+  geom_boxplot(aes(group = cut_number(carat, 20)) ) #<<
+```
+
+---
+class: center, middle, inverse
+
+## EDA: Patrones y modelos
+
+---
+
+## Patrones y modelos
+
+Los patrones revelan pistas acerca de relaciones entre variables. Ante uno, cabe preguntarse
+
+- ¿Puede ser debido al azar?
+
+- ¿Cómo se describe la relación que implica?
+
+- ¿Cómo es de fuerte?
+
+- ¿Qué otras variables afectan esta relación?
+
+- ¿Cambian la relación si observamos subgrupos de los datos?
+
+
+Los **modelos** sirven para extraer patrones de los datos...
+
+... e.g. pueden usarse para eliminar el efecto de una variable y estudiar el efecto restante.
+
+---
+
+## Bibliografía
+
+* [R for Data Science](https://r4ds.had.co.nz/), Wickham and Grolemund (2016)

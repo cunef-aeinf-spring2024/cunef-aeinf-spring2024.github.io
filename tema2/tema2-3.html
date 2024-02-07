@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Tema 2.3</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Roi Naveiro" />
+    <script src="libs/header-attrs-2.17/header-attrs.js"></script>
+    <link rel="stylesheet" href="ds_slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+
+class: center, middle, inverse, title-slide
+
+&lt;div class="title-logo"&gt;&lt;/div&gt;
+
+&lt;br&gt;
+
+# Análisis y Explotación de la Información
+
+## Tema 2 - Análisis Exploratorio de los Datos
+
+### 2.3 Análisis Exploratorio de los Datos
+
+&lt;br&gt;
+.pull-left[
+### Roi Naveiro
+]
+---
+
+## Análisis Exploratioro de los Datos
+
+* Aprenderemos cómo explorar los datos de forma sistemática...
+
+* ...usando las herramientas aprendidas (visualización y transformación)
+
+* El Análisis Exploratior de los datos es un ciclo que consiste en
+
+  1. Generar preguntas sobre los datos
+  2. Responderlas visualizanddo, transformando y modelizando
+  3. Usar lo aprendido para refinar preguntas o crear nuevas cuestiones
+
+---
+
+## Análisis Exploratioro de los Datos
+
+* **Objetivo**: desarrollar entendimiento acerca de los datos
+
+* Útil hacerlo a través de preguntas
+
+  - Permiten centrarnos en una parte de los datos
+  - Perimten decidir qué gráficos, modelos y transformaciones utilizar
+  
+* Proceso **creativo**
+
+---
+
+## Análisis Exploratioro de los Datos
+
+* Proceso **creativo**: no hay reglas para determinar qué preguntas son las más útiles.
+
+* Dos tipos de preguntas (casi siempre) interesantes:
+
+  - ¿Qué tipo de variación está presente en mis variables?
+  - ¿Qué tipo de co-variación aparece **entre** mis variables?
+  
+---
+## Un poco de jerga
+
+* **Variable**: propiedad que puede ser medida
+* **Valor**: estado de la variable cuando se mide. ¡Puede cambiar si se repite la medida!
+* **Observación**: conjunto de medidas tomadas en condiciones similares (e.g. sobre un mismo sujeto). Varios valores, cada uno asociado a diferentes variables
+* **Datos Tabulares**: conjunto de valores, cada uno asociado a una variable y una observación. Variables en columnas, observaciones en filas.
+
+
+---
+class: center, middle, inverse
+
+## EDA: Variación
+
+---
+## Variación
+
+*Variación es la tendencia de los valores de una variable a cambiar de medida a medida*
+
+Esta variación puede estar asociada a distintos fenómenos:
+
+- **Error de medición** al medir una cantidad constante (velocidad de la luz)
+- Medición de misma variable en **diferentes sujetos**
+- Medición de una misma variable, en el mismo sujeto, en **tiempos diferentes**
+- ...
+
+El patrón de variación da información interesante...
+
+... que se destila visualizado la **distribución de valores de la variable**
+
+---
+
+## Variación: variable categórica
+
+Recordemos cómo visualizar la distribución de una **variable categórica**
+
+
+```r
+library(ggplot2)
+# Representamos número de marchas en datos mtcars
+ggplot(data=mtcars, aes(x=gear)) + 
+  geom_bar() + 
+  labs(x = "Número de marchas")
+```
+
+&lt;img src="tema2-3_files/figure-html/unnamed-chunk-1-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+## Variación: variable categórica
+
+La altura de las barras muestran el número de observaciones. 
+¿Cómo obtendrías este número?
+
+--
+
+
+```r
+library(tidyverse)
+mtcars %&gt;% group_by(gear)  %&gt;% summarise(n())
+```
+
+```
+## # A tibble: 3 × 2
+##    gear `n()`
+##   &lt;dbl&gt; &lt;int&gt;
+## 1     3    15
+## 2     4    12
+## 3     5     5
+```
+
+---
+## Variación: variable contínua
+
+También habíamos visto cómo visualizar la distribución de variables contínuas
+
+```r
+ggplot(data=iris, aes(x=Petal.Length)) + 
+  geom_histogram(bins = 20) + 
+  labs(x = "Longitud del Pétalo (cm)")
+```
+
+&lt;img src="tema2-3_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+## Variación
+
+¿Qué debemos buscar en gráficos de variación? ¿Qué preguntas hacer?
+
+* Valores típicos
+
+* Valores atípicos
+
+---
+## Variación: valores típicos
+
+- ¿Qué valores son los más comunes?
+
+- ¿Cuáles los menos comunes?
+
+- ¿Existe algún patrón inusual?
+
+---
+## Ejemplo: longitud de pétalo
+
+
+```r
+ggplot(data=iris, aes(x=Petal.Length)) + 
+  geom_histogram() + 
+  labs(x = "Longitud del Pétalo (cm)")
+```
+
+&lt;img src="tema2-3_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+## Ejemplo: longitud de pétalo
+
+Los *clusters* de valores similares sugieren que existen subgrupos en los datos. Para entenderlos, conviene preguntarse
+
+* ¿Qué tienen en común las observaciones de cada subgrupo?
+
+* ¿Qué diferencia a las observaciones de distintos subgrupos?
+
+* ¿Cómo podemos explicar los subgrupos?
+
+--
+
+* Existe un grupo de flores con pétalos cortos (&lt;2cm) y otro con pétalos largos (&gt;2cm)
+
+* ¿Explica la variable especie esta separación?
+
+---
+## Variación: variable contínua
+
+* Si se quieren visualizar varios histogramas en la misma gráfica, se pueden usar colores
+
+* A veces más claro usar `geom_freqpoly()`
+
+* Igual que histograma, pero pintado con lineas poligonales
+
+---
+## Variación: variable contínua
+
+
+```r
+ggplot(data=iris, aes(x=Petal.Length, fill=Species)) + 
+  geom_histogram(bins = 20) + 
+  labs(x = "Longitud del Pétalo (cm)")
+```
+
+&lt;img src="tema2-3_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+## Variación: variable contínua
+
+
+```r
+ggplot(data=iris, aes(x=Petal.Length, color=Species)) + 
+  geom_freqpoly() + 
+  labs(x = "Longitud del Pétalo (cm)")
+```
+
+&lt;img src="tema2-3_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+## Variación: valores atípicos
+
+* Encontrar **valores atípicos** (outliers) Tan importante como estudiar los valores típicos
+
+* Valores atípicos:
+
+  - A veces, errores de medida
+  - Otras, importantes descubrimientos!
+  
+---
+## Ejemplo: anchura de los diamantes
+
+Estudiemos la distribución de la anchura de los diamantes en el dataset `diamonds` (más información en `?diamonds`)
+
+
+```r
+ggplot(diamonds, aes(x=y)) +
+  geom_histogram(binwidth = 0.5)
+```
+
+&lt;img src="tema2-3_files/figure-html/unnamed-chunk-7-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+## Ejemplo: anchura de los diamantes
+
+Aparentemente nada raro, pero...
+
+
+```r
+ggplot(diamonds, aes(x=y)) +
+  geom_histogram(binwidth = 0.5) + 
+  coord_cartesian( ylim = c(0,50) )
+```
+
+&lt;img src="tema2-3_files/figure-html/unnamed-chunk-8-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+## Ejemplo: anchura de los diamantes
+
+Parece ser que hay valores atípicos en torno al 0, 30 y 60.
+
+Vamos a extraerlos con `filter`
+--
+
+
+```r
+diamonds %&gt;%
+  filter(y &lt; 3 | y &gt; 20) 
+```
+
+```
+## # A tibble: 9 × 10
+##   carat cut       color clarity depth table price     x     y     z
+##   &lt;dbl&gt; &lt;ord&gt;     &lt;ord&gt; &lt;ord&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1  1    Very Good H     VS2      63.3    53  5139  0      0    0   
+## 2  1.14 Fair      G     VS1      57.5    67  6381  0      0    0   
+## 3  2    Premium   H     SI2      58.9    57 12210  8.09  58.9  8.06
+## 4  1.56 Ideal     G     VS2      62.2    54 12800  0      0    0   
+## 5  1.2  Premium   D     VVS1     62.1    59 15686  0      0    0   
+## 6  2.25 Premium   H     SI2      62.8    59 18034  0      0    0   
+## 7  0.51 Ideal     E     VS1      61.8    55  2075  5.15  31.8  5.12
+## 8  0.71 Good      F     SI2      64.1    60  2130  0      0    0   
+## 9  0.71 Good      F     SI2      64.1    60  2130  0      0    0
+```
+
+---
+## Ejemplo: anchura de los diamantes
+
+- Parece que hay diamantes de medida 0. Datos incorrectos.
+
+- Hay diamantes muy grandes, pero no demasiado caros...
+
+---
+## Variación: valores atípicos
+
+- Suele ser útil repetir análisis con y sin outliers, para medir su efecto
+
+- Si el efecto es mínimo y no sabemos su origen, reemplazar con `NA`
+
+- Si no, solo quitarlos de manera **justificada** e informar de ello
+
+---
+class: center, middle, inverse
+
+## EDA: Valores ausentes
+
+---
+## Valores atípicos
+
+Ante valores atípicos que se quieran eliminar, dos opciones:
+
+- Eliminar fila entera (mucha pérdida de información)
+
+
+```r
+diamonds2 &lt;- diamonds %&gt;%
+  filter(y&gt;=3 &amp; y&lt;=20)
+```
+
+- Reemplazar valores atípicos con `NA`
+
+
+```r
+diamonds2 &lt;- diamonds %&gt;%
+  mutate(y = ifelse(y&lt;3 | y&gt;20, NA, y))
+```
+
+- **NOTA**: primer argumento de `ifelse()` es lógico, segundo valor si `TRUE` y tercero, valor si `FALSE`
+
+---
+## Valores ausentes
+
+Los valores ausentes se indican con un warning
+
+```r
+ggplot(data=diamonds2, mapping = aes(x=x, y=y))+
+  geom_point()
+```
+
+```
+## Warning: Removed 9 rows containing missing values (`geom_point()`).
+```
+
+&lt;img src="tema2-3_files/figure-html/unnamed-chunk-12-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+## Valores ausentes
+
+Puede eliminarse con `na.rm = TRUE`
+
+```r
+ggplot(data=diamonds2, mapping = aes(x=x, y=y))+
+  geom_point(na.rm = T)
+```
+
+&lt;img src="tema2-3_files/figure-html/unnamed-chunk-13-1.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+class: center, middle, inverse
+
+## EDA: Covariación
+
+---
+
+## Covariación
+
+- Tendencia de los valores de dos o más variables a cambiar conjuntamente
+
+- La manera de visualizar covariación, depende del tipo de variables (como vimos)
+
+  * Categórica - Contínua
+  * Categórica - Categórica
+  * Contínua - Contínua
+  
+  
+---
+
+## Covariación: Categórica - Contínua
+
+
+```r
+ggplot(data=diamonds, aes(x=price, color=cut)) + 
+  geom_freqpoly()
+```
+
+&lt;img src="tema2-3_files/figure-html/unnamed-chunk-14-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Covariación: Categórica - Contínua
+
+`..density..` pinta densidad en eje y, que es la cuenta estandarizada para que el área de cada polígono sea 1
+
+```r
+ggplot(data=diamonds, aes(x=price, y=..density.., color=cut)) + 
+  geom_freqpoly()
+```
+
+&lt;img src="tema2-3_files/figure-html/unnamed-chunk-15-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Covariación: Categórica - Contínua
+
+¿Qué otra forma hay de visualizar covariación entre variables categóricas y contínuas?
+--
+
+
+```r
+ggplot(data = mpg, aes(x = class, y = hwy)) + 
+  geom_boxplot()
+```
+
+&lt;img src="tema2-3_files/figure-html/unnamed-chunk-16-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Covariación: Categórica - Contínua
+
+A veces, conviene reordenar...
+
+
+```r
+*ggplot(data = mpg, aes(x = reorder(class, hwy, FUN = median), y = hwy)) +
+  geom_boxplot()
+```
+
+&lt;img src="tema2-3_files/figure-html/unnamed-chunk-17-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Covariación: Categórica - Categórica
+
+Habíamos visto diagramas de barras. Otra forma:
+
+
+```r
+ggplot(data = diamonds, aes(x = cut, y = color)) + 
+* geom_count()
+```
+
+&lt;img src="tema2-3_files/figure-html/unnamed-chunk-18-1.png" style="display: block; margin: auto;" /&gt;
+---
+
+## Covariación: Categórica - Categórica
+
+¿Cómo harías esto con `dplyr`?
+--
+
+
+```r
+diamonds %&gt;%
+  group_by(color, cut) %&gt;%
+  summarise(n = n())
+```
+
+```
+## # A tibble: 35 × 3
+## # Groups:   color [7]
+##    color cut           n
+##    &lt;ord&gt; &lt;ord&gt;     &lt;int&gt;
+##  1 D     Fair        163
+##  2 D     Good        662
+##  3 D     Very Good  1513
+##  4 D     Premium    1603
+##  5 D     Ideal      2834
+##  6 E     Fair        224
+##  7 E     Good        933
+##  8 E     Very Good  2400
+##  9 E     Premium    2337
+## 10 E     Ideal      3903
+## # … with 25 more rows
+```
+---
+
+## Covariación: Categórica - Categórica
+
+También sirve
+
+
+```r
+diamonds %&gt;%
+  count(color, cut) 
+```
+
+```
+## # A tibble: 35 × 3
+##    color cut           n
+##    &lt;ord&gt; &lt;ord&gt;     &lt;int&gt;
+##  1 D     Fair        163
+##  2 D     Good        662
+##  3 D     Very Good  1513
+##  4 D     Premium    1603
+##  5 D     Ideal      2834
+##  6 E     Fair        224
+##  7 E     Good        933
+##  8 E     Very Good  2400
+##  9 E     Premium    2337
+## 10 E     Ideal      3903
+## # … with 25 more rows
+```
+
+---
+## Covariación: Categórica - Categórica
+
+Con esto
+
+
+```r
+diamonds %&gt;%
+  count(color, cut) %&gt;%
+  ggplot(aes(x = color, y = cut, fill = n))+ 
+* geom_tile()
+```
+
+&lt;img src="tema2-3_files/figure-html/unnamed-chunk-21-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+## Covariación: Contínua - Contínua
+
+- Vimos cómo hacerlo con `geom_point()`
+
+- En datasets muy grandes, puntos solapan
+
+- ¿Idea? Usar `aplha`
+
+---
+## Covariación: Contínua - Contínua
+
+
+```r
+ggplot(data=diamonds, aes(x = carat, y = price)) + 
+* geom_point(alpha = 0.01)
+```
+
+&lt;img src="tema2-3_files/figure-html/unnamed-chunk-22-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+## Covariación: Contínua - Contínua
+
+Mejor
+
+
+```r
+ggplot(data=diamonds, aes(x = carat, y = price)) + 
+* geom_bin2d()
+```
+
+&lt;img src="tema2-3_files/figure-html/unnamed-chunk-23-1.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+## Covariación: Contínua - Contínua
+
+Mejor
+
+
+```r
+# install.packages("hexbin")
+ggplot(data=diamonds, aes(x = carat, y = price)) + 
+* geom_hex()
+```
+
+&lt;img src="tema2-3_files/figure-html/unnamed-chunk-24-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+## Covariación: Contínua - Contínua
+
+Otra opción
+
+
+```r
+ggplot(data=diamonds, aes(x = carat, y = price, )) + 
+* geom_boxplot(aes(group = cut_width(carat, 0.1)) )
+```
+
+&lt;img src="tema2-3_files/figure-html/unnamed-chunk-25-1.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+## Covariación: Contínua - Contínua
+
+Otra opción (mismo número de puntos por cada bin)
+
+
+```r
+ggplot(data=diamonds, aes(x = carat, y = price, )) + 
+* geom_boxplot(aes(group = cut_number(carat, 20)) )
+```
+
+&lt;img src="tema2-3_files/figure-html/unnamed-chunk-26-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+class: center, middle, inverse
+
+## EDA: Patrones y modelos
+
+---
+
+## Patrones y modelos
+
+Los patrones revelan pistas acerca de relaciones entre variables. Ante uno, cabe preguntarse
+
+- ¿Puede ser debido al azar?
+
+- ¿Cómo se describe la relación que implica?
+
+- ¿Cómo es de fuerte?
+
+- ¿Qué otras variables afectan esta relación?
+
+- ¿Cambian la relación si observamos subgrupos de los datos?
+
+
+Los **modelos** sirven para extraer patrones de los datos...
+
+... e.g. pueden usarse para eliminar el efecto de una variable y estudiar el efecto restante.
+
+---
+
+## Bibliografía
+
+* [R for Data Science](https://r4ds.had.co.nz/), Wickham and Grolemund (2016)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": true,
+"highlightStyle": "github",
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+<style>
+.logo {
+  background-image: url(img/logo2.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  width: 110px;
+  height: 128px;
+  z-index: 0;
+}
+</style>
+
+<style>
+  .title-logo {
+    background-image: url(img/logo2.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 1em;
+    left: 20em;
+    width: 110px;
+    height: 128px;
+    z-index: 0;
+  }
+  </style>
+
+<script>
+document
+  .querySelectorAll(
+    '.remark-slide-content' +
+    ':not(.title-slide)' +
+    // add additional classes to exclude here, e.g.
+    // ':not(.inverse)' +
+    ':not(.hide-logo)' 
+
+  )
+  .forEach(el => {
+    el.innerHTML += '<div class="logo"></div>';
+  });
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
