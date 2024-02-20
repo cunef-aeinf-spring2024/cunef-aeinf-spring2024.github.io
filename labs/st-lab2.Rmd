@@ -1,5 +1,5 @@
 ---
-title: "Lab 01 - Programación en R"
+title: "Lab 02 - Visualización"
 author: "Tu Nombre Aquí"
 date: "2023-09-05"
 output: html_document
