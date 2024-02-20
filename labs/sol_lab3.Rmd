@@ -184,8 +184,31 @@ fumar %>% filter(! (ethnicity %in% c("Unknown", "Refused")) ) %>%
   arrange(desc(prop_smokers))
 ```
 
-
 ## Ejercicio 8
+
+Reproduce el siguiente gráfico
+
+### Solución
+
+```{r}
+fumar %>% mutate(decada=case_when(age<=20 ~"0-20",
+                    age>20 & age<=30 ~ "20-30",
+                    age>30 & age<=40 ~ "30-40",
+                    age>40 & age<=50 ~ "40-50",
+                    age>50 & age<=60 ~ "50-60",
+                    age>60 & age<=70 ~ "60-70",
+                    age>70 & age<=80 ~ "70-80",
+                    age>80 & age<=90 ~ "80-90",
+                    TRUE ~ "90-")) %>% 
+  filter(smoke == "Yes") %>% 
+  group_by(decada, gender) %>%
+  summarise(median_we = median(amt_weekdays)) %>% 
+  ggplot(aes(x=decada, y=median_we)) + geom_bar(stat="identity", fill="#D55E00") + 
+  facet_wrap(gender~.) + theme_minimal() + labs(x="Década", y="Mediana de Cigarrillos/Día entre semana")
+```
+
+
+## Ejercicio 9
 
 ¿Qué tipos de tabaco son más populares en las distintas franjas de salario bruto? ¿Y en las distintas franjas de edad?
 
@@ -206,7 +229,7 @@ fumar_new %>% filter(smoke == "Yes") %>% group_by(decada, type) %>%
   mutate(prop_type = n/sum(n))
 ```
 
-## Ejercicio 9
+## Ejercicio 10
 
 ¿Cuál es la diferencia entre estos dos códigos?
 
@@ -225,7 +248,7 @@ En el primero no se agrupa y por tanto el porcentaje mostrado es sobre el total.
 En el segundo, al hacer `group_by`, el porcentaje mostrado es sobre los individuos 
 de cada grupo.
 
-## Ejercicio 10
+## Ejercicio 11
 
 ¿Entre la gente que no está casada, cuántos cigarros/día entre semana se fuman de media por nivel de estudios?
 
@@ -240,7 +263,7 @@ fumar %>% filter(smoke == "Yes", marital_status != "Married") %>%
 ```
 
 
-## Ejercicio 11
+## Ejercicio 12
 
 En numerosas ocasiones, ante la presencia de valores ausentes, es útil substituírlos
 por un valor. A este proceso se le conoce como imputación.
