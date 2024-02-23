@@ -46,11 +46,10 @@ Bienvenido al sitio web de la asignatura de **Análisis y Explotación de la Inf
   - [Diapositivas](./tema2/tema2-2.html)
 
 
-<!--
-
 - 2.3: Análisis Exploratorio de datos
   - [Diapositivas](./tema2/tema2-3.html)
  
+<!--
 
 ### Tema 3 : Data Wrangling
   - 3.1: Importación de datos

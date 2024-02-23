@@ -89,15 +89,18 @@ Los niveles de esta variable han de ser
 
 Ordena las distintas etnias en orden decreciente de proporción de fumadores en la muestra. Excluye aquellas observaciones con etnia desconocida o no declarada.
 
-
 ## Ejercicio 8
+
+Reproduce el gráfico que aparece en la página del laboratorio en la web. Extrae alguna conclusión.
+
+## Ejercicio 9
 
 ¿Qué tipos de tabaco son más populares en las distintas franjas de salario bruto? ¿Y en las distintas franjas de edad?
 
 *Nota*: utiliza la variable decada creada anteriormente
 
 
-## Ejercicio 9
+## Ejercicio 10
 
 ¿Cuál es la diferencia entre estos dos códigos?
 
@@ -111,12 +114,12 @@ fumar %>% group_by(gender, smoke) %>% summarise(n=n()) %>%
 ```
 
 
-## Ejercicio 10
+## Ejercicio 11
 
 ¿Entre la gente que no está casada, cuántos cigarros/día entre semana se fuman de media por nivel de estudios?
 
 
-## Ejercicio 11
+## Ejercicio 12
 
 En numerosas ocasiones, ante la presencia de valores ausentes, es útil substituírlos
 por un valor. A este proceso se le conoce como imputación.
