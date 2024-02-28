@@ -41,13 +41,13 @@ class: center, middle, inverse, title-slide
 ]
 ---
 
-## Análisis Exploratioro de los Datos
+## Análisis Exploratorio de los Datos
 
 * Aprenderemos cómo explorar los datos de forma sistemática...
 
 * ...usando las herramientas aprendidas (visualización y transformación)
 
-* El Análisis Exploratior de los datos es un ciclo que consiste en
+* El Análisis Exploratorio de los datos es un ciclo que consiste en
 
   1. Generar preguntas sobre los datos
   2. Responderlas visualizanddo, transformando y modelizando
@@ -55,7 +55,7 @@ class: center, middle, inverse, title-slide
 
 ---
 
-## Análisis Exploratioro de los Datos
+## Análisis Exploratorio de los Datos
 
 * **Objetivo**: desarrollar entendimiento acerca de los datos
 
@@ -68,7 +68,7 @@ class: center, middle, inverse, title-slide
 
 ---
 
-## Análisis Exploratioro de los Datos
+## Análisis Exploratorio de los Datos
 
 * Proceso **creativo**: no hay reglas para determinar qué preguntas son las más útiles.
 
