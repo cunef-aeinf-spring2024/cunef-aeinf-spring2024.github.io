@@ -1,0 +1,798 @@
+---
+title: "Tema 3.3"
+author: "Roi Naveiro"
+date: ""
+output: 
+   xaringan::moon_reader:
+    css: "ds_slides.css"
+    lib_dir: libs
+    seal: false
+    includes:
+      after_body: insert-logo.html
+    nature: 
+      highlightLines: true
+      highlightStyle: github
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%"  
+---
+
+
+
+```{r packages_setup, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = T, warning = F, message = F)
+knitr::opts_chunk$set(fig.width=8, fig.height=6) 
+```
+
+class: center, middle, inverse, title-slide
+
+<div class="title-logo"></div>
+
+# Análisis y Explotación de la Información
+ 
+## Tema 3 - Data Wrangling
+
+### 3.3 Strings, factores y fechas
+<br>
+<br>
+.pull-left[
+### Roi Naveiro
+]
+---
+
+
+## Data Wrangling
+
+**Objetivo**: dejar los datos listos para su posterior **exploración** y **modelización**
+
+Convertir **datos crudos** en **datos procesados**
+
+**Datos crudos**
+
+  - Los datos tal cual aparecen en la fuente de origen
+  
+  - No han sufrido ninguna manipulación
+  
+**Datos procesados**
+
+  - Cada variable es una columna
+  
+  - Cada observación una fila
+  
+  - Cada unidad observacional es una celda
+  
+  - Datos más complejos, en varias tablas interconectadas
+  
+---
+## Data Wrangling
+
+* Importación de los datos
+
+* Organización de los datos
+
+* Transformación de los datos
+
+```{r, echo=FALSE, out.width = '100%',  fig.align='center'}
+knitr::include_graphics("img/data-science-wrangle.png")
+library(tidyverse)
+library(nycflights13)
+```
+
+
+---
+class: center, middle, inverse
+
+# Transformación de datos
+
+---
+## Transformación de datos
+
+* Strings
+
+* Factores
+
+* Fechas y horas
+
+---
+class: center, middle, inverse
+
+# Strings
+
+
+---
+## Strings
+
+* Veremos lo básico de manipulación de strings
+
+* Datos en formato texto
+
+```{r}
+"Esto es un string"
+c("una", "dos y tres")
+```
+
+* Expresiones regulares (regexps): permiten identificar patrones en texto
+
+* Usaremos `stringr` de tidyverse para manipular strings
+
+* Todas sus funciones empiezan con `str_`
+
+---
+## Strings: longitud
+
+Podemos calcular la longitud de una string usando `str_length()`
+
+```{r}
+str_length("Hola")
+```
+
+Las operaciones están vectorizadas
+
+```{r}
+str_length( c("Hola", "Adiós") )
+```
+
+**Pregunta:** ¿Qué pasa si hay espacios?
+
+---
+## Strings: combinación
+
+Combinamos strings con `str_c`
+
+```{r}
+str_c("Ma", "drid")
+
+str_c("Un", "dos", sep=",")
+```
+
+**Pregunta**: ¿Cómo combinarías dos strings con una coma seguida de un espacio?
+
+---
+## Strings: combinación
+
+También vectorizado!
+
+```{r}
+str_c("prefijo-", c("X", "Y", "Z"), "-sufijo")
+```
+
+Para colapsar un texto largo en una única string
+
+```{r}
+str_c(c("En", "un", "lugar", "de", "la", "Mancha"), collapse = " ")
+```
+---
+## Strings: subsetting
+
+Para extraer partes de una string usamos `str_sub`
+
+```{r}
+x <- c("Liberty", "La Nuit")
+str_sub(x, 1, 3)
+
+# Con números negativos empieza desde el final
+str_sub(x, -3, -1)
+
+```
+
+---
+## Strings: cosas útiles
+
+```{r}
+x <- c("Liberty", "La nuit")
+str_to_lower(x)
+
+str_to_upper(x)
+
+str_to_title(x)
+```
+
+---
+## Strings: expresiones regulares
+
+Permiten describir patrones en strings. Se pueden hacer varias cosas con los
+patrones
+
+* Determinar que strings cumplen el patrón. 
+
+* Determinar en qué posición aparece el patrón
+
+* Extraer el patrón
+
+* Reemplazarlo
+
+E.g. patrón "contiene ES seguido de dos números"
+
+```{r}
+x1 <- "ES49"
+x2 <- "Mi número de cuenta es ES35 30..."
+x3 <- "Resido en España (ES)"
+```
+
+---
+## Strings: expresiones regulares
+
+Vamos aprender a jugar con patrones muy sencillos. Primero, coincidencia 
+exacta (ojo mayúsculas y minúsculas!)
+
+```{r}
+x <- c("Cats", "Uñas Chung Lee", "Capital")
+str_view(x, "Le")
+```
+
+**Pregunta**: diferencia entre `str_view` y `str_view_all`
+
+---
+## Strings: expresiones regulares
+
+Para identificar cualquier caracter usamos `.`
+
+```{r}
+x <- c("Cats", "Uñas Chung Lee", "Capital")
+str_view(x, ".a.")
+```
+---
+## Strings: expresiones regulares
+
+Empieza por `^` 
+
+```{r}
+x <- c("Cats", "Uñas Chung Lee", "Capital")
+str_view(x, "^C")
+```
+
+---
+## Strings: expresiones regulares
+
+Termina por `$`
+
+```{r}
+str_view(x, "l$")
+```
+
+
+---
+## Strings: expresiones regulares
+
+`\d`: cualquier dígito
+`\s`: espacio en blanco
+`[abc]`:  a, b, o c.
+
+```{r}
+x = c("B12", "Eslava", "Ocho y Medio")
+str_view(x, "\\d")
+```
+---
+## Strings: expresiones regulares
+
+OJO
+
+```{r}
+writeLines("\\d")
+```
+
+---
+## Strings: expresiones regulares
+
+```{r}
+x = c("ES12", "Mi cuenta es ES46", "Resido en España (ES)")
+str_view(x, "ES\\d\\d")
+```
+
+---
+## Strings: expresiones regulares
+
+**Ejercicio**: Detecta las autovías correctas
+
+```{r}
+x <- c("A1", "A12", "A14", "A6", "EA5", "A3", "F2")
+```
+
+---
+## Strings: detectar patrones
+
+Con esto estamos preparados para detectar patrones
+
+```{r}
+x = c("ES12", "Mi cuenta es ES46", "Resido en España (ES)")
+str_detect(x, "ES\\d\\d")
+```
+
+Uso común, seleccionar los elementos que cumplen el patrón
+
+```{r}
+words[str_detect(words, "x$")]
+```
+
+---
+## Strings: detectar patrones
+
+También con dataframes
+
+```{r}
+df <- tibble(
+  word = words, 
+  i = seq_along(word)
+)
+df %>% 
+  filter(str_detect(word, "x$"))
+```
+
+---
+## Strings: contar patrones
+
+¿Cuántas veces ocurre el patrón?
+```{r}
+x <- c("apple", "banana", "pear")
+str_count(x, "a")
+```
+
+**Ejercicio**: calcula la media de vocales por palabra en `words`.
+
+---
+## Strings: contar patrones
+
+Se usa mucho con mutate
+
+```{r}
+df %>% 
+  mutate(
+    vocales = str_count(word, "[aeiou]"),
+  )
+```
+
+
+---
+class: center, middle, inverse
+
+# Factores
+
+---
+## Factores
+
+* Para trabajar con variables categóricas con número fijo de valores
+
+* Trabajaremos con `forcats` de tiduverse
+
+* Crear factores
+
+---
+## Factores: creación
+
+```{r}
+x1 <- c("Dec", "Apr", "Jan", "Mar")
+```
+
+Usar una string para almacenar esta variable tiene dos problemas
+
+* Los valores son fijos y nada previene de errores
+```{r}
+x1 <- c("Dec", "Apr", "Jan", "Mer")
+```
+
+* No ordena de manera útil
+```{r}
+sort(x1)
+```
+
+---
+## Factores: creación
+
+Esto se arregla creando un factor
+```{r}
+month_levels <- c(
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+)
+y1 <- factor(x1, levels = month_levels)
+sort(y1)
+```
+
+---
+## Factores: creación
+
+Con pipes
+
+```{r}
+f2 <- x1 %>% factor(levels = month_levels) 
+f2
+```
+
+---
+## Factores
+
+Trabajaremos con los datos `gss_cat`
+
+```{r}
+glimpse(gss_cat)
+```
+
+---
+## Factores
+
+**Pregunta**: ¿Cómo identificarías los niveles posibles de la variable `race`?
+
+--
+
+```{r}
+gss_cat %>% count(race)
+```
+
+---
+## Factores
+
+* Reordenar niveles
+
+* Modificar niveles
+
+---
+## Factores - Reordenar niveles
+
+Con `fct_reorder()`. Toma tres argumentos
+
+* `f`, el factor que queremos reordenar
+
+* `x`, vector numérico para ordenar
+
+* Opcionalmente, `fun`, en caso de que haya varios valores de `x` para la misma
+`f`. (Por defecto, `fun` es la mediana)
+
+---
+## Factores - Reordenar niveles
+Dos opciones 
+
+```{r, fig.width = 9, fig.height = 4}
+gss_cat %>%
+  group_by(relig) %>%
+  summarise(tvhours = mean(tvhours, na.rm = TRUE)) %>%  
+  ggplot(aes(tvhours, fct_reorder(relig, tvhours))) +
+    geom_point() + theme_bw()
+```
+
+---
+## Factores - Reordenar niveles
+Tres opciones 
+
+```{r, fig.width = 9, fig.height = 4}
+gss_cat %>%
+  group_by(relig) %>%
+  summarise(tvhours = mean(tvhours, na.rm = TRUE)) %>%  
+  mutate (relig = fct_reorder(relig, tvhours)) %>% 
+  ggplot(aes(tvhours, relig)) +
+    geom_point() + theme_bw()
+```
+
+
+
+---
+## Factores - Modificar niveles
+
+Usamos `fct_recode()`
+
+```{r}
+gss_cat %>% count(partyid)
+```
+
+---
+## Factores - Modificar niveles
+
+```{r}
+gss_cat %>%
+  mutate(partyid = fct_recode(partyid,
+    "Republican, strong"    = "Strong republican",
+    "Republican, weak"      = "Not str republican",
+    "Independent, near rep" = "Ind,near rep",
+    "Independent, near dem" = "Ind,near dem",
+    "Democrat, weak"        = "Not str democrat",
+    "Democrat, strong"      = "Strong democrat"
+  )) %>%
+  count(partyid)
+```
+
+---
+## Factores - Modificar niveles
+
+A veces útil colapsar niveles
+
+```{r}
+gss_cat %>%
+  mutate(partyid = fct_collapse(partyid,
+    other = c("No answer", "Don't know", "Other party"),
+    rep = c("Strong republican", "Not str republican"),
+    ind = c("Ind,near rep", "Independent", "Ind,near dem"),
+    dem = c("Not str democrat", "Strong democrat")
+  )) %>%
+  count(partyid)
+```
+
+
+---
+class: center, middle, inverse
+
+# Fechas y horas
+
+---
+## Fechas y horas
+
+Para trabajar con fechas y horas usamos `lubridate` que **NO** es parte tidyverse.
+Descárgalo y cárgalo en R
+
+```{r}
+library(lubridate)
+```
+
+---
+## Fechas y horas
+
+Tres tipos
+
+* Fechas, referidas como <date> en los tibble
+
+* Hora, referida como <time> en los tibble
+
+* Fecha y hora, identifica unívocamente un tiempo. Referidas como <dttm> en los tibble
+(en R, POSIXct)
+
+---
+## Fechas y horas
+
+```{r}
+today()
+str(today())
+now()
+str(now())
+```
+
+---
+## Fechas y horas
+
+En general proceden de strings.
+
+**Pregunta**: ¿Cómo convertir strings en objetos de fecha o fecha-hora?
+
+---
+## Fechas y horas
+
+* Otra forma de parsear más fácil con funciones de lubridate
+
+* Solo especificar orden usando “y”, “m”, y “d”
+
+```{r}
+ymd("2017-01-31")
+
+ymd("17-Jan-31")
+```
+
+---
+## Fechas y horas
+
+```{r}
+mdy("January 31st, 2017")
+dmy("31 of January of 2017")
+
+ymd_hms("2017-01-31 20:11:59")
+mdy_hm("01/31/2017 08:01")
+```
+
+---
+## Fechas y horas
+
+A veces nos dan las componentes individuales por separado
+
+```{r}
+library(nycflights13)
+flights %>% 
+  select(year, month, day, hour, minute)
+```
+
+---
+## Fechas y horas
+
+Para esto `make_datetime()`. Ojo orden de argumentos!!
+```{r}
+flights %>% 
+  select(year, month, day, hour, minute) %>% 
+  mutate(departure = make_datetime(year, month, day, hour, minute))
+```
+
+---
+## Fechas y horas
+
+Cambiar entre formatos
+```{r}
+as_datetime(today())
+as_date(now())
+```
+
+---
+## Fechas y horas
+
+¿Qué hacer con fechas y horas? 
+
+* Extraer componentes 
+
+* Realizar operaciones
+
+---
+## Fechas y horas - Componentes
+
+```{r}
+datetime <- ymd_hms("2016-07-08 12:34:56")
+
+year(datetime)
+
+month(datetime)
+
+mday(datetime)
+
+yday(datetime)
+
+wday(datetime)
+```
+
+---
+## Fechas y horas - Componentes
+
+```{r}
+datetime <- ymd_hms("2016-07-08 12:34:56")
+
+hour(datetime)
+
+minute(datetime)
+
+second(datetime)
+
+```
+
+---
+## Fechas y horas - Componentes
+
+```{r}
+datetime <- ymd_hms("2016-07-08 12:34:56")
+
+month(datetime, label = TRUE)
+
+wday(datetime, label = TRUE, abbr = FALSE)
+
+```
+
+---
+## Fechas y horas - Componentes
+
+Podemo modificar componentes usando las mismas funciones
+
+```{r}
+(datetime <- ymd_hms("2016-07-08 12:34:56"))
+year(datetime) <- 2020
+datetime
+month(datetime) <- 01
+datetime
+hour(datetime) <- hour(datetime) + 1
+datetime
+```
+
+---
+## Fechas y horas - Componentes
+
+También podemos modificar componentes con `update`
+
+```{r}
+update(datetime, year = 2023)
+```
+
+---
+## Fechas y horas - Operaciones
+
+Para operar con fechas, necesitaremos:
+
+* **Duraciones**: número exacto de segundos
+
+* **Períodos**: otras unidades como meses y semanas
+
+
+---
+## Fechas y horas - Operaciones
+
+Al restar dos fechas, obtenemos un objeto  de clase `difftime`
+
+```{r}
+mi_edad <- today() - ymd("1993 May 17")
+mi_edad
+```
+
+Este objeto alberga tiempos en segundos, minutos, horas, días, etc. Ambiguo
+
+---
+## Fechas y horas - Operaciones con duraciones
+
+Alternativa, trabajar con **duraciones** (en segundos)
+
+```{r}
+as.duration(mi_edad)
+```
+
+---
+## Fechas y horas - Operaciones con duraciones
+
+Funciones úliles. Siempre en segundos!!
+
+```{r}
+dseconds(15)
+dminutes(10)
+dhours(c(12, 24))
+ddays(0:5)
+```
+---
+## Fechas y horas - Operaciones con duraciones
+
+Funciones úliles. Siempre en segundos!!
+
+```{r}
+dweeks(3)
+dyears(1)
+```
+
+
+---
+## Fechas y horas - Operaciones con duraciones
+
+```{r}
+dyears(1) + dweeks(12) + dhours(15)
+2*dweeks(12)
+```
+
+```{r}
+mañana <- today() + ddays(1)
+mañana
+año_pasado <- today() - dyears(1)
+año_pasado
+```
+
+---
+## Fechas y horas - Operaciones con períodos
+
+Más intuitivo
+
+```{r}
+seconds(15)
+minutes(10)
+hours(c(12, 24))
+days(7)
+```
+
+---
+## Fechas y horas - Operaciones con períodos
+
+Más intuitivo
+
+```{r}
+months(1:6)
+weeks(3)
+years(1)
+```
+
+---
+## Fechas y horas - Operaciones con períodos
+
+Operaciones con fechas
+
+```{r}
+ymd("2017-01-01") + years(1)
+ymd("2017-01-01") + months(1)
+ymd("2017-01-01") + days(1)
+```
+
+---
+## Fechas y horas - Operaciones con períodos
+
+¿Qué está pasando?
+
+```{r}
+ymd("2016-01-01") + dyears(1)
+ymd("2016-01-01") + years(1)
+```
+
+
+---
+## Bibliografía
+
+Este tema está fundamentalmente basado en  [R for Data Science](https://r4ds.had.co.nz/), Wickham and Grolemund (2016)

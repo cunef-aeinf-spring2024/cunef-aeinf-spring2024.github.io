@@ -1,0 +1,798 @@
+---
+title: "Tema 3.2"
+author: "Roi Naveiro"
+date: ""
+output: 
+   xaringan::moon_reader:
+    css: "ds_slides.css"
+    lib_dir: libs
+    seal: false
+    includes:
+      after_body: insert-logo.html
+    nature: 
+      highlightLines: true
+      highlightStyle: github
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%"  
+---
+
+
+
+```{r packages_setup, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = T, warning = F, message = F)
+knitr::opts_chunk$set(fig.width=8, fig.height=6) 
+```
+
+class: center, middle, inverse, title-slide
+
+<div class="title-logo"></div>
+
+# Análisis y Explotación de la Información
+ 
+## Tema 3 - Data Wrangling
+
+### 3.2 Organización de Datos
+<br>
+<br>
+.pull-left[
+### Roi Naveiro
+]
+---
+
+
+## Data Wrangling
+
+**Objetivo**: dejar los datos listos para su posterior **exploración** y **modelización**
+
+Convertir **datos crudos** en **datos procesados**
+
+**Datos crudos**
+
+  - Los datos tal cual aparecen en la fuente de origen
+  
+  - No han sufrido ninguna manipulación
+  
+**Datos procesados**
+
+  - Cada variable es una columna
+  
+  - Cada observación una fila
+  
+  - Cada unidad observacional es una celda
+  
+  - Datos más complejos, en varias tablas interconectadas
+  
+---
+## Data Wrangling
+
+* Importación de los datos
+* Organización de los datos
+* Transformación de los datos
+
+```{r, echo=FALSE, out.width = '100%',  fig.align='center'}
+knitr::include_graphics("img/data-science-wrangle.png")
+library(tidyverse)
+library(nycflights13)
+```
+
+
+---
+class: center, middle, inverse
+
+# Organización de datos
+
+---
+
+# Datos Organizados
+
+* Aprenderemos forma consistente de organizar los datos en R
+
+* Lo haremos a través del paquete `tidyr` del universo `tidyverse`
+
+---
+# Datos Organizados
+
+* Los mismos datos pueden representarse de múltiples formas
+* En el siguiente ejemplo presentamos los valores de cuatro variables (*country, year, population, cases*) de cuatro formas distintas
+
+```{r}
+table1
+```
+
+---
+# Datos Organizados
+
+* Los mismos datos pueden representarse de múltiples formas
+* En el siguiente ejemplo presentamos los valores de cuatro variables (*country, year, population, cases*) de cuatro formas distintas
+
+```{r}
+table2
+```
+
+---
+# Datos Organizados
+
+* Los mismos datos pueden representarse de múltiples formas
+* En el siguiente ejemplo presentamos los valores de cuatro variables (*country, year, population, cases*) de cuatro formas distintas
+
+```{r}
+table3
+```
+
+---
+# Datos Organizados
+
+* Los mismos datos pueden representarse de múltiples formas
+* En el siguiente ejemplo presentamos los valores de cuatro variables (*country, year, population, cases*) de cuatro formas distintas
+
+```{r}
+table4a
+table4b
+```
+---
+# Datos Organizados
+
+* Solo uno está **organizado**
+
+* Hablamos de datos organizados si:
+
+  - Cada variable corresponde a una columna
+  - Cada fila a un observación
+  - Cada celda a un valor
+  
+```{r, echo=FALSE, out.width = '80%',  fig.align='center'}
+knitr::include_graphics("img/tidy.png")
+```
+
+---
+# Datos Organizados 
+
+* La principal ventaja es poder utilizar las herramientas de R que, usualmente, trabajan sobre vectores de valores.
+
+```{r}
+table1 %>% mutate(rate = 10000 * cases / population)
+```
+
+---
+# Datos Organizados 
+
+* La mayoría de datos que recibimos, no están organizados.
+
+* Primer paso: determinar qué son las variables y qué son las observaciones. ¿Ejemplos?
+
+* Segundo paso: resolver uno de estos problemas
+
+  - Una variable está dispersa por varias columnas
+  - Una observación está dispersa por múltiples filas
+  
+* Esto se resuelve con `pivot_longer()` y `pivot_wider()`
+
+---
+# `pivot_longer()`
+
+* Nombres de columnas son valores de variable
+
+```{r}
+table4a
+```
+
+---
+# `pivot_longer()`
+
+* Necesitamos **pivotar** estas columnas a un nuevo par de variables. Para ello, debemos conocer:
+
+  - El conjunto de columnas a pivotar
+  - El nombre de la variable que recibirá las columnas: `year`
+  - El nombre de la variable que recibirá los valores: `cases`
+
+---
+# `pivot_longer()`
+
+```{r}
+table4a %>% pivot_longer(c(`1999`, `2000`), 
+                         names_to = "year", values_to = "cases")
+```
+
+* Nótese que los años son nombres que no empiezan por letra y por tanto han de rodearse de tildes...
+
+---
+# `pivot_longer()`
+
+Usa `pivot_longer()` para ordenar el dataset `table4b`
+
+---
+# `pivot_wider()`
+
+* Se utiliza cuando tenemos una observación dispersa en filas
+
+* En el siguiente dataset, cada observación es un país en un año
+
+* Cada una ocupa dos filas
+
+```{r}
+table2
+```
+---
+# `pivot_wider()`
+
+Para ordenar, necesitamos:
+
+- La columna de la que extraeremos los nombres de las nuevas variables: `type`
+
+- La columna de la que extraeremos sus valores: `count`
+
+---
+# `pivot_wider()`
+
+```{r}
+table2 %>% 
+  pivot_wider(names_from = type, values_from = count)
+```
+
+---
+
+# Organizar datos
+
+* `pivot_longer`: elimina columnas y añade filas, hace los datos más largos.
+
+* `pivot_wider`: elimina filas y añade columnas, hace los datos más anchos.
+
+---
+# Separar y unir columnas
+
+* A veces, una misma columna contiene información acerca de dos variables.
+
+* Se puede separar en dos columnas utilizando `separate()`
+
+```{r}
+table3
+```
+---
+# Separar y unir columnas
+
+```{r}
+table3 %>% separate(rate, into = c("cases", "population"))
+```
+---
+# Separar y unir columnas
+
+* Por defecto, separa cuando encuentra carácter no alfanumérico.
+
+* Se puede especificar el caracter.
+
+```{r}
+table3 %>% separate(rate, into = c("cases", "population"), sep = "/")
+```
+
+---
+# Separar y unir columnas
+
+* Además, conviene convertir el tipo de columna, de lo contrario será de tipo string.
+
+```{r}
+table3 %>% separate(rate, into = c("cases", "population"), convert = TRUE)
+```
+---
+# Separar y unir columnas
+
+* Se puede separar usando enteros
+
+```{r}
+table5 <- 
+  table3 %>% separate(year, into = c("century", "year"), sep = 2)
+```
+
+---
+# Separar y unir columnas
+
+* `unite()` hace lo contrario que `separate()`: combina columnas
+* Toma como argumentos:  nueva variable, conjunto de columnas a juntar y `sep`
+
+```{r}
+table5 %>% unite(new, century, year, sep = "")
+```
+
+
+---
+class: center, middle, inverse
+
+# Datos relacionales
+
+---
+# Datos relacionales
+
+* Generalmente, en análisis de datos se trabaja con más de una base de datos.
+
+* Una de las mayores fuentes de riqueza en análisis de datos surge del cruce de bbdd!
+
+* Hay que saber cómo enganchar diferentes tablas de datos.
+
+* Cuando los datos están repartidos en múltiples tablas, hablamos de **datos relacionales**
+
+---
+# Datos relacionales
+
+En `tidyverse`, existen tres familias de verbos para trabajar con datos relacionales:
+
+* **Mutating joins**: añaden nuevas variables a una tabla de datos, procedentes de observaciones coincidentes de otra tabla.
+
+* **Filtering joins**: filtran observaciones de una base de datos basándose en si coinciden o no con las observaciones de otra tabla.
+
+* **Set operations**: utilizan las observaciones como si fueran elementos de un conjunto.
+
+---
+# `nycflights13`
+
+Utilizaremos este conjunto de datos para aprender sobre datos relacionales. Contiene las siguientes tablas:
+
+* `airlines`:  Nombres de aerolíneas
+
+* `airports`: Información sobre cada aeropuerto
+
+* `planes`: Información sobre cada avión
+
+* `weather`: Información climática en cada aeropuerto de NYC a cada hora
+
+* `flights`: Información sobre todos los vuelos que partieron de NYC en 2013
+
+---
+# `nycflights13`
+
+```{r, echo=FALSE, out.width = '100%',  fig.align='center'}
+knitr::include_graphics("img/relations_NYC.png")
+```
+
+---
+# Keys (Llaves)
+
+* Son **variables** que se usan para conectar pares de tablas.
+
+* Conjunto de variables que identifican unívocamente una observación.
+
+* ¿Cuáles son las llaves de cada una de las tablas de datos de `nycflights13`?
+
+---
+# Keys (Llaves)
+
+Dos tipos de llaves:
+
+* Primary Key: identifica unívocamente una observación en su propia tabla.
+
+* Foreign Key: identifica unívocamente una observación en otra tabla.
+
+* ¿Ejemplo en `nycflights13`?
+
+---
+# Keys (Llaves)
+
+Una vez identificada una llave primaria, es útil comprobar que es correcta
+
+```{r}
+planes %>% 
+  count(tailnum) %>% 
+  filter(n > 1)
+```
+
+
+```{r}
+weather %>% 
+  count(year, month, day, hour, origin) %>% 
+  filter(n > 1)
+```
+
+---
+# Keys (Llaves)
+
+* A veces no existen llaves primarias! No hay una combinación de variables que identifique unívocamente cada observación.
+
+* Ejemplo, `flights`.
+
+Útil añadir una... **llave surrogada**
+
+```{r}
+flights_key <- flights %>% mutate(key = row_number())
+```
+
+
+```{r}
+flights_key %>% 
+  count(key) %>% 
+  filter(n > 1)
+```
+
+---
+# Keys (Llaves)
+
+* Una *primary key* y su *foreign key* en otra table forman una **relación**.
+
+* Usualmente las relaciones son 1 a varios.
+
+* Ejemplo: cada vuelo tiene un único avión, pero cada avión realiza muchos vuelos.
+
+---
+class: center, middle, inverse
+
+# Mutating joins
+
+---
+
+# Mutating joins
+
+* Sirve para combinar variables de dos tablas.
+
+* Primero, empareja observaciones usando las llaves correspondientes, y después copia
+variables de una tabla a otra.
+
+* Añade nuevas variables a la derecha!! Trabajamos con versión reducida
+
+```{r}
+flights2 <- flights %>% 
+  select(year:day, hour, origin, dest, tailnum, carrier) 
+flights2 %>% slice(1:3)
+```
+
+---
+# Mutating joins
+
+Para entender su funcionamiento, trabajamos con datos artificiales
+
+```{r}
+x <- tribble(
+  ~key, ~val_x,
+     1, "x1",
+     2, "x2",
+     3, "x3"
+)
+y <- tribble(
+  ~key, ~val_y,
+     1, "y1",
+     2, "y2",
+     4, "y3"
+)
+```
+
+---
+# Mutating joins
+
+
+```{r, echo=FALSE, out.width = '60%',  fig.align='center'}
+knitr::include_graphics("img/join-setup1.png")
+```
+
+---
+# Inner join
+
+Empareja observaciones únicamente cuando las llaves son iguales.
+
+```{r, echo=FALSE, out.width = '70%',  fig.align='center'}
+knitr::include_graphics("img/join-inner.png")
+```
+
+---
+# Inner join
+
+La salida es un nuevo data frame con llave, variable x y variable y. 
+Las filas no emparejadas no aparecen!!
+
+```{r}
+x %>% 
+  inner_join(y, by = "key")
+```
+
+---
+# Outer join
+
+Mantiene observaciones que aparecen **al menos** en uno de los dataset!!
+Tres tipos:
+
+* **Left join**: mantiene todas las observaciones de `x`
+
+* **Right join**: mantiene todas las observaciones de `y`
+
+* **Full join**: mantiene todas las observaciones de `x` e `y` 
+
+---
+# Outer join
+
+```{r, echo=FALSE, out.width = '45%',  fig.align='center'}
+knitr::include_graphics("img/join-outer.png")
+```
+
+---
+# Outer join
+
+Predice la respuesta de los siguientes códigos
+
+```{r, eval=F}
+x %>% 
+  left_join(y, by = "key")
+
+x %>% 
+  right_join(y, by = "key")
+
+x %>% 
+  full_join(y, by = "key")
+```
+
+---
+# Outer join
+
+Predice la respuesta de los siguientes códigos
+
+```{r, eval=T}
+x %>% 
+  left_join(y, by = "key")
+
+x %>% 
+  right_join(y, by = "key")
+```
+
+---
+# Outer join
+
+Predice la respuesta de los siguientes códigos
+
+```{r, eval=T}
+x %>% 
+  full_join(y, by = "key")
+```
+
+
+---
+# ¿Llaves duplicadas?
+
+```{r, echo=FALSE, out.width = '55%',  fig.align='center'}
+knitr::include_graphics("img/join-one-to-many.png")
+```
+
+* Caso 1: Una sola tablas tiene llaves duplicadas
+
+* Caso 2: Ambas tablas tiene llaves duplicadas
+
+---
+# Llaves duplicadas - Caso 1
+
+Caso típico!
+
+```{r}
+x <- tribble(
+  ~key, ~val_x,
+     1, "x1",
+     2, "x2",
+     2, "x3",
+     1, "x4"
+)
+y <- tribble(
+  ~key, ~val_y,
+     1, "y1",
+     2, "y2"
+)
+left_join(x, y, by = "key")
+```
+
+---
+# Llaves duplicadas - Caso 1
+
+
+```{r}
+left_join(x, y, by = "key")
+```
+
+---
+# Llaves duplicadas - Caso 2
+
+Error, llave no identifica unívocamente las observaciones
+
+```{r}
+x <- tribble(
+  ~key, ~val_x,
+     1, "x1",
+     2, "x2",
+     2, "x3",
+     3, "x4"
+)
+y <- tribble(
+  ~key, ~val_y,
+     1, "y1",
+     2, "y2",
+     2, "y3",
+     3, "y4"
+)
+```
+
+
+---
+# Llaves duplicadas - Caso 2
+
+Todas las combinaciones!
+
+```{r}
+left_join(x, y, by = "key")
+```
+
+---
+# Ejercicio
+
+Utilizando los datos `flights` y `airlines`, crea una base de datos donde 
+aparezcan año, mes, día y hora de vuelo, así como la variable `carrier`
+que contiene las siglas de la aerolínea correspondiente y la
+variable `name` que tiene el nombre completo de la aerolínea.
+
+
+
+---
+# Definiendo las llaves
+
+* Hasta ahora, la llave era una única variable, con el mismo nombre en ambas
+tablas.
+
+* Indicado en `by = "key"`
+
+* ¿Otros usos de `by`?
+
+---
+# Usos de `by`
+
+* `by = NULL` es el valor por defecto. Usa todas las variables que aparecen en 
+ambas tablas
+
+* ¿Qué variables se utilizarán en el siguiente código?
+
+```{r, eval=FALSE}
+flights2 %>% 
+  left_join(weather)
+```
+
+---
+# Usos de `by`
+
+* `by = "x"` une según variable/s indicada/s, con **mismo nombre** en ambas tablas.
+
+
+
+```{r, eval=FALSE}
+flights2 %>% 
+  left_join(planes, by = "tailnum")
+```
+
+---
+# Usos de `by`
+
+* `by = c("a" = "b")` empareja la variable `a` de la primera tabla con la
+variable `b` de la segunda.
+
+* ¿Qué pasa?
+
+```{r, eval=FALSE}
+flights2 %>% 
+  left_join(airports, c("dest" = "faa"))
+```
+
+
+---
+# Ejercicio
+
+¿Qué variables usarías como llave para juntar los datos `planes` y 
+`flights`?
+
+Pista: usa las ayudas para entender cada uno de los datos
+
+---
+# Ejercicio
+
+¿Cuáles son los nombres completos de los aeropuertos de destino con el retraso medio
+más alto? Presenta una tabla con dos columnas, una con nombre completo y 
+la otra con el retraso medio.
+
+
+---
+# Mutating joins
+
+**Consejo**: utiliza siempre que puedas el `left_join`. Es la función más
+importante
+
+
+---
+class: center, middle, inverse
+
+# Filtering joins
+
+---
+# Filtering joins
+
+Similar a los mutating joins, pero afectan a observaciones, no a variables!
+Dos tipos
+
+* `semi_join(x,y)`: mantienen todas las observaciones de `x` que tienen pareja en
+`y`
+* `anti_join(x,y)`: elimina todas las observaciones de `x` que tienen pareja en
+`y`
+
+---
+# `semi_join(x,y)`
+
+```{r, echo=FALSE, out.width = '65%',  fig.align='center'}
+knitr::include_graphics("img/join-semi.png")
+```
+
+---
+# `semi_join(x,y)`
+
+Útil para recuperar variables tras resumen.
+
+**Ejercicio**: extrae toda la información de los vuelos de `flights` cuyo destino 
+esté entre los 10 destinos con más observaciones.
+
+```{r}
+top_dest <- flights %>% count(dest) %>% arrange(desc(n)) %>% 
+  slice(1:10)
+```
+
+
+---
+# `anti_join(x,y)`
+
+```{r, echo=FALSE, out.width = '65%',  fig.align='center'}
+knitr::include_graphics("img/join-anti.png")
+```
+
+
+---
+# `anti_join(x,y)`
+Útil para diagnosticar discordancias.
+```{r}
+flights %>%
+  anti_join(planes, by = "tailnum") %>%
+  count(tailnum) %>% arrange(desc(n))
+```
+
+---
+class: center, middle, inverse
+# Set operations
+
+
+---
+# Set operations
+
+Esperan `x` e `y` con las **mismas** variables.
+Tratan observaciones como conjuntos:
+
+* `intersect(x,y)`: Devuelve observaciones presentes en ambos `x` e `y`.
+
+* `union(x,y)`: Devuelve observaciones únicas presentes en `x` o `y`.
+
+* `setdiff(x,y)`: Devuelve observaciones presentes en `x` pero no en `y`.
+
+---
+# Set operations
+
+```{r}
+df1 <- tribble(
+  ~x, ~y,
+   1,  1,
+   2,  1
+)
+df2 <- tribble(
+  ~x, ~y,
+   1,  1,
+   1,  2
+)
+```
+
+
+---
+# Set operations
+
+```{r}
+intersect(df1, df2)
+
+union(df1, df2)
+
+setdiff(df1, df2)
+```
+
+
+---
+## Bibliografía
+
+Este tema está fundamentalmente basado en  [R for Data Science](https://r4ds.had.co.nz/), Wickham and Grolemund (2016)

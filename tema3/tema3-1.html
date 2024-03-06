@@ -1,0 +1,2304 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Tema 3.1</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Roi Naveiro" />
+    <script src="libs/header-attrs-2.25/header-attrs.js"></script>
+    <link rel="stylesheet" href="ds_slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+
+class: center, middle, inverse, title-slide
+
+&lt;div class="title-logo"&gt;&lt;/div&gt;
+
+# Análisis y Explotación de la Información
+ 
+## Tema 3 - Data Wrangling
+
+### 3.1 Importación de Datos
+&lt;br&gt;
+&lt;br&gt;
+.pull-left[
+### Roi Naveiro
+]
+---
+
+
+## Data Wrangling
+
+**Objetivo**: dejar los datos listos para su posterior **exploración** y **modelización**
+
+Convertir **datos crudos** en **datos procesados**
+
+**Datos crudos**
+
+  - Los datos tal cual aparecen en la fuente de origen
+  
+  - No han sufrido ninguna manipulación
+  
+**Datos procesados**
+
+  - Cada variable es una columna
+  
+  - Cada observación una fila
+  
+  - Cada unidad observacional es una celda
+  
+  - Datos más complejos, en varias tablas interconectadas
+  
+---
+## Data Wrangling
+
+* Importación de los datos
+* Organización de los datos
+* Transformación de los datos
+
+&lt;img src="img/data-science-wrangle.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+
+---
+class: center, middle, inverse
+
+# Importación de datos
+
+---
+## Importación de datos
+
+* Aprederemos cómo descargar y leer datos en R
+
+* Nos centraremos en **datos tabulares**
+
+* De nuevo, para esta parte, necesitaremos cargar `tidyverse`
+
+
+```r
+library(tidyverse)
+```
+
+Seguiremos este esquema
+
+* Descarga de datos
+* Lectura de ficheros en R-base
+* Lectura de ficheros tidyverse
+
+---
+class: center, middle, inverse
+
+# Importación de datos: Descarga de datos
+
+---
+
+## Directorio de trabajo
+
+* Es esencial conocer el directorio de trabajo
+
+* Los comandos esenciales son `getwd()` y `setwd()`
+
+
+```r
+# Devuelve el directorio de trabajo
+getwd()
+```
+
+
+```r
+# Cambia el directorio de trabajo
+setwd()
+
+# Directorio relativo al directorio raíz
+setwd("./data")
+
+# Directorio relativo al directorio superior al raíz
+setwd("../data")
+
+# Directorio absoluto
+setwd("/home/roi/data")
+```
+---
+
+## Descarga de datos
+
+Vamos a ver cómo crear una carpeta `data` desde R (si esta no existe) y descargar unos datos dentro de la misma
+
+1. Comprobar si existe una carpeta llamada `data` en el directorio actual. Si no, crearla. Usar funciones `file.exists()` y `dir.create()`. Inténtalo
+
+
+---
+
+## Descarga de datos
+
+Vamos a ver cómo crear una carpeta `data` desde R (si esta no existe) y descargar unos datos dentro de la misma
+
+1. Descarga los datos sobre los indicadores de calidad de vino tinto [https://archive.ics.uci.edu/ml/datasets/Wine+Quality](https://archive.ics.uci.edu/ml/datasets/Wine+Quality).
+
+
+```r
+data_url &lt;- "https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv"
+download.file(data_url, destfile = "data/red_qualities.csv")
+list.files("./data")
+```
+
+---
+class: center, middle, inverse
+
+# Importación de datos: Lectura de ficheros en R-base
+---
+
+## `read.table()`
+
+
+```r
+# Así leemos datos con read.table
+# OJO: el separador es ;
+red_wine_data &lt;- read.table("data/red_qualities.csv", header = T, sep = ';')
+head(red_wine_data)
+```
+
+```
+##   fixed.acidity volatile.acidity citric.acid residual.sugar chlorides
+## 1           7.4             0.70        0.00            1.9     0.076
+## 2           7.8             0.88        0.00            2.6     0.098
+## 3           7.8             0.76        0.04            2.3     0.092
+## 4          11.2             0.28        0.56            1.9     0.075
+## 5           7.4             0.70        0.00            1.9     0.076
+## 6           7.4             0.66        0.00            1.8     0.075
+##   free.sulfur.dioxide total.sulfur.dioxide density   pH sulphates alcohol
+## 1                  11                   34  0.9978 3.51      0.56     9.4
+## 2                  25                   67  0.9968 3.20      0.68     9.8
+## 3                  15                   54  0.9970 3.26      0.65     9.8
+## 4                  17                   60  0.9980 3.16      0.58     9.8
+## 5                  11                   34  0.9978 3.51      0.56     9.4
+## 6                  13                   40  0.9978 3.51      0.56     9.4
+##   quality
+## 1       5
+## 2       5
+## 3       5
+## 4       6
+## 5       5
+## 6       5
+```
+
+---
+
+##  `read.table()`
+
+Algunos parámetros importantes
+
+* _na.strings_ - elegir el caracter que representa un valor ausente
+* _nrows_ - cuántas filas leer (e.g. nrows=10 lee 10 filas)
+* _skip_ - número de filas a ignorar hasta empezar lectura
+
+---
+## Leer excell
+
+Esto require la librería `openxlsx`
+
+
+```r
+library(openxlsx)
+red_wine_data &lt;- read.xlsx("data/red_qualities.xlsx", 
+                           sheet = 1)
+
+head(red_wine_data)
+```
+
+
+---
+## Leer JSON
+
+* Javascript Object Notation
+
+* Almacenamiento ligero de datos
+
+* Es un formato común en APIs
+
+* Los datos se guardan objetos con pares atributo-valor y matrices
+
+---
+## Leer JSON
+
+
+&lt;img src="img/json.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+## Leer JSON
+
+```r
+library(jsonlite)
+
+# Leer JSON
+iris_JSON &lt;- read_json("data/iris.json", simplifyVector = TRUE)
+
+# Convertir en dataframe
+iris_df &lt;- fromJSON(iris_JSON)
+
+head(iris_df)
+```
+
+```
+##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+## 1          5.1         3.5          1.4         0.2  setosa
+## 2          4.9         3.0          1.4         0.2  setosa
+## 3          4.7         3.2          1.3         0.2  setosa
+## 4          4.6         3.1          1.5         0.2  setosa
+## 5          5.0         3.6          1.4         0.2  setosa
+## 6          5.4         3.9          1.7         0.4  setosa
+```
+
+---
+## Leer JSON
+
+```r
+# La función prettify nos imprime el JSON de forma limpia
+prettify(iris_JSON)
+```
+
+```
+## [
+##     {
+##         "Sepal.Length": 5.1,
+##         "Sepal.Width": 3.5,
+##         "Petal.Length": 1.4,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 4.9,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 1.4,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 4.7,
+##         "Sepal.Width": 3.2,
+##         "Petal.Length": 1.3,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 4.6,
+##         "Sepal.Width": 3.1,
+##         "Petal.Length": 1.5,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5,
+##         "Sepal.Width": 3.6,
+##         "Petal.Length": 1.4,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5.4,
+##         "Sepal.Width": 3.9,
+##         "Petal.Length": 1.7,
+##         "Petal.Width": 0.4,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 4.6,
+##         "Sepal.Width": 3.4,
+##         "Petal.Length": 1.4,
+##         "Petal.Width": 0.3,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5,
+##         "Sepal.Width": 3.4,
+##         "Petal.Length": 1.5,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 4.4,
+##         "Sepal.Width": 2.9,
+##         "Petal.Length": 1.4,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 4.9,
+##         "Sepal.Width": 3.1,
+##         "Petal.Length": 1.5,
+##         "Petal.Width": 0.1,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5.4,
+##         "Sepal.Width": 3.7,
+##         "Petal.Length": 1.5,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 4.8,
+##         "Sepal.Width": 3.4,
+##         "Petal.Length": 1.6,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 4.8,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 1.4,
+##         "Petal.Width": 0.1,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 4.3,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 1.1,
+##         "Petal.Width": 0.1,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5.8,
+##         "Sepal.Width": 4,
+##         "Petal.Length": 1.2,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5.7,
+##         "Sepal.Width": 4.4,
+##         "Petal.Length": 1.5,
+##         "Petal.Width": 0.4,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5.4,
+##         "Sepal.Width": 3.9,
+##         "Petal.Length": 1.3,
+##         "Petal.Width": 0.4,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5.1,
+##         "Sepal.Width": 3.5,
+##         "Petal.Length": 1.4,
+##         "Petal.Width": 0.3,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5.7,
+##         "Sepal.Width": 3.8,
+##         "Petal.Length": 1.7,
+##         "Petal.Width": 0.3,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5.1,
+##         "Sepal.Width": 3.8,
+##         "Petal.Length": 1.5,
+##         "Petal.Width": 0.3,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5.4,
+##         "Sepal.Width": 3.4,
+##         "Petal.Length": 1.7,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5.1,
+##         "Sepal.Width": 3.7,
+##         "Petal.Length": 1.5,
+##         "Petal.Width": 0.4,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 4.6,
+##         "Sepal.Width": 3.6,
+##         "Petal.Length": 1,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5.1,
+##         "Sepal.Width": 3.3,
+##         "Petal.Length": 1.7,
+##         "Petal.Width": 0.5,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 4.8,
+##         "Sepal.Width": 3.4,
+##         "Petal.Length": 1.9,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 1.6,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5,
+##         "Sepal.Width": 3.4,
+##         "Petal.Length": 1.6,
+##         "Petal.Width": 0.4,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5.2,
+##         "Sepal.Width": 3.5,
+##         "Petal.Length": 1.5,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5.2,
+##         "Sepal.Width": 3.4,
+##         "Petal.Length": 1.4,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 4.7,
+##         "Sepal.Width": 3.2,
+##         "Petal.Length": 1.6,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 4.8,
+##         "Sepal.Width": 3.1,
+##         "Petal.Length": 1.6,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5.4,
+##         "Sepal.Width": 3.4,
+##         "Petal.Length": 1.5,
+##         "Petal.Width": 0.4,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5.2,
+##         "Sepal.Width": 4.1,
+##         "Petal.Length": 1.5,
+##         "Petal.Width": 0.1,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5.5,
+##         "Sepal.Width": 4.2,
+##         "Petal.Length": 1.4,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 4.9,
+##         "Sepal.Width": 3.1,
+##         "Petal.Length": 1.5,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5,
+##         "Sepal.Width": 3.2,
+##         "Petal.Length": 1.2,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5.5,
+##         "Sepal.Width": 3.5,
+##         "Petal.Length": 1.3,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 4.9,
+##         "Sepal.Width": 3.6,
+##         "Petal.Length": 1.4,
+##         "Petal.Width": 0.1,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 4.4,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 1.3,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5.1,
+##         "Sepal.Width": 3.4,
+##         "Petal.Length": 1.5,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5,
+##         "Sepal.Width": 3.5,
+##         "Petal.Length": 1.3,
+##         "Petal.Width": 0.3,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 4.5,
+##         "Sepal.Width": 2.3,
+##         "Petal.Length": 1.3,
+##         "Petal.Width": 0.3,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 4.4,
+##         "Sepal.Width": 3.2,
+##         "Petal.Length": 1.3,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5,
+##         "Sepal.Width": 3.5,
+##         "Petal.Length": 1.6,
+##         "Petal.Width": 0.6,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5.1,
+##         "Sepal.Width": 3.8,
+##         "Petal.Length": 1.9,
+##         "Petal.Width": 0.4,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 4.8,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 1.4,
+##         "Petal.Width": 0.3,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5.1,
+##         "Sepal.Width": 3.8,
+##         "Petal.Length": 1.6,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 4.6,
+##         "Sepal.Width": 3.2,
+##         "Petal.Length": 1.4,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5.3,
+##         "Sepal.Width": 3.7,
+##         "Petal.Length": 1.5,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 5,
+##         "Sepal.Width": 3.3,
+##         "Petal.Length": 1.4,
+##         "Petal.Width": 0.2,
+##         "Species": "setosa"
+##     },
+##     {
+##         "Sepal.Length": 7,
+##         "Sepal.Width": 3.2,
+##         "Petal.Length": 4.7,
+##         "Petal.Width": 1.4,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 6.4,
+##         "Sepal.Width": 3.2,
+##         "Petal.Length": 4.5,
+##         "Petal.Width": 1.5,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 6.9,
+##         "Sepal.Width": 3.1,
+##         "Petal.Length": 4.9,
+##         "Petal.Width": 1.5,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 5.5,
+##         "Sepal.Width": 2.3,
+##         "Petal.Length": 4,
+##         "Petal.Width": 1.3,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 6.5,
+##         "Sepal.Width": 2.8,
+##         "Petal.Length": 4.6,
+##         "Petal.Width": 1.5,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 5.7,
+##         "Sepal.Width": 2.8,
+##         "Petal.Length": 4.5,
+##         "Petal.Width": 1.3,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 6.3,
+##         "Sepal.Width": 3.3,
+##         "Petal.Length": 4.7,
+##         "Petal.Width": 1.6,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 4.9,
+##         "Sepal.Width": 2.4,
+##         "Petal.Length": 3.3,
+##         "Petal.Width": 1,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 6.6,
+##         "Sepal.Width": 2.9,
+##         "Petal.Length": 4.6,
+##         "Petal.Width": 1.3,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 5.2,
+##         "Sepal.Width": 2.7,
+##         "Petal.Length": 3.9,
+##         "Petal.Width": 1.4,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 5,
+##         "Sepal.Width": 2,
+##         "Petal.Length": 3.5,
+##         "Petal.Width": 1,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 5.9,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 4.2,
+##         "Petal.Width": 1.5,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 6,
+##         "Sepal.Width": 2.2,
+##         "Petal.Length": 4,
+##         "Petal.Width": 1,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 6.1,
+##         "Sepal.Width": 2.9,
+##         "Petal.Length": 4.7,
+##         "Petal.Width": 1.4,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 5.6,
+##         "Sepal.Width": 2.9,
+##         "Petal.Length": 3.6,
+##         "Petal.Width": 1.3,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 6.7,
+##         "Sepal.Width": 3.1,
+##         "Petal.Length": 4.4,
+##         "Petal.Width": 1.4,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 5.6,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 4.5,
+##         "Petal.Width": 1.5,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 5.8,
+##         "Sepal.Width": 2.7,
+##         "Petal.Length": 4.1,
+##         "Petal.Width": 1,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 6.2,
+##         "Sepal.Width": 2.2,
+##         "Petal.Length": 4.5,
+##         "Petal.Width": 1.5,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 5.6,
+##         "Sepal.Width": 2.5,
+##         "Petal.Length": 3.9,
+##         "Petal.Width": 1.1,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 5.9,
+##         "Sepal.Width": 3.2,
+##         "Petal.Length": 4.8,
+##         "Petal.Width": 1.8,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 6.1,
+##         "Sepal.Width": 2.8,
+##         "Petal.Length": 4,
+##         "Petal.Width": 1.3,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 6.3,
+##         "Sepal.Width": 2.5,
+##         "Petal.Length": 4.9,
+##         "Petal.Width": 1.5,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 6.1,
+##         "Sepal.Width": 2.8,
+##         "Petal.Length": 4.7,
+##         "Petal.Width": 1.2,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 6.4,
+##         "Sepal.Width": 2.9,
+##         "Petal.Length": 4.3,
+##         "Petal.Width": 1.3,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 6.6,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 4.4,
+##         "Petal.Width": 1.4,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 6.8,
+##         "Sepal.Width": 2.8,
+##         "Petal.Length": 4.8,
+##         "Petal.Width": 1.4,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 6.7,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 5,
+##         "Petal.Width": 1.7,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 6,
+##         "Sepal.Width": 2.9,
+##         "Petal.Length": 4.5,
+##         "Petal.Width": 1.5,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 5.7,
+##         "Sepal.Width": 2.6,
+##         "Petal.Length": 3.5,
+##         "Petal.Width": 1,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 5.5,
+##         "Sepal.Width": 2.4,
+##         "Petal.Length": 3.8,
+##         "Petal.Width": 1.1,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 5.5,
+##         "Sepal.Width": 2.4,
+##         "Petal.Length": 3.7,
+##         "Petal.Width": 1,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 5.8,
+##         "Sepal.Width": 2.7,
+##         "Petal.Length": 3.9,
+##         "Petal.Width": 1.2,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 6,
+##         "Sepal.Width": 2.7,
+##         "Petal.Length": 5.1,
+##         "Petal.Width": 1.6,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 5.4,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 4.5,
+##         "Petal.Width": 1.5,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 6,
+##         "Sepal.Width": 3.4,
+##         "Petal.Length": 4.5,
+##         "Petal.Width": 1.6,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 6.7,
+##         "Sepal.Width": 3.1,
+##         "Petal.Length": 4.7,
+##         "Petal.Width": 1.5,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 6.3,
+##         "Sepal.Width": 2.3,
+##         "Petal.Length": 4.4,
+##         "Petal.Width": 1.3,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 5.6,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 4.1,
+##         "Petal.Width": 1.3,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 5.5,
+##         "Sepal.Width": 2.5,
+##         "Petal.Length": 4,
+##         "Petal.Width": 1.3,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 5.5,
+##         "Sepal.Width": 2.6,
+##         "Petal.Length": 4.4,
+##         "Petal.Width": 1.2,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 6.1,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 4.6,
+##         "Petal.Width": 1.4,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 5.8,
+##         "Sepal.Width": 2.6,
+##         "Petal.Length": 4,
+##         "Petal.Width": 1.2,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 5,
+##         "Sepal.Width": 2.3,
+##         "Petal.Length": 3.3,
+##         "Petal.Width": 1,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 5.6,
+##         "Sepal.Width": 2.7,
+##         "Petal.Length": 4.2,
+##         "Petal.Width": 1.3,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 5.7,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 4.2,
+##         "Petal.Width": 1.2,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 5.7,
+##         "Sepal.Width": 2.9,
+##         "Petal.Length": 4.2,
+##         "Petal.Width": 1.3,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 6.2,
+##         "Sepal.Width": 2.9,
+##         "Petal.Length": 4.3,
+##         "Petal.Width": 1.3,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 5.1,
+##         "Sepal.Width": 2.5,
+##         "Petal.Length": 3,
+##         "Petal.Width": 1.1,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 5.7,
+##         "Sepal.Width": 2.8,
+##         "Petal.Length": 4.1,
+##         "Petal.Width": 1.3,
+##         "Species": "versicolor"
+##     },
+##     {
+##         "Sepal.Length": 6.3,
+##         "Sepal.Width": 3.3,
+##         "Petal.Length": 6,
+##         "Petal.Width": 2.5,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 5.8,
+##         "Sepal.Width": 2.7,
+##         "Petal.Length": 5.1,
+##         "Petal.Width": 1.9,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 7.1,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 5.9,
+##         "Petal.Width": 2.1,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.3,
+##         "Sepal.Width": 2.9,
+##         "Petal.Length": 5.6,
+##         "Petal.Width": 1.8,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.5,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 5.8,
+##         "Petal.Width": 2.2,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 7.6,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 6.6,
+##         "Petal.Width": 2.1,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 4.9,
+##         "Sepal.Width": 2.5,
+##         "Petal.Length": 4.5,
+##         "Petal.Width": 1.7,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 7.3,
+##         "Sepal.Width": 2.9,
+##         "Petal.Length": 6.3,
+##         "Petal.Width": 1.8,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.7,
+##         "Sepal.Width": 2.5,
+##         "Petal.Length": 5.8,
+##         "Petal.Width": 1.8,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 7.2,
+##         "Sepal.Width": 3.6,
+##         "Petal.Length": 6.1,
+##         "Petal.Width": 2.5,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.5,
+##         "Sepal.Width": 3.2,
+##         "Petal.Length": 5.1,
+##         "Petal.Width": 2,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.4,
+##         "Sepal.Width": 2.7,
+##         "Petal.Length": 5.3,
+##         "Petal.Width": 1.9,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.8,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 5.5,
+##         "Petal.Width": 2.1,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 5.7,
+##         "Sepal.Width": 2.5,
+##         "Petal.Length": 5,
+##         "Petal.Width": 2,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 5.8,
+##         "Sepal.Width": 2.8,
+##         "Petal.Length": 5.1,
+##         "Petal.Width": 2.4,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.4,
+##         "Sepal.Width": 3.2,
+##         "Petal.Length": 5.3,
+##         "Petal.Width": 2.3,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.5,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 5.5,
+##         "Petal.Width": 1.8,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 7.7,
+##         "Sepal.Width": 3.8,
+##         "Petal.Length": 6.7,
+##         "Petal.Width": 2.2,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 7.7,
+##         "Sepal.Width": 2.6,
+##         "Petal.Length": 6.9,
+##         "Petal.Width": 2.3,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6,
+##         "Sepal.Width": 2.2,
+##         "Petal.Length": 5,
+##         "Petal.Width": 1.5,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.9,
+##         "Sepal.Width": 3.2,
+##         "Petal.Length": 5.7,
+##         "Petal.Width": 2.3,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 5.6,
+##         "Sepal.Width": 2.8,
+##         "Petal.Length": 4.9,
+##         "Petal.Width": 2,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 7.7,
+##         "Sepal.Width": 2.8,
+##         "Petal.Length": 6.7,
+##         "Petal.Width": 2,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.3,
+##         "Sepal.Width": 2.7,
+##         "Petal.Length": 4.9,
+##         "Petal.Width": 1.8,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.7,
+##         "Sepal.Width": 3.3,
+##         "Petal.Length": 5.7,
+##         "Petal.Width": 2.1,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 7.2,
+##         "Sepal.Width": 3.2,
+##         "Petal.Length": 6,
+##         "Petal.Width": 1.8,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.2,
+##         "Sepal.Width": 2.8,
+##         "Petal.Length": 4.8,
+##         "Petal.Width": 1.8,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.1,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 4.9,
+##         "Petal.Width": 1.8,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.4,
+##         "Sepal.Width": 2.8,
+##         "Petal.Length": 5.6,
+##         "Petal.Width": 2.1,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 7.2,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 5.8,
+##         "Petal.Width": 1.6,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 7.4,
+##         "Sepal.Width": 2.8,
+##         "Petal.Length": 6.1,
+##         "Petal.Width": 1.9,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 7.9,
+##         "Sepal.Width": 3.8,
+##         "Petal.Length": 6.4,
+##         "Petal.Width": 2,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.4,
+##         "Sepal.Width": 2.8,
+##         "Petal.Length": 5.6,
+##         "Petal.Width": 2.2,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.3,
+##         "Sepal.Width": 2.8,
+##         "Petal.Length": 5.1,
+##         "Petal.Width": 1.5,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.1,
+##         "Sepal.Width": 2.6,
+##         "Petal.Length": 5.6,
+##         "Petal.Width": 1.4,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 7.7,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 6.1,
+##         "Petal.Width": 2.3,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.3,
+##         "Sepal.Width": 3.4,
+##         "Petal.Length": 5.6,
+##         "Petal.Width": 2.4,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.4,
+##         "Sepal.Width": 3.1,
+##         "Petal.Length": 5.5,
+##         "Petal.Width": 1.8,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 4.8,
+##         "Petal.Width": 1.8,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.9,
+##         "Sepal.Width": 3.1,
+##         "Petal.Length": 5.4,
+##         "Petal.Width": 2.1,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.7,
+##         "Sepal.Width": 3.1,
+##         "Petal.Length": 5.6,
+##         "Petal.Width": 2.4,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.9,
+##         "Sepal.Width": 3.1,
+##         "Petal.Length": 5.1,
+##         "Petal.Width": 2.3,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 5.8,
+##         "Sepal.Width": 2.7,
+##         "Petal.Length": 5.1,
+##         "Petal.Width": 1.9,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.8,
+##         "Sepal.Width": 3.2,
+##         "Petal.Length": 5.9,
+##         "Petal.Width": 2.3,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.7,
+##         "Sepal.Width": 3.3,
+##         "Petal.Length": 5.7,
+##         "Petal.Width": 2.5,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.7,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 5.2,
+##         "Petal.Width": 2.3,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.3,
+##         "Sepal.Width": 2.5,
+##         "Petal.Length": 5,
+##         "Petal.Width": 1.9,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.5,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 5.2,
+##         "Petal.Width": 2,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 6.2,
+##         "Sepal.Width": 3.4,
+##         "Petal.Length": 5.4,
+##         "Petal.Width": 2.3,
+##         "Species": "virginica"
+##     },
+##     {
+##         "Sepal.Length": 5.9,
+##         "Sepal.Width": 3,
+##         "Petal.Length": 5.1,
+##         "Petal.Width": 1.8,
+##         "Species": "virginica"
+##     }
+## ]
+## 
+```
+
+---
+class: center, middle, inverse
+
+# Importación de datos: Lectura de ficheros con paquetes de tidyverse
+
+---
+## El paquete `readr`
+
+Ahora veremos cómo leer datos con el paquete `readr` que es parte de `tidyverse`
+
+
+```r
+library(tidyverse)
+```
+
+Las funciones de `readr` se encargan de transfromar ficheros planos en *tibbles*
+
+
+---
+
+.pull-left[
+## readr
+
+- `read_csv()` - ficheros delimitados por `,`
+- `read_csv2()` - ficheros delimitados por `:`
+- `read_tsv()` - ficheros delimitados por tabulador
+- `read_delim()` - ficheros con cualquier delimitación
+- ...
+]
+
+--
+.pull-right[
+## readxl
+
+- `read_excel()` - ficheros xls o xlsx 
+- ...
+]
+
+---
+## Lectura de datos
+
+
+```r
+red_wine_data &lt;- read_csv2("data/red_qualities.csv")
+red_wine_data
+```
+
+```
+## # A tibble: 1,599 × 12
+##    `fixed acidity` `volatile acidity` `citric acid` `residual sugar` chlorides
+##              &lt;dbl&gt; &lt;chr&gt;              &lt;chr&gt;                    &lt;dbl&gt; &lt;chr&gt;    
+##  1              74 0.7                0                           19 0.076    
+##  2              78 0.88               0                           26 0.098    
+##  3              78 0.76               0.04                        23 0.092    
+##  4             112 0.28               0.56                        19 0.075    
+##  5              74 0.7                0                           19 0.076    
+##  6              74 0.66               0                           18 0.075    
+##  7              79 0.6                0.06                        16 0.069    
+##  8              73 0.65               0                           12 0.065    
+##  9              78 0.58               0.02                         2 0.073    
+## 10              75 0.5                0.36                        61 0.071    
+## # ℹ 1,589 more rows
+## # ℹ 7 more variables: `free sulfur dioxide` &lt;dbl&gt;,
+## #   `total sulfur dioxide` &lt;dbl&gt;, density &lt;chr&gt;, pH &lt;dbl&gt;, sulphates &lt;chr&gt;,
+## #   alcohol &lt;dbl&gt;, quality &lt;dbl&gt;
+```
+---
+## Lectura de datos
+
+También podemos pasarle un csv escrito a mano
+
+```r
+df &lt;- read_csv("a,b,c
+               1,2,3
+               4,5,6")
+df
+```
+
+```
+## # A tibble: 2 × 3
+##       a     b     c
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1     1     2     3
+## 2     4     5     6
+```
+
+---
+## Lectura de datos
+
+También podemos pasarle un csv escrito a mano
+
+```r
+# Así prevenimos la lectura de una línea 
+df &lt;- read_csv("Línea de metadatos
+               a,b,c
+               1,2,3
+               4,5,6", skip=1)
+df
+```
+
+```
+## # A tibble: 2 × 3
+##       a     b     c
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1     1     2     3
+## 2     4     5     6
+```
+
+---
+## Lectura de datos
+
+También podemos pasarle un csv escrito a mano
+
+```r
+# Así prevenimos la lectura de comentarios
+df &lt;- read_csv("# Línea de metadatos
+               a,b,c
+               # Un comentario
+               1,2,3
+               4,5,6", comment = '#')
+df
+```
+
+```
+## # A tibble: 3 × 3
+##       a     b     c
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1    NA    NA    NA
+## 2     1     2     3
+## 3     4     5     6
+```
+
+---
+## Lectura de datos
+
+Si las columnas no tienen nombre
+
+```r
+df &lt;- read_csv("a,b,c
+               1,2,3
+               4,5,6", col_names=FALSE)
+df
+```
+
+```
+## # A tibble: 3 × 3
+##   X1    X2    X3   
+##   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+## 1 a     b     c    
+## 2 1     2     3    
+## 3 4     5     6
+```
+
+---
+## Lectura de datos
+
+Si queremos nombrar las columnas
+
+
+```r
+df &lt;- read_csv("a,b,c
+               1,2,3
+               4,5,6", col_names=c("p", "q", "r"))
+df
+```
+
+```
+## # A tibble: 3 × 3
+##   p     q     r    
+##   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+## 1 a     b     c    
+## 2 1     2     3    
+## 3 4     5     6
+```
+
+---
+## Lectura de datos
+
+Dar nombres en formato apropiado
+
+
+```r
+df &lt;- read_csv("Nombre Apellido, Es Fumador, EDAD_PACIENTE
+               Juan Montero, SI, 35
+               Maria Chacón, NO, 64")
+df %&gt;% janitor::clean_names()
+```
+
+```
+## # A tibble: 2 × 3
+##   nombre_apellido es_fumador edad_paciente
+##   &lt;chr&gt;           &lt;chr&gt;              &lt;dbl&gt;
+## 1 Juan Montero    SI                    35
+## 2 Maria Chacón    NO                    64
+```
+
+---
+## Lectura de datos
+
+Podemos indicar que caracteres se refieren a un valor ausente
+
+
+```r
+df &lt;- read_csv("a,b,c
+               1,nan,3
+               4,5,nan", na = "nan")
+df
+```
+
+```
+## # A tibble: 2 × 3
+##       a     b     c
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1     1    NA     3
+## 2     4     5    NA
+```
+
+---
+class: center, middle, inverse
+
+# Importación de datos: Parsear vectores y ficheros
+
+---
+## Parsear vectores
+
+La función `read_csv` **parsea** un fichero de texto. Es decir, convierte un fichero
+de texto en una estructura de datos organizada.
+
+Para entender mejor cómo hace esto debemos entender las funciones `parse*()`
+
+Estas convierten un vector de caracteres en un vector de datos especializado
+
+
+```r
+str(parse_logical(c("T", "F", "F")))
+```
+
+```
+##  logi [1:3] TRUE FALSE FALSE
+```
+
+```r
+str(parse_integer(c("1", "4")))
+```
+
+```
+##  int [1:2] 1 4
+```
+
+```r
+str(parse_date(c("2022-01-04")))
+```
+
+```
+##  Date[1:1], format: "2022-01-04"
+```
+
+---
+## Parsear vectores
+
+Como todas las funciones de tidyverse, las funciones `parse*()` son uniformes:
+el primer argumento es el vector a parsear y `na` permite indicar que caracteres
+serán tratados como valores ausentes
+
+
+```r
+parse_integer(c("1", "4", "."), na=".")
+```
+
+```
+## [1]  1  4 NA
+```
+
+---
+## Parsear vectores
+
+Si hay problemas, sale un mensaje warning
+
+```r
+parse_integer(c("1", "4", "c"))
+```
+
+```
+## Warning: 1 parsing failure.
+## row col               expected actual
+##   3  -- no trailing characters      c
+```
+
+```
+## [1]  1  4 NA
+## attr(,"problems")
+## # A tibble: 1 × 4
+##     row   col expected               actual
+##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;                  &lt;chr&gt; 
+## 1     3    NA no trailing characters c
+```
+
+---
+## Tipos de parseadores
+
+* `parse_logical()` y `parse_integer()` para lógicos y enteros. Los más sencillos, dada su uniformidad
+
+* `parse_double()` para números y `parse_number()` (más flexible). Son más complejos
+
+* `parse_factor()` para variables tipo factor (categóricas con valores fijos y conocidos)
+
+* `parse_datetime()`, `parse_date()` y `parse_time()` para tiempos y fechas. Son los más complejos dada la variabilidad en la escritura de fechas y tiempos.
+
+---
+## Tipos de parseadores - Números
+
+Tres problemas
+
+1. Los números se escriben de manera diferente en distintas partes del mundo (1.45 vs 1,45)
+
+2. A veces los números vienen con símbolos (100%)
+
+3. Caracteres de agrupamiento (1.000.000)
+
+---
+## Tipos de parseadores - Números
+
+1. Los números se escriben de manera diferente en distintas partes del mundo (1.45 vs 1,45)
+
+
+```r
+parse_double("1,45", locale = locale(decimal_mark = ","))
+```
+
+```
+## [1] 1.45
+```
+
+---
+## Tipos de parseadores - Números
+
+2. A veces los números vienen con símbolos (100%)
+
+
+```r
+parse_number("100$")
+```
+
+```
+## [1] 100
+```
+
+```r
+parse_number("30%")
+```
+
+```
+## [1] 30
+```
+
+```r
+parse_number("Me costó 100 €")
+```
+
+```
+## [1] 100
+```
+
+---
+## Tipos de parseadores - Números
+
+3. Caracteres de agrupamiento (1.000.000)
+
+
+```r
+parse_number("%100,330")
+```
+
+```
+## [1] 100330
+```
+
+```r
+parse_number("100.330€$", locale = locale(grouping_mark = "."))
+```
+
+```
+## [1] 100330
+```
+
+---
+## Tipos de parseadores - Factores
+
+Hay que dar a `parse_factor` un vector de posibles niveles
+
+
+```r
+parse_factor(c("hombre", "mujer", "mujer", "unicornio"), levels=c("hombre", "mujer"))
+```
+
+```
+## [1] hombre mujer  mujer  &lt;NA&gt;  
+## attr(,"problems")
+## # A tibble: 1 × 4
+##     row   col expected           actual   
+##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;              &lt;chr&gt;    
+## 1     4    NA value in level set unicornio
+## Levels: hombre mujer
+```
+
+
+---
+## Tipos de parseadores - Fechas y horas
+
+`parse_datetime()` para fecha con hora. Espera, en este orden, año, mes, dia, hora, minuto y segundo
+
+```r
+parse_datetime("2022-01-01T1015")
+```
+
+```
+## [1] "2022-01-01 10:15:00 UTC"
+```
+
+`parse_date()` para fecha. Espera, en este orden, año, mes, dia, separados por `-` o `/`
+
+```r
+parse_date("2022/01/01")
+```
+
+```
+## [1] "2022-01-01"
+```
+
+---
+## Tipos de parseadores - Fechas y horas
+
+`parse_time()` para hora. Espera, en este orden, hora, minuto y segundo separados por `:` y am pm opcionales
+
+```r
+parse_time("10:15 am")
+```
+
+```
+## 10:15:00
+```
+
+También se puede especificar el formato
+
+
+```r
+parse_date("01/04/22", "%d/%m/%y")
+```
+
+```
+## [1] "2022-04-01"
+```
+
+[Más información sobre los formatos](https://readr.tidyverse.org/reference/parse_datetime.html)
+
+---
+## Tipos de parseadores - Fechas y horas
+
+- **Año**
+
+:   `%Y` (4 dígitos).
+
+:   `%y` (2 dígitos); 00-69 -\&gt; 2000-2069, 70-99 -\&gt; 1970-1999.
+
+- **Mes**
+
+:   `%m` (2 dígitos).
+
+:   `%b` (nombre abreviado, como "Jan").
+
+:   `%B` (nombre completo, "January").
+
+- **Día**
+
+:   `%d` (2 dígitos).
+
+:   `%e` (espacio opcional).
+
+---
+## Tipos de parseadores - Fechas y horas
+
+- **Tiempo**
+
+:   `%H` 0-23 horas
+
+:   `%I` 0-12, usar con `%p`.
+
+:   `%p` AM/PM
+
+:   `%M` minutos
+
+:   `%S` segundos, número entero.
+
+:   `%OS` rsegundos reales.
+
+:   `%Z` Franja horaria (e.g. `America/Chicago`).
+
+
+:   `%z` (como offset de UTC, e.g. `+0800`).
+
+
+---
+## Parsear un fichero
+
+Intentemos entender
+
+1. Cómo `readr` acierta automáticamente el tipo de columna para parsearla
+
+2. Cómo cambiar la especificación por defecto
+
+---
+## Parsear un fichero
+
+1. Cómo `readr` acierta automáticamente el tipo de columna para parsearla
+
+Para esto, `readr` lee las primeras 1000 filas y cada columna y usa una heurística para adivinar el tipo.
+
+
+```r
+guess_parser("2022-01-01")
+```
+
+```
+## [1] "date"
+```
+
+```r
+str(parse_guess("2022-01-01"))
+```
+
+```
+##  Date[1:1], format: "2022-01-01"
+```
+
+---
+
+## Parsear un fichero
+
+A veces esta estrategia falla
+
+* Puede ser que las 1000 primeras filas sean casos especiales (1000 enteros en variable double)
+
+* La columna puede contener valores ausentes
+
+Es recomendable, cuando se pueda, especificar el tipo de columnas
+
+---
+## Ejemplo
+
+
+```r
+read_csv("data/df-na.csv")
+```
+
+```
+## # A tibble: 9 × 3
+##   x     y              z     
+##   &lt;chr&gt; &lt;chr&gt;          &lt;chr&gt; 
+## 1 1     a              hi    
+## 2 &lt;NA&gt;  b              hello 
+## 3 3     Not applicable 9999  
+## 4 4     d              ola   
+## 5 5     e              hola  
+## 6 .     f              whatup
+## 7 7     g              wassup
+## 8 8     h              sup   
+## 9 9     i              &lt;NA&gt;
+```
+
+---
+## Ejemplo
+
+
+```r
+read_csv("data/df-na.csv", col_types = list(col_double(), col_character(), 
+                                            col_character()))
+```
+
+```
+## # A tibble: 9 × 3
+##       x y              z     
+##   &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt; 
+## 1     1 a              hi    
+## 2    NA b              hello 
+## 3     3 Not applicable 9999  
+## 4     4 d              ola   
+## 5     5 e              hola  
+## 6    NA f              whatup
+## 7     7 g              wassup
+## 8     8 h              sup   
+## 9     9 i              &lt;NA&gt;
+```
+
+---
+class: center, middle, inverse
+
+# Importación de datos: escritura de datos
+
+---
+# Escritura de datos
+
+Tres funciones principales
+
+* `write_csv()`: escribe en csv
+
+* `write_tsv()`: escribe en tsv
+
+* `write_excel_csv()`: escribe en excell
+
+El uso
+
+
+```r
+write_csv(df, "df.csv")
+```
+
+---
+# Escritura de datos
+
+Con estas funciones se pierde información (por ejemplo el tipo de columnas).
+
+Recomendable usar `write_rds()` y `read_rds()` (análogas a `readRDS()` y `writeRDS()` de R Base)
+
+Estas guardan ficheros en formato binario RDS
+
+---
+# Escritura de datos
+
+
+```r
+write_rds(iris, "data/iris.RDS")
+iris_tibble = read_rds("data/iris.RDS")
+iris_tibble
+```
+
+```
+##     Sepal.Length Sepal.Width Petal.Length Petal.Width    Species
+## 1            5.1         3.5          1.4         0.2     setosa
+## 2            4.9         3.0          1.4         0.2     setosa
+## 3            4.7         3.2          1.3         0.2     setosa
+## 4            4.6         3.1          1.5         0.2     setosa
+## 5            5.0         3.6          1.4         0.2     setosa
+## 6            5.4         3.9          1.7         0.4     setosa
+## 7            4.6         3.4          1.4         0.3     setosa
+## 8            5.0         3.4          1.5         0.2     setosa
+## 9            4.4         2.9          1.4         0.2     setosa
+## 10           4.9         3.1          1.5         0.1     setosa
+## 11           5.4         3.7          1.5         0.2     setosa
+## 12           4.8         3.4          1.6         0.2     setosa
+## 13           4.8         3.0          1.4         0.1     setosa
+## 14           4.3         3.0          1.1         0.1     setosa
+## 15           5.8         4.0          1.2         0.2     setosa
+## 16           5.7         4.4          1.5         0.4     setosa
+## 17           5.4         3.9          1.3         0.4     setosa
+## 18           5.1         3.5          1.4         0.3     setosa
+## 19           5.7         3.8          1.7         0.3     setosa
+## 20           5.1         3.8          1.5         0.3     setosa
+## 21           5.4         3.4          1.7         0.2     setosa
+## 22           5.1         3.7          1.5         0.4     setosa
+## 23           4.6         3.6          1.0         0.2     setosa
+## 24           5.1         3.3          1.7         0.5     setosa
+## 25           4.8         3.4          1.9         0.2     setosa
+## 26           5.0         3.0          1.6         0.2     setosa
+## 27           5.0         3.4          1.6         0.4     setosa
+## 28           5.2         3.5          1.5         0.2     setosa
+## 29           5.2         3.4          1.4         0.2     setosa
+## 30           4.7         3.2          1.6         0.2     setosa
+## 31           4.8         3.1          1.6         0.2     setosa
+## 32           5.4         3.4          1.5         0.4     setosa
+## 33           5.2         4.1          1.5         0.1     setosa
+## 34           5.5         4.2          1.4         0.2     setosa
+## 35           4.9         3.1          1.5         0.2     setosa
+## 36           5.0         3.2          1.2         0.2     setosa
+## 37           5.5         3.5          1.3         0.2     setosa
+## 38           4.9         3.6          1.4         0.1     setosa
+## 39           4.4         3.0          1.3         0.2     setosa
+## 40           5.1         3.4          1.5         0.2     setosa
+## 41           5.0         3.5          1.3         0.3     setosa
+## 42           4.5         2.3          1.3         0.3     setosa
+## 43           4.4         3.2          1.3         0.2     setosa
+## 44           5.0         3.5          1.6         0.6     setosa
+## 45           5.1         3.8          1.9         0.4     setosa
+## 46           4.8         3.0          1.4         0.3     setosa
+## 47           5.1         3.8          1.6         0.2     setosa
+## 48           4.6         3.2          1.4         0.2     setosa
+## 49           5.3         3.7          1.5         0.2     setosa
+## 50           5.0         3.3          1.4         0.2     setosa
+## 51           7.0         3.2          4.7         1.4 versicolor
+## 52           6.4         3.2          4.5         1.5 versicolor
+## 53           6.9         3.1          4.9         1.5 versicolor
+## 54           5.5         2.3          4.0         1.3 versicolor
+## 55           6.5         2.8          4.6         1.5 versicolor
+## 56           5.7         2.8          4.5         1.3 versicolor
+## 57           6.3         3.3          4.7         1.6 versicolor
+## 58           4.9         2.4          3.3         1.0 versicolor
+## 59           6.6         2.9          4.6         1.3 versicolor
+## 60           5.2         2.7          3.9         1.4 versicolor
+## 61           5.0         2.0          3.5         1.0 versicolor
+## 62           5.9         3.0          4.2         1.5 versicolor
+## 63           6.0         2.2          4.0         1.0 versicolor
+## 64           6.1         2.9          4.7         1.4 versicolor
+## 65           5.6         2.9          3.6         1.3 versicolor
+## 66           6.7         3.1          4.4         1.4 versicolor
+## 67           5.6         3.0          4.5         1.5 versicolor
+## 68           5.8         2.7          4.1         1.0 versicolor
+## 69           6.2         2.2          4.5         1.5 versicolor
+## 70           5.6         2.5          3.9         1.1 versicolor
+## 71           5.9         3.2          4.8         1.8 versicolor
+## 72           6.1         2.8          4.0         1.3 versicolor
+## 73           6.3         2.5          4.9         1.5 versicolor
+## 74           6.1         2.8          4.7         1.2 versicolor
+## 75           6.4         2.9          4.3         1.3 versicolor
+## 76           6.6         3.0          4.4         1.4 versicolor
+## 77           6.8         2.8          4.8         1.4 versicolor
+## 78           6.7         3.0          5.0         1.7 versicolor
+## 79           6.0         2.9          4.5         1.5 versicolor
+## 80           5.7         2.6          3.5         1.0 versicolor
+## 81           5.5         2.4          3.8         1.1 versicolor
+## 82           5.5         2.4          3.7         1.0 versicolor
+## 83           5.8         2.7          3.9         1.2 versicolor
+## 84           6.0         2.7          5.1         1.6 versicolor
+## 85           5.4         3.0          4.5         1.5 versicolor
+## 86           6.0         3.4          4.5         1.6 versicolor
+## 87           6.7         3.1          4.7         1.5 versicolor
+## 88           6.3         2.3          4.4         1.3 versicolor
+## 89           5.6         3.0          4.1         1.3 versicolor
+## 90           5.5         2.5          4.0         1.3 versicolor
+## 91           5.5         2.6          4.4         1.2 versicolor
+## 92           6.1         3.0          4.6         1.4 versicolor
+## 93           5.8         2.6          4.0         1.2 versicolor
+## 94           5.0         2.3          3.3         1.0 versicolor
+## 95           5.6         2.7          4.2         1.3 versicolor
+## 96           5.7         3.0          4.2         1.2 versicolor
+## 97           5.7         2.9          4.2         1.3 versicolor
+## 98           6.2         2.9          4.3         1.3 versicolor
+## 99           5.1         2.5          3.0         1.1 versicolor
+## 100          5.7         2.8          4.1         1.3 versicolor
+## 101          6.3         3.3          6.0         2.5  virginica
+## 102          5.8         2.7          5.1         1.9  virginica
+## 103          7.1         3.0          5.9         2.1  virginica
+## 104          6.3         2.9          5.6         1.8  virginica
+## 105          6.5         3.0          5.8         2.2  virginica
+## 106          7.6         3.0          6.6         2.1  virginica
+## 107          4.9         2.5          4.5         1.7  virginica
+## 108          7.3         2.9          6.3         1.8  virginica
+## 109          6.7         2.5          5.8         1.8  virginica
+## 110          7.2         3.6          6.1         2.5  virginica
+## 111          6.5         3.2          5.1         2.0  virginica
+## 112          6.4         2.7          5.3         1.9  virginica
+## 113          6.8         3.0          5.5         2.1  virginica
+## 114          5.7         2.5          5.0         2.0  virginica
+## 115          5.8         2.8          5.1         2.4  virginica
+## 116          6.4         3.2          5.3         2.3  virginica
+## 117          6.5         3.0          5.5         1.8  virginica
+## 118          7.7         3.8          6.7         2.2  virginica
+## 119          7.7         2.6          6.9         2.3  virginica
+## 120          6.0         2.2          5.0         1.5  virginica
+## 121          6.9         3.2          5.7         2.3  virginica
+## 122          5.6         2.8          4.9         2.0  virginica
+## 123          7.7         2.8          6.7         2.0  virginica
+## 124          6.3         2.7          4.9         1.8  virginica
+## 125          6.7         3.3          5.7         2.1  virginica
+## 126          7.2         3.2          6.0         1.8  virginica
+## 127          6.2         2.8          4.8         1.8  virginica
+## 128          6.1         3.0          4.9         1.8  virginica
+## 129          6.4         2.8          5.6         2.1  virginica
+## 130          7.2         3.0          5.8         1.6  virginica
+## 131          7.4         2.8          6.1         1.9  virginica
+## 132          7.9         3.8          6.4         2.0  virginica
+## 133          6.4         2.8          5.6         2.2  virginica
+## 134          6.3         2.8          5.1         1.5  virginica
+## 135          6.1         2.6          5.6         1.4  virginica
+## 136          7.7         3.0          6.1         2.3  virginica
+## 137          6.3         3.4          5.6         2.4  virginica
+## 138          6.4         3.1          5.5         1.8  virginica
+## 139          6.0         3.0          4.8         1.8  virginica
+## 140          6.9         3.1          5.4         2.1  virginica
+## 141          6.7         3.1          5.6         2.4  virginica
+## 142          6.9         3.1          5.1         2.3  virginica
+## 143          5.8         2.7          5.1         1.9  virginica
+## 144          6.8         3.2          5.9         2.3  virginica
+## 145          6.7         3.3          5.7         2.5  virginica
+## 146          6.7         3.0          5.2         2.3  virginica
+## 147          6.3         2.5          5.0         1.9  virginica
+## 148          6.5         3.0          5.2         2.0  virginica
+## 149          6.2         3.4          5.4         2.3  virginica
+## 150          5.9         3.0          5.1         1.8  virginica
+```
+
+---
+## Otros datos
+
+Para el resto de tipos de datos que no hemos estudiado, existen paqutes de tidyverse 
+
+* **haven**: SPSS, Stata, SAS
+
+* **readxl** para excel
+
+* **DBI** junto con **RMySQL**, **RSQLite**, etc. para lanzar queries de SQL contra bases de datos y devolver un data frame
+
+
+---
+
+## Bibliografía
+
+Este tema está fundamentalmente basado en  [R for Data Science](https://r4ds.had.co.nz/), Wickham and Grolemund (2016)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": true,
+"highlightStyle": "github",
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+<style>
+.logo {
+  background-image: url(img/logo2.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  width: 110px;
+  height: 128px;
+  z-index: 0;
+}
+</style>
+
+<style>
+  .title-logo {
+    background-image: url(img/logo2.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 1em;
+    left: 20em;
+    width: 110px;
+    height: 128px;
+    z-index: 0;
+  }
+  </style>
+
+<script>
+document
+  .querySelectorAll(
+    '.remark-slide-content' +
+    ':not(.title-slide)' +
+    // add additional classes to exclude here, e.g.
+    // ':not(.inverse)' +
+    ':not(.hide-logo)' 
+
+  )
+  .forEach(el => {
+    el.innerHTML += '<div class="logo"></div>';
+  });
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

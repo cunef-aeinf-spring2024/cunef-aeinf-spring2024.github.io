@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Tema 3.3</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Roi Naveiro" />
+    <script src="libs/header-attrs-2.17/header-attrs.js"></script>
+    <script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+    <link href="libs/str_view-0.1.0/str_view.css" rel="stylesheet" />
+    <script src="libs/str_view-binding-1.4.1/str_view.js"></script>
+    <link rel="stylesheet" href="ds_slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+
+class: center, middle, inverse, title-slide
+
+&lt;div class="title-logo"&gt;&lt;/div&gt;
+
+# Análisis y Explotación de la Información
+ 
+## Tema 3 - Data Wrangling
+
+### 3.3 Strings, factores y fechas
+&lt;br&gt;
+&lt;br&gt;
+.pull-left[
+### Roi Naveiro
+]
+---
+
+
+## Data Wrangling
+
+**Objetivo**: dejar los datos listos para su posterior **exploración** y **modelización**
+
+Convertir **datos crudos** en **datos procesados**
+
+**Datos crudos**
+
+  - Los datos tal cual aparecen en la fuente de origen
+  
+  - No han sufrido ninguna manipulación
+  
+**Datos procesados**
+
+  - Cada variable es una columna
+  
+  - Cada observación una fila
+  
+  - Cada unidad observacional es una celda
+  
+  - Datos más complejos, en varias tablas interconectadas
+  
+---
+## Data Wrangling
+
+* Importación de los datos
+
+* Organización de los datos
+
+* Transformación de los datos
+
+&lt;img src="img/data-science-wrangle.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+
+---
+class: center, middle, inverse
+
+# Transformación de datos
+
+---
+## Transformación de datos
+
+* Strings
+
+* Factores
+
+* Fechas y horas
+
+---
+class: center, middle, inverse
+
+# Strings
+
+
+---
+## Strings
+
+* Veremos lo básico de manipulación de strings
+
+* Datos en formato texto
+
+
+```r
+"Esto es un string"
+```
+
+```
+## [1] "Esto es un string"
+```
+
+```r
+c("una", "dos y tres")
+```
+
+```
+## [1] "una"        "dos y tres"
+```
+
+* Expresiones regulares (regexps): permiten identificar patrones en texto
+
+* Usaremos `stringr` de tidyverse para manipular strings
+
+* Todas sus funciones empiezan con `str_`
+
+---
+## Strings: longitud
+
+Podemos calcular la longitud de una string usando `str_length()`
+
+
+```r
+str_length("Hola")
+```
+
+```
+## [1] 4
+```
+
+Las operaciones están vectorizadas
+
+
+```r
+str_length( c("Hola", "Adiós") )
+```
+
+```
+## [1] 4 5
+```
+
+**Pregunta:** ¿Qué pasa si hay espacios?
+
+---
+## Strings: combinación
+
+Combinamos strings con `str_c`
+
+
+```r
+str_c("Ma", "drid")
+```
+
+```
+## [1] "Madrid"
+```
+
+```r
+str_c("Un", "dos", sep=",")
+```
+
+```
+## [1] "Un,dos"
+```
+
+**Pregunta**: ¿Cómo combinarías dos strings con una coma seguida de un espacio?
+
+---
+## Strings: combinación
+
+También vectorizado!
+
+
+```r
+str_c("prefijo-", c("X", "Y", "Z"), "-sufijo")
+```
+
+```
+## [1] "prefijo-X-sufijo" "prefijo-Y-sufijo" "prefijo-Z-sufijo"
+```
+
+Para colapsar un texto largo en una única string
+
+
+```r
+str_c(c("En", "un", "lugar", "de", "la", "Mancha"), collapse = " ")
+```
+
+```
+## [1] "En un lugar de la Mancha"
+```
+---
+## Strings: subsetting
+
+Para extraer partes de una string usamos `str_sub`
+
+
+```r
+x &lt;- c("Liberty", "La Nuit")
+str_sub(x, 1, 3)
+```
+
+```
+## [1] "Lib" "La "
+```
+
+```r
+# Con números negativos empieza desde el final
+str_sub(x, -3, -1)
+```
+
+```
+## [1] "rty" "uit"
+```
+
+---
+## Strings: cosas útiles
+
+
+```r
+x &lt;- c("Liberty", "La nuit")
+str_to_lower(x)
+```
+
+```
+## [1] "liberty" "la nuit"
+```
+
+```r
+str_to_upper(x)
+```
+
+```
+## [1] "LIBERTY" "LA NUIT"
+```
+
+```r
+str_to_title(x)
+```
+
+```
+## [1] "Liberty" "La Nuit"
+```
+
+---
+## Strings: expresiones regulares
+
+Permiten describir patrones en strings. Se pueden hacer varias cosas con los
+patrones
+
+* Determinar que strings cumplen el patrón. 
+
+* Determinar en qué posición aparece el patrón
+
+* Extraer el patrón
+
+* Reemplazarlo
+
+E.g. patrón "contiene ES seguido de dos números"
+
+
+```r
+x1 &lt;- "ES49"
+x2 &lt;- "Mi número de cuenta es ES35 30..."
+x3 &lt;- "Resido en España (ES)"
+```
+
+---
+## Strings: expresiones regulares
+
+Vamos aprender a jugar con patrones muy sencillos. Primero, coincidencia 
+exacta (ojo mayúsculas y minúsculas!)
+
+
+```r
+x &lt;- c("Cats", "Uñas Chung Lee", "Capital")
+str_view(x, "Le")
+```
+
+<div id="htmlwidget-4579cab7d818218ed460" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-4579cab7d818218ed460">{"x":{"html":"<ul>\n  <li>Cats<\/li>\n  <li>Uñas Chung <span class='match'>Le<\/span>e<\/li>\n  <li>Capital<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+
+**Pregunta**: diferencia entre `str_view` y `str_view_all`
+
+---
+## Strings: expresiones regulares
+
+Para identificar cualquier caracter usamos `.`
+
+
+```r
+x &lt;- c("Cats", "Uñas Chung Lee", "Capital")
+str_view(x, ".a.")
+```
+
+<div id="htmlwidget-2ccfe57b253377ceb68f" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-2ccfe57b253377ceb68f">{"x":{"html":"<ul>\n  <li><span class='match'>Cat<\/span>s<\/li>\n  <li>U<span class='match'>ñas<\/span> Chung Lee<\/li>\n  <li><span class='match'>Cap<\/span>ital<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+---
+## Strings: expresiones regulares
+
+Empieza por `^` 
+
+
+```r
+x &lt;- c("Cats", "Uñas Chung Lee", "Capital")
+str_view(x, "^C")
+```
+
+<div id="htmlwidget-289626fe2ec127d4dfd6" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-289626fe2ec127d4dfd6">{"x":{"html":"<ul>\n  <li><span class='match'>C<\/span>ats<\/li>\n  <li>Uñas Chung Lee<\/li>\n  <li><span class='match'>C<\/span>apital<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+
+---
+## Strings: expresiones regulares
+
+Termina por `$`
+
+
+```r
+str_view(x, "l$")
+```
+
+<div id="htmlwidget-560fe1fa4224281e1ed8" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-560fe1fa4224281e1ed8">{"x":{"html":"<ul>\n  <li>Cats<\/li>\n  <li>Uñas Chung Lee<\/li>\n  <li>Capita<span class='match'>l<\/span><\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+
+
+---
+## Strings: expresiones regulares
+
+`\d`: cualquier dígito
+`\s`: espacio en blanco
+`[abc]`:  a, b, o c.
+
+
+```r
+x = c("B12", "Eslava", "Ocho y Medio")
+str_view(x, "\\d")
+```
+
+<div id="htmlwidget-6072ef9cb665d16d2e5d" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-6072ef9cb665d16d2e5d">{"x":{"html":"<ul>\n  <li>B<span class='match'>1<\/span>2<\/li>\n  <li>Eslava<\/li>\n  <li>Ocho y Medio<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+---
+## Strings: expresiones regulares
+
+OJO
+
+
+```r
+writeLines("\\d")
+```
+
+```
+## \d
+```
+
+---
+## Strings: expresiones regulares
+
+
+```r
+x = c("ES12", "Mi cuenta es ES46", "Resido en España (ES)")
+str_view(x, "ES\\d\\d")
+```
+
+<div id="htmlwidget-84d3ff39f993edad4376" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-84d3ff39f993edad4376">{"x":{"html":"<ul>\n  <li><span class='match'>ES12<\/span><\/li>\n  <li>Mi cuenta es <span class='match'>ES46<\/span><\/li>\n  <li>Resido en España (ES)<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+
+---
+## Strings: expresiones regulares
+
+**Ejercicio**: Detecta las autovías correctas
+
+
+```r
+x &lt;- c("A1", "A12", "A14", "A6", "EA5", "A3", "F2")
+```
+
+---
+## Strings: detectar patrones
+
+Con esto estamos preparados para detectar patrones
+
+
+```r
+x = c("ES12", "Mi cuenta es ES46", "Resido en España (ES)")
+str_detect(x, "ES\\d\\d")
+```
+
+```
+## [1]  TRUE  TRUE FALSE
+```
+
+Uso común, seleccionar los elementos que cumplen el patrón
+
+
+```r
+words[str_detect(words, "x$")]
+```
+
+```
+## [1] "box" "sex" "six" "tax"
+```
+
+---
+## Strings: detectar patrones
+
+También con dataframes
+
+
+```r
+df &lt;- tibble(
+  word = words, 
+  i = seq_along(word)
+)
+df %&gt;% 
+  filter(str_detect(word, "x$"))
+```
+
+```
+## # A tibble: 4 × 2
+##   word      i
+##   &lt;chr&gt; &lt;int&gt;
+## 1 box     108
+## 2 sex     747
+## 3 six     772
+## 4 tax     841
+```
+
+---
+## Strings: contar patrones
+
+¿Cuántas veces ocurre el patrón?
+
+```r
+x &lt;- c("apple", "banana", "pear")
+str_count(x, "a")
+```
+
+```
+## [1] 1 3 1
+```
+
+**Ejercicio**: calcula la media de vocales por palabra en `words`.
+
+---
+## Strings: contar patrones
+
+Se usa mucho con mutate
+
+
+```r
+df %&gt;% 
+  mutate(
+    vocales = str_count(word, "[aeiou]"),
+  )
+```
+
+```
+## # A tibble: 980 × 3
+##    word         i vocales
+##    &lt;chr&gt;    &lt;int&gt;   &lt;int&gt;
+##  1 a            1       1
+##  2 able         2       2
+##  3 about        3       3
+##  4 absolute     4       4
+##  5 accept       5       2
+##  6 account      6       3
+##  7 achieve      7       4
+##  8 across       8       2
+##  9 act          9       1
+## 10 active      10       3
+## # … with 970 more rows
+```
+
+
+---
+class: center, middle, inverse
+
+# Factores
+
+---
+## Factores
+
+* Para trabajar con variables categóricas con número fijo de valores
+
+* Trabajaremos con `forcats` de tiduverse
+
+* Crear factores
+
+---
+## Factores: creación
+
+
+```r
+x1 &lt;- c("Dec", "Apr", "Jan", "Mar")
+```
+
+Usar una string para almacenar esta variable tiene dos problemas
+
+* Los valores son fijos y nada previene de errores
+
+```r
+x1 &lt;- c("Dec", "Apr", "Jan", "Mer")
+```
+
+* No ordena de manera útil
+
+```r
+sort(x1)
+```
+
+```
+## [1] "Apr" "Dec" "Jan" "Mer"
+```
+
+---
+## Factores: creación
+
+Esto se arregla creando un factor
+
+```r
+month_levels &lt;- c(
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+)
+y1 &lt;- factor(x1, levels = month_levels)
+sort(y1)
+```
+
+```
+## [1] Jan Apr Dec
+## Levels: Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec
+```
+
+---
+## Factores: creación
+
+Con pipes
+
+
+```r
+f2 &lt;- x1 %&gt;% factor(levels = month_levels) 
+f2
+```
+
+```
+## [1] Dec  Apr  Jan  &lt;NA&gt;
+## Levels: Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec
+```
+
+---
+## Factores
+
+Trabajaremos con los datos `gss_cat`
+
+
+```r
+glimpse(gss_cat)
+```
+
+```
+## Rows: 21,483
+## Columns: 9
+## $ year    &lt;int&gt; 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 20…
+## $ marital &lt;fct&gt; Never married, Divorced, Widowed, Never married, Divorced, Mar…
+## $ age     &lt;int&gt; 26, 48, 67, 39, 25, 25, 36, 44, 44, 47, 53, 52, 52, 51, 52, 40…
+## $ race    &lt;fct&gt; White, White, White, White, White, White, White, White, White,…
+## $ rincome &lt;fct&gt; $8000 to 9999, $8000 to 9999, Not applicable, Not applicable, …
+## $ partyid &lt;fct&gt; "Ind,near rep", "Not str republican", "Independent", "Ind,near…
+## $ relig   &lt;fct&gt; Protestant, Protestant, Protestant, Orthodox-christian, None, …
+## $ denom   &lt;fct&gt; "Southern baptist", "Baptist-dk which", "No denomination", "No…
+## $ tvhours &lt;int&gt; 12, NA, 2, 4, 1, NA, 3, NA, 0, 3, 2, NA, 1, NA, 1, 7, NA, 3, 3…
+```
+
+---
+## Factores
+
+**Pregunta**: ¿Cómo identificarías los niveles posibles de la variable `race`?
+
+--
+
+
+```r
+gss_cat %&gt;% count(race)
+```
+
+```
+## # A tibble: 3 × 2
+##   race      n
+##   &lt;fct&gt; &lt;int&gt;
+## 1 Other  1959
+## 2 Black  3129
+## 3 White 16395
+```
+
+---
+## Factores
+
+* Reordenar niveles
+
+* Modificar niveles
+
+---
+## Factores - Reordenar niveles
+
+Con `fct_reorder()`. Toma tres argumentos
+
+* `f`, el factor que queremos reordenar
+
+* `x`, vector numérico para ordenar
+
+* Opcionalmente, `fun`, en caso de que haya varios valores de `x` para la misma
+`f`. (Por defecto, `fun` es la mediana)
+
+---
+## Factores - Reordenar niveles
+Dos opciones 
+
+
+```r
+gss_cat %&gt;%
+  group_by(relig) %&gt;%
+  summarise(tvhours = mean(tvhours, na.rm = TRUE)) %&gt;%  
+  ggplot(aes(tvhours, fct_reorder(relig, tvhours))) +
+    geom_point() + theme_bw()
+```
+
+![](tema3-3_files/figure-html/unnamed-chunk-31-1.png)&lt;!-- --&gt;
+
+---
+## Factores - Reordenar niveles
+Tres opciones 
+
+
+```r
+gss_cat %&gt;%
+  group_by(relig) %&gt;%
+  summarise(tvhours = mean(tvhours, na.rm = TRUE)) %&gt;%  
+  mutate (relig = fct_reorder(relig, tvhours)) %&gt;% 
+  ggplot(aes(tvhours, relig)) +
+    geom_point() + theme_bw()
+```
+
+![](tema3-3_files/figure-html/unnamed-chunk-32-1.png)&lt;!-- --&gt;
+
+
+
+---
+## Factores - Modificar niveles
+
+Usamos `fct_recode()`
+
+
+```r
+gss_cat %&gt;% count(partyid)
+```
+
+```
+## # A tibble: 10 × 2
+##    partyid                n
+##    &lt;fct&gt;              &lt;int&gt;
+##  1 No answer            154
+##  2 Don't know             1
+##  3 Other party          393
+##  4 Strong republican   2314
+##  5 Not str republican  3032
+##  6 Ind,near rep        1791
+##  7 Independent         4119
+##  8 Ind,near dem        2499
+##  9 Not str democrat    3690
+## 10 Strong democrat     3490
+```
+
+---
+## Factores - Modificar niveles
+
+
+```r
+gss_cat %&gt;%
+  mutate(partyid = fct_recode(partyid,
+    "Republican, strong"    = "Strong republican",
+    "Republican, weak"      = "Not str republican",
+    "Independent, near rep" = "Ind,near rep",
+    "Independent, near dem" = "Ind,near dem",
+    "Democrat, weak"        = "Not str democrat",
+    "Democrat, strong"      = "Strong democrat"
+  )) %&gt;%
+  count(partyid)
+```
+
+```
+## # A tibble: 10 × 2
+##    partyid                   n
+##    &lt;fct&gt;                 &lt;int&gt;
+##  1 No answer               154
+##  2 Don't know                1
+##  3 Other party             393
+##  4 Republican, strong     2314
+##  5 Republican, weak       3032
+##  6 Independent, near rep  1791
+##  7 Independent            4119
+##  8 Independent, near dem  2499
+##  9 Democrat, weak         3690
+## 10 Democrat, strong       3490
+```
+
+---
+## Factores - Modificar niveles
+
+A veces útil colapsar niveles
+
+
+```r
+gss_cat %&gt;%
+  mutate(partyid = fct_collapse(partyid,
+    other = c("No answer", "Don't know", "Other party"),
+    rep = c("Strong republican", "Not str republican"),
+    ind = c("Ind,near rep", "Independent", "Ind,near dem"),
+    dem = c("Not str democrat", "Strong democrat")
+  )) %&gt;%
+  count(partyid)
+```
+
+```
+## # A tibble: 4 × 2
+##   partyid     n
+##   &lt;fct&gt;   &lt;int&gt;
+## 1 other     548
+## 2 rep      5346
+## 3 ind      8409
+## 4 dem      7180
+```
+
+
+---
+class: center, middle, inverse
+
+# Fechas y horas
+
+---
+## Fechas y horas
+
+Para trabajar con fechas y horas usamos `lubridate` que **NO** es parte tidyverse.
+Descárgalo y cárgalo en R
+
+
+```r
+library(lubridate)
+```
+
+---
+## Fechas y horas
+
+Tres tipos
+
+* Fechas, referidas como &lt;date&gt; en los tibble
+
+* Hora, referida como &lt;time&gt; en los tibble
+
+* Fecha y hora, identifica unívocamente un tiempo. Referidas como &lt;dttm&gt; en los tibble
+(en R, POSIXct)
+
+---
+## Fechas y horas
+
+
+```r
+today()
+```
+
+```
+## [1] "2023-11-02"
+```
+
+```r
+str(today())
+```
+
+```
+##  Date[1:1], format: "2023-11-02"
+```
+
+```r
+now()
+```
+
+```
+## [1] "2023-11-02 12:18:43 CET"
+```
+
+```r
+str(now())
+```
+
+```
+##  POSIXct[1:1], format: "2023-11-02 12:18:43"
+```
+
+---
+## Fechas y horas
+
+En general proceden de strings.
+
+**Pregunta**: ¿Cómo convertir strings en objetos de fecha o fecha-hora?
+
+---
+## Fechas y horas
+
+* Otra forma de parsear más fácil con funciones de lubridate
+
+* Solo especificar orden usando “y”, “m”, y “d”
+
+
+```r
+ymd("2017-01-31")
+```
+
+```
+## [1] "2017-01-31"
+```
+
+```r
+ymd("17-Jan-31")
+```
+
+```
+## [1] "2017-01-31"
+```
+
+---
+## Fechas y horas
+
+
+```r
+mdy("January 31st, 2017")
+```
+
+```
+## [1] "2017-01-31"
+```
+
+```r
+dmy("31 of January of 2017")
+```
+
+```
+## [1] "2017-01-31"
+```
+
+```r
+ymd_hms("2017-01-31 20:11:59")
+```
+
+```
+## [1] "2017-01-31 20:11:59 UTC"
+```
+
+```r
+mdy_hm("01/31/2017 08:01")
+```
+
+```
+## [1] "2017-01-31 08:01:00 UTC"
+```
+
+---
+## Fechas y horas
+
+A veces nos dan las componentes individuales por separado
+
+
+```r
+library(nycflights13)
+flights %&gt;% 
+  select(year, month, day, hour, minute)
+```
+
+```
+## # A tibble: 336,776 × 5
+##     year month   day  hour minute
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt;
+##  1  2013     1     1     5     15
+##  2  2013     1     1     5     29
+##  3  2013     1     1     5     40
+##  4  2013     1     1     5     45
+##  5  2013     1     1     6      0
+##  6  2013     1     1     5     58
+##  7  2013     1     1     6      0
+##  8  2013     1     1     6      0
+##  9  2013     1     1     6      0
+## 10  2013     1     1     6      0
+## # … with 336,766 more rows
+```
+
+---
+## Fechas y horas
+
+Para esto `make_datetime()`. Ojo orden de argumentos!!
+
+```r
+flights %&gt;% 
+  select(year, month, day, hour, minute) %&gt;% 
+  mutate(departure = make_datetime(year, month, day, hour, minute))
+```
+
+```
+## # A tibble: 336,776 × 6
+##     year month   day  hour minute departure          
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dttm&gt;             
+##  1  2013     1     1     5     15 2013-01-01 05:15:00
+##  2  2013     1     1     5     29 2013-01-01 05:29:00
+##  3  2013     1     1     5     40 2013-01-01 05:40:00
+##  4  2013     1     1     5     45 2013-01-01 05:45:00
+##  5  2013     1     1     6      0 2013-01-01 06:00:00
+##  6  2013     1     1     5     58 2013-01-01 05:58:00
+##  7  2013     1     1     6      0 2013-01-01 06:00:00
+##  8  2013     1     1     6      0 2013-01-01 06:00:00
+##  9  2013     1     1     6      0 2013-01-01 06:00:00
+## 10  2013     1     1     6      0 2013-01-01 06:00:00
+## # … with 336,766 more rows
+```
+
+---
+## Fechas y horas
+
+Cambiar entre formatos
+
+```r
+as_datetime(today())
+```
+
+```
+## [1] "2023-11-02 UTC"
+```
+
+```r
+as_date(now())
+```
+
+```
+## [1] "2023-11-02"
+```
+
+---
+## Fechas y horas
+
+¿Qué hacer con fechas y horas? 
+
+* Extraer componentes 
+
+* Realizar operaciones
+
+---
+## Fechas y horas - Componentes
+
+
+```r
+datetime &lt;- ymd_hms("2016-07-08 12:34:56")
+
+year(datetime)
+```
+
+```
+## [1] 2016
+```
+
+```r
+month(datetime)
+```
+
+```
+## [1] 7
+```
+
+```r
+mday(datetime)
+```
+
+```
+## [1] 8
+```
+
+```r
+yday(datetime)
+```
+
+```
+## [1] 190
+```
+
+```r
+wday(datetime)
+```
+
+```
+## [1] 6
+```
+
+---
+## Fechas y horas - Componentes
+
+
+```r
+datetime &lt;- ymd_hms("2016-07-08 12:34:56")
+
+hour(datetime)
+```
+
+```
+## [1] 12
+```
+
+```r
+minute(datetime)
+```
+
+```
+## [1] 34
+```
+
+```r
+second(datetime)
+```
+
+```
+## [1] 56
+```
+
+---
+## Fechas y horas - Componentes
+
+
+```r
+datetime &lt;- ymd_hms("2016-07-08 12:34:56")
+
+month(datetime, label = TRUE)
+```
+
+```
+## [1] Jul
+## 12 Levels: Jan &lt; Feb &lt; Mar &lt; Apr &lt; May &lt; Jun &lt; Jul &lt; Aug &lt; Sep &lt; ... &lt; Dec
+```
+
+```r
+wday(datetime, label = TRUE, abbr = FALSE)
+```
+
+```
+## [1] Friday
+## 7 Levels: Sunday &lt; Monday &lt; Tuesday &lt; Wednesday &lt; Thursday &lt; ... &lt; Saturday
+```
+
+---
+## Fechas y horas - Componentes
+
+Podemo modificar componentes usando las mismas funciones
+
+
+```r
+(datetime &lt;- ymd_hms("2016-07-08 12:34:56"))
+```
+
+```
+## [1] "2016-07-08 12:34:56 UTC"
+```
+
+```r
+year(datetime) &lt;- 2020
+datetime
+```
+
+```
+## [1] "2020-07-08 12:34:56 UTC"
+```
+
+```r
+month(datetime) &lt;- 01
+datetime
+```
+
+```
+## [1] "2020-01-08 12:34:56 UTC"
+```
+
+```r
+hour(datetime) &lt;- hour(datetime) + 1
+datetime
+```
+
+```
+## [1] "2020-01-08 13:34:56 UTC"
+```
+
+---
+## Fechas y horas - Componentes
+
+También podemos modificar componentes con `update`
+
+
+```r
+update(datetime, year = 2023)
+```
+
+```
+## [1] "2023-01-08 13:34:56 UTC"
+```
+
+---
+## Fechas y horas - Operaciones
+
+Para operar con fechas, necesitaremos:
+
+* **Duraciones**: número exacto de segundos
+
+* **Períodos**: otras unidades como meses y semanas
+
+
+---
+## Fechas y horas - Operaciones
+
+Al restar dos fechas, obtenemos un objeto  de clase `difftime`
+
+
+```r
+mi_edad &lt;- today() - ymd("1993 May 17")
+mi_edad
+```
+
+```
+## Time difference of 11126 days
+```
+
+Este objeto alberga tiempos en segundos, minutos, horas, días, etc. Ambiguo
+
+---
+## Fechas y horas - Operaciones con duraciones
+
+Alternativa, trabajar con **duraciones** (en segundos)
+
+
+```r
+as.duration(mi_edad)
+```
+
+```
+## [1] "961286400s (~30.46 years)"
+```
+
+---
+## Fechas y horas - Operaciones con duraciones
+
+Funciones úliles. Siempre en segundos!!
+
+
+```r
+dseconds(15)
+```
+
+```
+## [1] "15s"
+```
+
+```r
+dminutes(10)
+```
+
+```
+## [1] "600s (~10 minutes)"
+```
+
+```r
+dhours(c(12, 24))
+```
+
+```
+## [1] "43200s (~12 hours)" "86400s (~1 days)"
+```
+
+```r
+ddays(0:5)
+```
+
+```
+## [1] "0s"                "86400s (~1 days)"  "172800s (~2 days)"
+## [4] "259200s (~3 days)" "345600s (~4 days)" "432000s (~5 days)"
+```
+---
+## Fechas y horas - Operaciones con duraciones
+
+Funciones úliles. Siempre en segundos!!
+
+
+```r
+dweeks(3)
+```
+
+```
+## [1] "1814400s (~3 weeks)"
+```
+
+```r
+dyears(1)
+```
+
+```
+## [1] "31557600s (~1 years)"
+```
+
+
+---
+## Fechas y horas - Operaciones con duraciones
+
+
+```r
+dyears(1) + dweeks(12) + dhours(15)
+```
+
+```
+## [1] "38869200s (~1.23 years)"
+```
+
+```r
+2*dweeks(12)
+```
+
+```
+## [1] "14515200s (~24 weeks)"
+```
+
+
+```r
+mañana &lt;- today() + ddays(1)
+mañana
+```
+
+```
+## [1] "2023-11-03"
+```
+
+```r
+año_pasado &lt;- today() - dyears(1)
+año_pasado
+```
+
+```
+## [1] "2022-11-01 18:00:00 UTC"
+```
+
+---
+## Fechas y horas - Operaciones con períodos
+
+Más intuitivo
+
+
+```r
+seconds(15)
+```
+
+```
+## [1] "15S"
+```
+
+```r
+minutes(10)
+```
+
+```
+## [1] "10M 0S"
+```
+
+```r
+hours(c(12, 24))
+```
+
+```
+## [1] "12H 0M 0S" "24H 0M 0S"
+```
+
+```r
+days(7)
+```
+
+```
+## [1] "7d 0H 0M 0S"
+```
+
+---
+## Fechas y horas - Operaciones con períodos
+
+Más intuitivo
+
+
+```r
+months(1:6)
+```
+
+```
+## [1] "1m 0d 0H 0M 0S" "2m 0d 0H 0M 0S" "3m 0d 0H 0M 0S" "4m 0d 0H 0M 0S"
+## [5] "5m 0d 0H 0M 0S" "6m 0d 0H 0M 0S"
+```
+
+```r
+weeks(3)
+```
+
+```
+## [1] "21d 0H 0M 0S"
+```
+
+```r
+years(1)
+```
+
+```
+## [1] "1y 0m 0d 0H 0M 0S"
+```
+
+---
+## Fechas y horas - Operaciones con períodos
+
+Operaciones con fechas
+
+
+```r
+ymd("2017-01-01") + years(1)
+```
+
+```
+## [1] "2018-01-01"
+```
+
+```r
+ymd("2017-01-01") + months(1)
+```
+
+```
+## [1] "2017-02-01"
+```
+
+```r
+ymd("2017-01-01") + days(1)
+```
+
+```
+## [1] "2017-01-02"
+```
+
+---
+## Fechas y horas - Operaciones con períodos
+
+¿Qué está pasando?
+
+
+```r
+ymd("2016-01-01") + dyears(1)
+```
+
+```
+## [1] "2016-12-31 06:00:00 UTC"
+```
+
+```r
+ymd("2016-01-01") + years(1)
+```
+
+```
+## [1] "2017-01-01"
+```
+
+
+---
+## Bibliografía
+
+Este tema está fundamentalmente basado en  [R for Data Science](https://r4ds.had.co.nz/), Wickham and Grolemund (2016)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": true,
+"highlightStyle": "github",
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+<style>
+.logo {
+  background-image: url(img/logo2.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  width: 110px;
+  height: 128px;
+  z-index: 0;
+}
+</style>
+
+<style>
+  .title-logo {
+    background-image: url(img/logo2.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 1em;
+    left: 20em;
+    width: 110px;
+    height: 128px;
+    z-index: 0;
+  }
+  </style>
+
+<script>
+document
+  .querySelectorAll(
+    '.remark-slide-content' +
+    ':not(.title-slide)' +
+    // add additional classes to exclude here, e.g.
+    // ':not(.inverse)' +
+    ':not(.hide-logo)' 
+
+  )
+  .forEach(el => {
+    el.innerHTML += '<div class="logo"></div>';
+  });
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
