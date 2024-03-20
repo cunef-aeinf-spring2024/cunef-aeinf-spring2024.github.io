@@ -53,12 +53,11 @@ Bienvenido al sitio web de la asignatura de **Análisis y Explotación de la Inf
 ### Tema 3 : Data Wrangling
   - 3.1: Importación de datos
     - [Diapositivas](./tema3/tema3-1.html)
-    
-<!--
 
   - 3.2: Organización de datos
     - [Diapositivas](./tema3/tema3-2.html)
     
+<!--
   
   - 3.3: Transformación de datos
     - [Diapositivas](./tema3/tema3-3.html)

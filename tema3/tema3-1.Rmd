@@ -458,7 +458,7 @@ parse_number("100.330€$", locale = locale(grouping_mark = "."))
 Hay que dar a `parse_factor` un vector de posibles niveles
 
 ```{r}
-parse_factor(c("hombre", "mujer", "mujer", "unicornio"), levels=c("hombre", "mujer"))
+parse_factor(c("hombre", "mujer", "mujer", "otro", "portugues"), levels=c("hombre", "mujer", "otro"))
 ```
 
 

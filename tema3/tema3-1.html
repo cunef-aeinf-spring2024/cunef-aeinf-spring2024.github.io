@@ -4,7 +4,7 @@
     <title>Tema 3.1</title>
     <meta charset="utf-8" />
     <meta name="author" content="Roi Naveiro" />
-    <script src="libs/header-attrs-2.25/header-attrs.js"></script>
+    <script src="libs/header-attrs-2.17/header-attrs.js"></script>
     <link rel="stylesheet" href="ds_slides.css" type="text/css" />
   </head>
   <body>
@@ -1366,22 +1366,22 @@ red_wine_data
 
 ```
 ## # A tibble: 1,599 × 12
-##    `fixed acidity` `volatile acidity` `citric acid` `residual sugar` chlorides
-##              &lt;dbl&gt; &lt;chr&gt;              &lt;chr&gt;                    &lt;dbl&gt; &lt;chr&gt;    
-##  1              74 0.7                0                           19 0.076    
-##  2              78 0.88               0                           26 0.098    
-##  3              78 0.76               0.04                        23 0.092    
-##  4             112 0.28               0.56                        19 0.075    
-##  5              74 0.7                0                           19 0.076    
-##  6              74 0.66               0                           18 0.075    
-##  7              79 0.6                0.06                        16 0.069    
-##  8              73 0.65               0                           12 0.065    
-##  9              78 0.58               0.02                         2 0.073    
-## 10              75 0.5                0.36                        61 0.071    
-## # ℹ 1,589 more rows
-## # ℹ 7 more variables: `free sulfur dioxide` &lt;dbl&gt;,
-## #   `total sulfur dioxide` &lt;dbl&gt;, density &lt;chr&gt;, pH &lt;dbl&gt;, sulphates &lt;chr&gt;,
-## #   alcohol &lt;dbl&gt;, quality &lt;dbl&gt;
+##    fixed…¹ volat…² citri…³ resid…⁴ chlor…⁵ free …⁶ total…⁷ density    pH sulph…⁸
+##      &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt; &lt;chr&gt;  
+##  1      74 0.7     0            19 0.076        11      34 0.9978    351 0.56   
+##  2      78 0.88    0            26 0.098        25      67 0.9968     32 0.68   
+##  3      78 0.76    0.04         23 0.092        15      54 0.997     326 0.65   
+##  4     112 0.28    0.56         19 0.075        17      60 0.998     316 0.58   
+##  5      74 0.7     0            19 0.076        11      34 0.9978    351 0.56   
+##  6      74 0.66    0            18 0.075        13      40 0.9978    351 0.56   
+##  7      79 0.6     0.06         16 0.069        15      59 0.9964     33 0.46   
+##  8      73 0.65    0            12 0.065        15      21 0.9946    339 0.47   
+##  9      78 0.58    0.02          2 0.073         9      18 0.9968    336 0.57   
+## 10      75 0.5     0.36         61 0.071        17     102 0.9978    335 0.8    
+## # … with 1,589 more rows, 2 more variables: alcohol &lt;dbl&gt;, quality &lt;dbl&gt;, and
+## #   abbreviated variable names ¹​`fixed acidity`, ²​`volatile acidity`,
+## #   ³​`citric acid`, ⁴​`residual sugar`, ⁵​chlorides, ⁶​`free sulfur dioxide`,
+## #   ⁷​`total sulfur dioxide`, ⁸​sulphates
 ```
 ---
 ## Lectura de datos
@@ -1709,17 +1709,17 @@ Hay que dar a `parse_factor` un vector de posibles niveles
 
 
 ```r
-parse_factor(c("hombre", "mujer", "mujer", "unicornio"), levels=c("hombre", "mujer"))
+parse_factor(c("hombre", "mujer", "mujer", "otro", "portugues"), levels=c("hombre", "mujer", "otro"))
 ```
 
 ```
-## [1] hombre mujer  mujer  &lt;NA&gt;  
+## [1] hombre mujer  mujer  otro   &lt;NA&gt;  
 ## attr(,"problems")
 ## # A tibble: 1 × 4
 ##     row   col expected           actual   
 ##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;              &lt;chr&gt;    
-## 1     4    NA value in level set unicornio
-## Levels: hombre mujer
+## 1     5    NA value in level set portugues
+## Levels: hombre mujer otro
 ```
 
 
