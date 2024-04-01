@@ -201,6 +201,58 @@ flights %>% filter( !(dest %in% c("ANC", "HNL")) ) %>% left_join(airports, by=c(
 ```
 
 
+## Ejercicio 9
+
+Elabora una visualización similar a la anterior donde muestres la distribución espacial del retraso medio de los vuelos del día 13 de Junio. Compara esta distribución la de otro día, por ejemplo el 13 de Mayo. ¿Qué observas? Intenta determinar el origen del patrón (buscando en Google).
+
+### Solución
+
+```{r}
+flights %>% filter( !(dest %in% c("ANC", "HNL")) ) %>% 
+  filter(month==6, day==13) %>% 
+  left_join(airports, by=c("dest"="faa")) %>% 
+  group_by(dest) %>% summarise(med_delay = mean(dep_delay, na.rm=T), lat=lat, lon=lon) %>% ggplot(aes(lon, lat)) +
+    borders("state") +
+    geom_point(aes(size=med_delay)) + theme_classic() +
+    coord_quickmap()
+```
+
+
+## Ejercicio 10
+
+Estudia la relación entre las condiciones climáticas en el origen y el retraso medio de los vuelos. ¿Qué condiciones climáticas parecen afectar más a los retrasos? Justifica tu respuesta con una tabla o una visualización.
+
+### Solución
+
+```{r}
+flights %>% 
+  left_join(weather, by=c("year", "month", "day", "hour")) %>% 
+  mutate(visib_discrete = cut(visib, breaks=seq(0, 10, 1))) %>%
+  group_by(visib_discrete) %>% summarise(med_delay = mean(dep_delay, na.rm=T))
+```
+
+
+## Ejercicio 11
+
+Estudia la relación entre la edad de los aviones y el retraso medio de los vuelos. Para ello, tendrás que juntar la base de datos `planes` con `flights`, y crear una nueva variable llamada `age`, que corresponda a la edad del avión que realizó el vuelo, en años. Asigna edad 25 a los aviones con más de 25 años antes de estudiar la relación entre el retraso medio y la variable `age`. ¿Qué observas? Justifica tu respuesta con una visualización y tratar de dar una posible explicación al fenómeno observado.
+
+### Solución
+
+
+```{r}
+flights %>% left_join(planes, by="tailnum") %>%
+  mutate(age = 2013 - year.y) %>%
+  filter(!is.na(age)) %>%
+  mutate(age = if_else(age > 25, 25, age)) %>%
+  group_by(age) %>%
+  summarise(
+    dep_delay_mean = mean(dep_delay, na.rm = TRUE),
+  ) %>% 
+  ggplot(aes(x = age, y = dep_delay_mean)) +
+  geom_point() +
+  scale_x_continuous("Age of plane (years)", breaks = seq(0, 30, by = 10)) +
+  scale_y_continuous("Mean Departure Delay (minutes)") + theme_minimal()
+```
 
 
 
