@@ -110,7 +110,6 @@ algún vuelo cuyo destino sea ese aeropuesto dentro de la base de datos `flights
 
 ## Ejercicio 8
 
-(Difícil)
 Representa un mapa de los Estados Unidos donde cada aeropuerto de destino aparezca como un punto.
 El tamaño del punto ha de ser proporcional al valor medio del tiempo de vuelo (`air_time`)
 a ese aeropuerto (desde cualquier aeropuerto de NYC).
@@ -131,6 +130,26 @@ ggplot(data, aes(lon, lat)) +
 
 **Pista:** Las coordenadas de cada aeropuerto de destino están en la base de datos
 `airports`.
+
+### Solución
+
+## Ejercicio 9
+
+Elabora una visualización similar a la anterior donde muestres la distribución espacial del retraso medio de los vuelos del día 13 de Junio. Compara esta distribución la de otro día, por ejemplo el 13 de Mayo. ¿Qué observas? Intenta determinar el origen del patrón (buscando en Google).
+
+### Solución
+
+
+## Ejercicio 10
+
+Estudia la relación entre las condiciones climáticas en el origen y el retraso medio de los vuelos. ¿Qué condiciones climáticas parecen afectar más a los retrasos? Justifica tu respuesta con una tabla o una visualización.
+
+### Solución
+
+
+## Ejercicio 11
+
+Estudia la relación entre la edad de los aviones y el retraso medio de los vuelos. Para ello, tendrás que juntar la base de datos `planes` con `flights`, y crear una nueva variable llamada `age`, que corresponda a la edad del avión que realizó el vuelo, en años. Asigna edad 25 a los aviones con más de 25 años antes de estudiar la relación entre el retraso medio y la variable `age`. ¿Qué observas? Justifica tu respuesta con una visualización y tratar de dar una posible explicación al fenómeno observado.
 
 ### Solución
 
