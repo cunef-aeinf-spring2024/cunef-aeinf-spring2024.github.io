@@ -57,12 +57,11 @@ Bienvenido al sitio web de la asignatura de **Análisis y Explotación de la Inf
   - 3.2: Organización de datos
     - [Diapositivas](./tema3/tema3-2.html)
     
-<!--
   
   - 3.3: Transformación de datos
     - [Diapositivas](./tema3/tema3-3.html)
 
-
+<!--
 
 ### Tema 4 : Modelización
   - [Diapositivas](./tema4/tema4.html)

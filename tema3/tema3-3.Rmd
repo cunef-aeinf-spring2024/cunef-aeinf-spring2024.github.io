@@ -249,6 +249,17 @@ Termina por `$`
 str_view(x, "l$")
 ```
 
+---
+## Strings: expresiones regulares
+
+`\b` delimita una palabra 
+
+```{r}
+x <- c("My favourite animal is the cat", "Here you can see our catalog")
+
+str_view(x, "\\bcat\\b")
+```
+
 
 ---
 ## Strings: expresiones regulares
@@ -270,6 +281,8 @@ OJO
 writeLines("\\d")
 ```
 
+Cuando queremso escribir explícitamente el símbolo \ en una string, necesitamos escribir \\, pues \ es un caracter reservado.
+
 ---
 ## Strings: expresiones regulares
 
@@ -284,8 +297,10 @@ str_view(x, "ES\\d\\d")
 **Ejercicio**: Detecta las autovías correctas
 
 ```{r}
-x <- c("A1", "A12", "A14", "A6", "EA5", "A3", "F2")
+x <- c("Siempre paso por la A1", "A12", "A14", "La A6 va a Galicia", "EA5", "A3", "F2")
 ```
+
+
 
 ---
 ## Strings: detectar patrones
@@ -525,11 +540,11 @@ library(lubridate)
 
 Tres tipos
 
-* Fechas, referidas como <date> en los tibble
+* Fechas: `<date>` 
 
-* Hora, referida como <time> en los tibble
+* Hora: `<time>` 
 
-* Fecha y hora, identifica unívocamente un tiempo. Referidas como <dttm> en los tibble
+* Fecha y hora: identifica unívocamente un tiempo. Referidas como `<dttm>` en los tibble
 (en R, POSIXct)
 
 ---
