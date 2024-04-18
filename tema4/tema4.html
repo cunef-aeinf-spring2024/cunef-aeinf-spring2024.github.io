@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Tema 4</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Roi Naveiro" />
+    <script src="libs/header-attrs-2.17/header-attrs.js"></script>
+    <link rel="stylesheet" href="ds_slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+
+class: center, middle, inverse, title-slide
+
+&lt;div class="title-logo"&gt;&lt;/div&gt;
+
+# Análisis y Explotación de la Información
+ 
+## Tema 4 - Modelización
+
+&lt;br&gt;
+&lt;br&gt;
+.pull-left[
+### Roi Naveiro
+]
+---
+## Modelización
+
+Las herramientas de modelización tienen cuatro objetivos fundamentales:
+
+* **Explorar** los datos: los modelos a veces revelan patrones que no son evidentes en
+las visualizaciónes (&gt;3D)
+
+* **Generalizar** hallazgos de una muestra a la población (inferencia)
+
+* Determinar **relaciones causa-efecto** (inferencia causal)
+
+
+&lt;img src="img/data-science-model.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+## Modelización
+
+Los patrones descubiertos por las herramientas de modelización pueden ser:
+
+* Patrones de asociación
+* Relaciones causa-efecto
+
+Además, estos patrones pueden:
+
+* Darse únicamente en los datos observados
+* Generalizarse a la población 
+
+---
+## Modelización
+
+La forma de recolectar los datos afecta al tipo de generalización de las 
+conclusiones:
+
+* Si queremos que las conclusiones extraídas a partir de una muestra de datos
+sean generalizables a la población, debemos muestrear los sujetos **al azar**.
+
+&lt;img src="img/bdl.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+[Fuente](https://www.huffingtonpost.es/2016/03/28/troleo-en-la-red-para-bautizar-blas-de-lezo-a-un-buque-brita_n_9556114.html)
+
+---
+## Modelización
+
+¿Muestrear datos al azar nos garantiza que los patrones detectados sean relaciones 
+causa-efecto reales?
+
+---
+## Study: Cereal Keeps Girls Slim
+ 
+Se observó que las mujeres que desayunaban tenían un **índice de masa corporal promedio más bajo**, un indicador común de obesidad, que las que no desayunaban. El índice fue aún más bajo para las que **desayunaban cereales**, según los hallazgos del estudio realizado por el Instituto de Investigación Médica de Maryland con fondos de NIH y el fabricante de cereales General Mills.
+
+[...]
+
+Los resultados se obtuvieron de una encuesta de NIH de 2379 mujeres en California, Ohio y Maryland.
+
+[...]
+
+Como parte de la encuesta, se preguntaba a las niñas una vez al año qué habían comido durante los tres días anteriores...
+
+[Fuente](https://www.cbsnews.com/news/study-cereal-keeps-girls-slim/)
+
+---
+## Study: Cereal Keeps Girls Slim
+
+Existen tres posibles explicaciones de este hallazgo:
+
+* Comer cereales es la causa de que las mujeres estén delgadas
+
+* Que las mujeres estén delgadas es la causa de que coman cerales
+
+* Existe una tercera variable que es causa de estas dos, **variable de confusión**
+
+Una **variable de confusión** es una variable exógena que es causa tanto a la variable explicativa como a la de respuesta, y que hace que parezca que existe una relación entre ellas.
+
+---
+## Study: Cereal Keeps Girls Slim
+
+"Aquellos que desayunan regularmente tienen **más probabilidades de tener un plan de alimentación estructurado** a lo largo del día y, en consecuencia, es menos probable que coman entre comidas y consuman calorías vacías".
+
+---
+## Study: Cereal Keeps Girls Slim
+
+¿Por qué se publica esto?
+
+&lt;img src="img/follow-money.jpeg" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+## Estudios científicos
+
+Según el proceso de recolección de los datos, distinguimos estudios:
+
+* **Observacionales**
+
+  * Se recogen datos de forma que no se altera el proceso de generación de los mismos
+
+  * Sirven para determinar **asociación**
+
+* **Experimentales**
+
+  * Se asignan diferentes tratamientos a distintos individuos 
+
+  * Establecer relaciones **causa-efecto**
+
+---
+## Estudios científicos
+
+&lt;img src="img/studies.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+## Correlación no implica necesariamente causalidad
+
+&lt;img src="img/margarina.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+## Modelización
+
+Las herramientas de modelización tienen tres objetivos fundamentales:
+
+* **Explorar** los datos: los modelos a veces revelan patrones que no son evidentes en
+las visualizaciónes (&gt;3D)
+
+* **Generalizar** hallazgos de una muestra a la población (inferencia)
+
+* Determinar **relaciones causa-efecto** (inferencia causal)
+
+&lt;img src="img/data-science-model.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+
+---
+class: center, middle, inverse
+
+# Modelos para Análisis Exploratorio
+
+---
+## Modelización
+
+* En lo que resta de curso, introduciremos herramientas básicas de modelización, poniendo
+el foco en su uso como **técnicas de exploración** de datos.
+
+* **No** vamos a estudiar cómo usar estas herramientas para determinar causalidad.
+
+* No hay nada malo con la exploración, pero nunca debes vender un análisis exploratorio como un análisis confirmatorio porque es **engañoso**.
+
+---
+## ¿Qué son los modelos estadísticos?
+
+* Herramientas que nos permiten extraer patrones de los datos.
+
+* Patrones vs residuos
+
+* Estudiaremos modelos que relacionan un serie de variables (variables predictoras)
+coon una variable de interés (variable respuesta)
+
+---
+## ¿Qué son los modelos estadísticos?
+
+Un modelo estadístico es un modelo matemático que incorpora un conjunto de supuestos estadísticos relacionados con la generación de datos de una muestra (observaciones) y datos similares de una población más grande. Un modelo estadístico representa, a menudo de forma idealizada, el proceso de generación de datos.
+
+---
+## ¿Qué son los modelos estadísticos?
+
+* Formalmente, un modelo estadísticos es un par `\((S \mathcal{P})\)`: `\(S\)` es el conjunto de posibles observaciones y `\(\mathcal{P}\)` es una familia de distribuciones de probabilidad.
+
+* Asumimos que hay una distribución de probabilidad verdadera que gobierna la generación de datos.
+
+* Se asume que la familia de distribuciones `\(\mathcal{P}\)` contiene una distribución que aproxima de forma adecuada la distribución real.
+
+* "A model is a simplification or approximation of reality and hence will not reflect all of reality."
+
+---
+## ¿Qué son los modelos estadísticos?
+
+* Los modelos suelen ser paramétricos: d: `\(\mathcal {P}=\{F_{\theta }:\theta \in \Theta \}\)`
+
+
+* Dados unos datos, el objetivo es encontrar el valor de `\(\theta\)` que mejor se ajusta a los datos.
+
+
+---
+## ¿Qué son los modelos estadísticos?
+
+* Nos vamos a centrar en modelos que relacionan una variable respuesta con una o más variables predictoras.
+
+* Estos modelos se conocen como **modelos de regresión**.
+
+* Empezemos con un ejemplo sencillo: la variable respuesta es continua y hay una sola variable predictora.
+
+---
+## ¿Qué son los modelos estadísticos?
+
+
+```r
+ggplot(mtcars, aes(x=wt, y=mpg)) + geom_point() + theme_minimal() +
+  geom_smooth(method="lm", se=FALSE, color='red')
+```
+
+![](tema4_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
+
+---
+## ¿Qué son los modelos estadísticos?
+
+
+* En este caso `\(S = \mathbb{R}^2\)`. Una posibilidad para `\(\mathcal{P}\)` es la familia de modelos lineales:
+$$
+\mathcal{P} = \{y \sim \mathcal{N}(\beta_0 + \beta_1 x, \sigma^2)\}
+$$
+
+* También podemos escribirlo como `\(y = \beta_0 + \beta_1 x + \epsilon\)`, donde `\(\epsilon \sim \mathcal{N}(0, \sigma^2)\)`
+
+* ¿Cuáles son los parámetros de este modelo?
+
+---
+## ¿Qué son los modelos estadísticos?
+
+* Una vez observamos datos `\((x_i, y_i) \in \mathcal{S}\)`, podemos ajustar el modelo para encontrar los valores de los parámetros que mejor se ajustan a los datos.
+
+* El modelo resultante se denomina **modelo ajustado**.
+
+
+**OJO**: el mejor modelo de la familia no tiene por qué ser la realidad. Los modelos son
+simplificaciones de la realidad que nos sirven de algún propósito
+
+---
+## ¿Qué son los modelos?
+
+&lt;img src="img/box.jpeg" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+## Vocabulario
+
+* **Variable respuesta**: Variable cuyo comportamiento o variación se está tratando de entender. También llamada variable dependiente. Eje y.
+
+* **Variables explicativas**: otras variables que desea utilizar para explicar la variación en la respuesta. También llamadas variables independientes, covariables, predictores o *features*. Eje x.
+
+* **Valor predicho**: output del modelo para cierto valor de las covariables.
+
+---
+## Vocabulario
+
+Discute los elementos anteriores en este ejemplo.
+
+
+```r
+ggplot(mtcars, aes(x=wt, y=mpg)) + geom_point() + theme_minimal() +
+  geom_smooth(method="lm", se=FALSE, color='red')
+```
+
+![](tema4_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
+
+---
+## Ajustando modelos
+
+
+```r
+ggplot(mtcars, aes(x=wt, y=mpg)) + geom_point() + theme_minimal()
+```
+
+![](tema4_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+
+---
+## Ajustando modelos
+
+* Los datos anteriores presentan un patrón claro
+
+* Usaremos un modelo para capturar ese patrón y hacerlo explícito
+
+* Un modelo lineal parece razonable `\(y = \beta_0 + \beta_1 x + \epsilon\)` con `\(\epsilon \sim \mathcal{N}(0, \sigma^2)\)`.
+
+* Vamos a asumir que `\(\sigma^2\)` es conocido.
+
+* Existen infinitos modelos en esta familia
+
+---
+## Ajustando modelos
+
+
+```r
+models &lt;- tibble(
+  a1 = runif(250, -20, 40),
+  a2 = runif(250, -5, 5)
+)
+
+ggplot(mtcars, aes(wt, mpg)) + 
+  geom_abline(aes(intercept = a1, slope = a2), data = models, alpha = 1/4) +
+  geom_point() + theme_minimal()
+```
+
+![](tema4_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+
+---
+## Ajustando modelos
+
+* La mayoría de estos modelos son **malos**, no capturan el patrón
+
+* Necesitamos determinar qué modelos son **más cercanos** a los datos
+
+* Una opción, usar el modelo que minimice suma de las distancias verticales de cada
+punto a la recta del modelo
+
+---
+## Ajustando modelos
+
+![](tema4_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
+
+
+---
+## Regresión lineal
+
+Para obtener el valor de los coeficientes usando R, hacemos
+
+
+```r
+reg_mod &lt;- lm(mpg ~ wt, data = mtcars)
+coef(reg_mod)
+```
+
+```
+## (Intercept)          wt 
+##   37.285126   -5.344472
+```
+
+* El objeto `mpg ~ wt` es una fórmula. Equivale a 
+
+$$
+\text{mpg} = \beta_0 + \beta_1 \cdot \text{wt}
+$$
+
+* Intercept es la estimación del coeficiente `\(\beta_0\)` y el otro número es la estimación de `\(\beta_1\)`
+
+
+---
+## Regresión lineal
+
+* Para estimar los valores de `\(\beta_0\)` y `\(\beta_1\)`, usamos los datos.
+
+* Llamamos a las estimaciones `\(\hat{\beta}_0\)` y `\(\hat{\beta}_1\)`.
+
+* Llamamos valor predicho a `\(\hat{y} = \hat{\beta}_0 + \hat{\beta}_1 x\)`.
+
+* `\(\hat{\beta}_0\)` y `\(\hat{\beta}_1\)` son aquellos valores que hacen que las distancias verticales vistas anteriormente sean mínimas
+
+$$
+\arg \min_{\beta_0, \beta_1} \sum_{i=1}^n [y_i - (\beta_0 + \beta_1 x_i)]^2
+$$
+---
+## Regresión lineal
+
+Demostrar que los valores que minimizan la expresión anterior son los estimadores de maximá verosimilitud de `\(\beta_0\)` y `\(\beta_1\)`.
+
+
+---
+## Regresión lineal - Residuos
+
+Los residuos nos dicen cómo de lejos está cada valor predicho de su valore observado
+
+Residuo = Valor observado - valor predicho: `\(y - \hat{y}\)`
+
+
+---
+## Regresión lineal
+
+* La recta de regresión es aquella que minimiza la suma de distancias verticales.
+
+* Esto es equivalente a minimizar la suma de los residuos al cuadrado
+
+`\begin{eqnarray}
+&amp;&amp;\sum_{i=1}^n [y_i-\hat{y}_i]^2 = \\
+&amp;&amp;\sum_{i=1}^n [y_i-(\beta_0 + \beta_1 x)]^2
+\end{eqnarray}`
+
+
+---
+## Visualización de modelos
+
+Podemos visualizar:
+
+* Las predicciones de los modelos
+
+* Los residuos de los modelos
+
+Para esto, utilizamos `modelr` de `tidyverse`
+
+---
+## Visualización de modelos
+
+* Primero creamos una red de puntos de la variable predictora
+
+
+```r
+library(modelr)
+grid &lt;- mtcars %&gt;% 
+  data_grid(wt) 
+
+grid
+```
+
+```
+## # A tibble: 29 × 1
+##       wt
+##    &lt;dbl&gt;
+##  1  1.51
+##  2  1.62
+##  3  1.84
+##  4  1.94
+##  5  2.14
+##  6  2.2 
+##  7  2.32
+##  8  2.46
+##  9  2.62
+## 10  2.77
+## # … with 19 more rows
+```
+
+---
+## Visualización de modelos
+
+* Con el modelo, podemos añadir predicciones
+
+
+```r
+reg_mod &lt;- lm(mpg ~ wt, data = mtcars)
+
+grid &lt;- grid %&gt;% 
+  add_predictions(reg_mod)
+
+grid
+```
+
+```
+## # A tibble: 29 × 2
+##       wt  pred
+##    &lt;dbl&gt; &lt;dbl&gt;
+##  1  1.51  29.2
+##  2  1.62  28.7
+##  3  1.84  27.5
+##  4  1.94  26.9
+##  5  2.14  25.8
+##  6  2.2   25.5
+##  7  2.32  24.9
+##  8  2.46  24.1
+##  9  2.62  23.3
+## 10  2.77  22.5
+## # … with 19 more rows
+```
+
+---
+## Visualización de modelos
+
+
+```r
+ggplot(mtcars, aes(wt)) +
+  geom_point(aes(y = mpg)) + theme_minimal() +
+  geom_line(aes(y = pred), data = grid, colour = "red", size = 1)
+```
+
+![](tema4_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
+
+
+---
+## Visualización de modelos
+
+Añadimos residuos usando
+
+
+```r
+reg_mod &lt;- lm(mpg ~ wt, data = mtcars)
+
+mtcars &lt;- mtcars %&gt;% add_residuals(reg_mod)
+```
+
+---
+## Visualización de modelos
+
+
+```r
+ggplot(mtcars, aes(wt, resid)) + 
+  geom_ref_line(h = 0) +
+  geom_point() 
+```
+
+![](tema4_files/figure-html/unnamed-chunk-18-1.png)&lt;!-- --&gt;
+
+---
+## Visualización de modelos
+
+* Las predicciones nos dicen qué patrón hemos capturado
+
+* Los residuos indican qué patrón queda sin capturar
+
+
+---
+## ¿Qué hacer con los modelos?
+
+* **Explicación**: caracterizar la relación entre `\(y\)` y `\(x\)` a través de los parámetros
+`\(\beta_0\)` y `\(\beta_1\)`
+
+* **Predicción**: para un nuevo valor de `\(x\)`, obtener su valor `\(y\)`
+
+---
+## Interpretación de la regresión lineal
+
+Volvamos a la regresión anterior. La librería `broom` de tidyverse, sirve para 
+ordenar los resultados de `lm`. **OJO**: no se carga automáticamente al cargar `tidyverse`.
+
+
+```r
+library(broom)
+mod_reg &lt;- lm(mpg ~ wt, data=mtcars)
+tidy(mod_reg)
+```
+
+```
+## # A tibble: 2 × 5
+##   term        estimate std.error statistic  p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)    37.3      1.88      19.9  8.24e-19
+## 2 wt             -5.34     0.559     -9.56 1.29e-10
+```
+
+---
+## Interpretación de la regresión lineal - Pendiente
+
+El modelo de regresión lineal es
+
+$$
+\widehat{ \text{mpg} } = \beta_0 + \beta_1 \text{wt}
+$$
+
+Aumentemos wt en una unidad
+
+`\begin{eqnarray}
+&amp;&amp; \beta_0 + \beta_1 ( \text{wt} + 1) = \\
+&amp;&amp; \beta_0 + \beta_1 \text{wt} + \beta_1 = \\
+&amp;&amp; \widehat{ \text{mpg} } + \beta_1
+\end{eqnarray}`
+
+¿Cómo se interpreta `\(\beta_1\)`?
+
+---
+## Interpretación de la regresión lineal - Ordenada en el orign
+
+El modelo de regresión lineal es
+
+$$
+\widehat{ \text{mpg} } = \beta_0 + \beta_1 \text{wt}
+$$
+
+Sustituímos wt por cero
+
+`\begin{eqnarray}
+\widehat{ \text{mpg} } = \beta_0 + \beta_1 \times 0 = \beta_0
+\end{eqnarray}`
+
+¿Cómo se interpreta `\(\beta_0\)`?
+
+---
+## Interpretación de la Regresión Lineal
+
+Vamos a modelizar cómo afectan los años de experiencia en el salario de un profesor
+
+
+```r
+library(openintro)
+data("teacher")
+set.seed(1)
+grade &lt;- sample(c(rep("elementary", 20), rep("middle", 25), rep("high", 26)))
+teacher &lt;- teacher %&gt;%
+  mutate(degree = factor(degree, c("MA","BA")),
+         grade = grade)
+```
+
+---
+## Interpretación de la Regresión Lineal
+
+Vamos a modelizar cómo afectan los años de experiencia en el salario de un profesor
+
+
+```r
+ggplot(teacher, aes(x=years, y=base)) + geom_point() + theme_minimal()
+```
+
+![](tema4_files/figure-html/unnamed-chunk-21-1.png)&lt;!-- --&gt;
+
+---
+## Interpretación de la Regresión Lineal
+
+Ajusta un modelo lineal, obtén los coeficientes e interprétalos.
+
+Determina la predicción del salario de un profesor con 15 años de experiencia.
+
+---
+## Interpretación de la Regresión Lineal
+
+
+```r
+ggplot(teacher, aes(x=years, y=base)) + geom_point() +
+  geom_smooth(method="lm", color='red', se=FALSE) + theme_minimal()
+```
+
+![](tema4_files/figure-html/unnamed-chunk-22-1.png)&lt;!-- --&gt;
+
+
+---
+## Regresión Lineal: Predictores Categóricos
+
+* Hasta ahora hemos considerado la `\(x\)` contínua. ¿Qué sucede si es categórica?
+
+* Imaginemos que la `\(x\)` se refiere a género y toma dos valores: masculino y femenino.
+
+* `\(y = \beta_0 + \beta_1 x\)` no tendría sentido, `\(x\)` no es un número!
+
+* Podemos hacer `\(y = \beta_0 +\beta_1 \text{gen}\_\text{masc}\)`, donde `\(\text{gen}\_\text{masc}\)` toma valor 1 para hombres y cero para mujeres
+
+---
+## Regresión Lineal: Predictores Categóricos
+
+* Salario frente a grado. ¿Qué niveles tiene la variable degree?
+
+* Ajustamos un modelo
+
+
+```r
+mod_base_degree &lt;- lm(base ~ degree, data=teacher)
+tidy(mod_base_degree)
+```
+
+```
+## # A tibble: 2 × 5
+##   term        estimate std.error statistic  p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)   56610.     1777.    31.8   5.44e-43
+## 2 degreeBA       -352.     2398.    -0.147 8.84e- 1
+```
+
+---
+## Regresión Lineal: Predictores Categóricos
+
+* R ha creado una **variable indicatriz**  degreeBA: si el grado es BA toma valor 1,
+sino 0.
+
+* Si la variable tuviese tres niveles A, B y C, R crearía dos variables indicatrices, e.g. para A y B.
+
+* El nivel base es el nivel que toma la variable cuando todas las indicatrices son 0.
+
+* Los coeficientes se interpretan respecto al nivel base.
+
+
+---
+## Regresión Lineal: Predictores Categóricos
+
+
+```r
+mod_base_degree &lt;- lm(base ~ degree, data=teacher)
+tidy(mod_base_degree)
+```
+
+```
+## # A tibble: 2 × 5
+##   term        estimate std.error statistic  p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)   56610.     1777.    31.8   5.44e-43
+## 2 degreeBA       -352.     2398.    -0.147 8.84e- 1
+```
+Interpreta cada coeficiente
+
+---
+## Regresión Lineal: Visualizamos las predicciones
+
+
+```r
+mod_base_degree &lt;- lm(base ~ degree, data=teacher)
+
+grid &lt;- teacher %&gt;% 
+  data_grid(degree) %&gt;% 
+  add_predictions(mod_base_degree)
+grid
+```
+
+```
+## # A tibble: 2 × 2
+##   degree   pred
+##   &lt;fct&gt;   &lt;dbl&gt;
+## 1 MA     56610.
+## 2 BA     56257.
+```
+
+---
+## Regresión Lineal: Visualizamos las predicciones
+
+
+```r
+ggplot(teacher, aes(x=degree)) + geom_point(aes(y=base)) + theme_minimal() +
+  geom_point(data = grid, aes(y = pred), colour = "red", size = 4)
+```
+
+![](tema4_files/figure-html/unnamed-chunk-26-1.png)&lt;!-- --&gt;
+
+---
+## Regresión Lineal: Visualizamos las predicciones
+
+Predecimos la media para cada grupo!
+
+---
+## Regresión Lineal Múltiple
+
+* En múltiples ocasiones, tenemos más de una variable predictora.
+
+* El modelo lineal más sencillo para este caso, es la **regresión lineal múltiple**
+
+$$
+y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \dots + \beta_p x_p
+$$
+
+* El efecto de cada variable se estima independientemente del resto de variables.
+
+---
+## Regresión Lineal Múltiple - Interpretación
+
+* ¿Cómo se interpreta `\(\beta_0\)`? 
+
+* ¿Cómo se interpreta `\(\beta_1\)`? 
+
+---
+## Regresión Lineal Múltiple 
+
+En R
+
+
+```r
+mod_reg &lt;- lm(base ~ years + degree, data = teacher)
+tidy(mod_reg)
+```
+
+```
+## # A tibble: 3 × 5
+##   term        estimate std.error statistic  p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)   44838.    1156.      38.8  4.11e-48
+## 2 years           818.      54.0     15.2  1.75e-23
+## 3 degreeBA      -2560.    1164.      -2.20 3.12e- 2
+```
+
+---
+## Regresión Lineal Múltiple 
+
+Visualizamos las predicciones
+
+
+```r
+grid &lt;- teacher %&gt;% 
+  data_grid(years, degree) %&gt;% 
+  add_predictions(mod_reg)
+grid
+```
+
+```
+## # A tibble: 76 × 3
+##    years degree   pred
+##    &lt;dbl&gt; &lt;fct&gt;   &lt;dbl&gt;
+##  1     0 MA     44838.
+##  2     0 BA     42278.
+##  3     1 MA     45656.
+##  4     1 BA     43096.
+##  5     2 MA     46474.
+##  6     2 BA     43914.
+##  7     3 MA     47292.
+##  8     3 BA     44732.
+##  9     4 MA     48110.
+## 10     4 BA     45550.
+## # … with 66 more rows
+```
+
+---
+## Regresión Lineal Múltiple 
+
+Visualizamos las predicciones
+
+
+```r
+ggplot(teacher, aes(years, base, colour = degree)) + 
+  geom_point() + 
+  geom_line(data = grid, aes(y = pred)) + theme_minimal()
+```
+
+![](tema4_files/figure-html/unnamed-chunk-29-1.png)&lt;!-- --&gt;
+
+---
+class: center, middle, inverse
+
+# Inferencia 
+
+---
+
+## Terminología
+
+.vocab[Población]: grupo de individuos a estudiar
+
+.vocab[Parámetro]: cantidad numérica derivada de la población
+(casi siempre desconocida)
+
+Si tuviéramos datos de cada unidad de la población, podríamos simplemente calcular
+el parámetro de población y ¡listo!
+
+--
+
+**Desafortunadamente, en general no podemos hacer esto. 
+En cambio, trabajamos con**
+
+.vocab[Muestra]: un subconjunto de nuestra población de interés
+
+.vocab[Estadístico]: una cantidad numérica derivada de una muestra
+
+
+---
+
+## Inferencia
+
+Si la muestra es .vocab[representativa], entonces podemos utilizar 
+la probabilidad y la inferencia estadística para obtener
+conclusiones .vocab[generalizables] a la población de interés.
+
+
+
+---
+
+## Inferencia estadística
+
+La .vocab[inferencia estadística] es el proceso que permite, a través de
+datos de una muestra, obtener conclusiones sobre la población de la cual procede
+la misma.
+
+- .vocab[Estimación]: utilizar la muestra para estimar un rango plausible de 
+valores de un parámetro poblacional desconocido
+
+- .vocab[Contraste de hipótesis]: evaluar si la muestra observada proporciona evidencia 
+a favor o en contra de alguna afirmación sobre la población
+
+Nos enfocaremos en la **estimación**.
+
+---
+
+class: center, middle
+
+# Estimación
+
+---
+
+## Viajamos a Asheville! 
+
+&lt;img src="img/asheville.jpg" width="450" style="display: block; margin: auto;" /&gt;
+
+**¿Cuánto deberíamos esperar pagar por un Airbnb en Asheville?**
+
+
+---
+
+## Datos de Asheville
+
+[Inside Airbnb](http://insideairbnb.com/) extrajo todos los listados de Airbnb en 
+Asheville, NC, que estaban activos el 25 de junio de 2020.
+
+**Población de interés**: airbnbs en Asheville con al menos diez reseñas.
+
+**Parámetro de interés**: Precio promedio por huésped por noche en estos 
+Airbnbs.
+
+
+.pregunta[
+¿Cuál es el precio promedio por huésped por noche de los alquileres de Airbnb en junio de 2020, 
+con al menos diez reseñas en Asheville (códigos postales 28801 - 28806)?
+]
+
+Tenemos datos sobre el precio por huésped (`ppg`) para una muestra aleatoria de 50 listados de Airbnb.
+
+
+---
+
+## Estimación puntual
+
+Un .vocab[estimador puntual] es un solo valor calculado a partir de los datos de 
+la muestra para servir como la "mejor estimación" para el parámetro poblacional.
+
+Nuestro estimador puntual para el precio promedio por huésped en la población es 
+la media observada en la muestra:
+
+
+```r
+abb &lt;- read_csv("data/asheville.csv")
+abb %&gt;% 
+  summarize(mean_price = mean(ppg))
+```
+
+```
+## # A tibble: 1 × 1
+##   mean_price
+##        &lt;dbl&gt;
+## 1       76.6
+```
+
+---
+
+## Visualización de nuestra muestra
+
+&lt;img src="tema4_files/figure-html/unnamed-chunk-32-1.png" width="80%" /&gt;
+
+---
+
+## Estimador puntual?
+
+.pregunta[
+Si quieres estimar un parámetro de la población, ¿prefieres informar un rango de valores en los que podría estar el parámetro, o un solo valor?
+]
+
+
+--
+
+- Si únicamente aportamos un estimador puntual, probablemente no acertemos 
+exactamente el valor real del parámetro de la población.
+
+- Si aportamos un rango de valores plausibles,
+tenemos mayor probabilidad de capturar el valor real parámetro.
+
+
+---
+
+class: middle, center
+
+## Intervalos de confianza
+
+---
+
+## Variabilidad de los estadísticos muestrales
+
+Para construír un intervalo de confianza para la media de la población, 
+necesitamos crear un rango de valores plausibles alrededor de la media muestral observada.
+
+- Recuerda que las muestras aleatorias pueden diferir entre sí. Si tomamos otra
+muestra aleatoria de 50 listados de Airbnb en Asheville, probablemente no obtendríamos la misma
+media de precio por huésped.
+
+--
+
+- Existe cierta .vocab[variabilidad] en la media muestral.
+
+- Para construir un intervalo de confianza, debemos cuantificar esta variabilidad. Esto
+nos da una medida de cuánto esperamos que varíe la media muestral de
+muestra a muestra.
+
+---
+
+## Variabilidad de los estadísticos muestrales
+
+.question[
+Supongamos que dividimos la clase por la mitad y le preguntamos a cada estudiante su altura. 
+Luego, calculamos la altura media de los estudiantes
+en cada lado del salón. ¿Esperarías que estas dos medias sean exactamente
+iguales, cercanas pero no iguales, o muy diferentes?
+]
+
+--
+
+&lt;br&gt;&lt;br&gt;
+
+.question[
+Supongamos que tomas al azar 50 estudiantes y 5 de ellos son zurdos. Si
+tomaras otra muestra aleatoria de 50 estudiantes, ¿cuántos esperarías que fueran
+zurdos? ¿Te sorprendería si solo 3 de ellos fueran zurdos? ¿Te sorprendería si
+40 de ellos fueran zurdos?
+]
+
+---
+
+## Cuantificación de la variabilidad
+
+Podemos cuantificar la variabilidad de los estadísticos muestrales mediante enfoques diferentes:
+
+- **Simulación**: mediante técnicas como "bootstrap" o "remuestreo" (**lo que haremos aquí**)
+
+o
+
+- **Teoría**: mediante el Teorema del Límite Central
+
+---
+
+class: center, middle
+
+# Bootstrapping
+
+---
+
+## El principio del bootstrap
+
+&lt;img src="img/boot.png" style="float:right"&gt;
+
+- El término .vocab[bootstrap] proviene de la frase "levantarse a uno mismo 
+tirando de la hebilla de las 
+botas", que es una metáfora para lograr una tarea imposible sin 
+ninguna ayuda externa.
+
+- En este caso, la tarea imposible es estimar un parámetro de la población, y lo 
+lograremos utilizando datos solo de la muestra dada.
+
+- Esta noción de decir algo sobre un parámetro de la población usando 
+solo información de una muestra observada es la esencia de la inferencia estadística;
+no se limita al bootstrap.
+
+---
+
+## El procedimiento del bootstrap
+
+1. Tomar una .vocab[muestra bootstrap] - una muestra aleatoria tomada **con reemplazo**
+de la muestra original, **del mismo tamaño** que la muestra original.
+
+2. Calcular el .vocab[estadístico bootstrap]:  el estadístico de interés (la 
+media, la mediana, la correlación, etc.) usando la muestra bootstrap.
+
+3. Repetir los pasos (1) y (2) muchas veces para crear una .vocab[distribución bootstrap] - una distribución de estadísticos bootstrap.
+
+4. Calcular los límites del intervalo de confianza del XX% como la región que alberga el
+XX% de la distribución bootstrap.
+
+---
+
+## La muestra original
+
+&lt;br&gt;&lt;br&gt;
+
+&lt;img src="tema4_files/figure-html/unnamed-chunk-33-1.png" width="70%" /&gt;
+
+---
+
+## Paso a paso
+
+**Paso 1.** Tomar una .vocab[muestra bootstrap]: una muestra aleatoria tomada 
+**con reemplazamiento** de la muestra original, **del mismo tamaño** que la 
+muestra original:
+
+
+
+
+&lt;img src="tema4_files/figure-html/unnamed-chunk-35-1.png" width="70%" /&gt;
+
+
+---
+
+## Paso a paso
+
+**Paso 2.** Calcular el estadístico bootstrap (en este caso, la media de la muestra) 
+usando la muestra bootstrap:
+
+
+&lt;img src="tema4_files/figure-html/unnamed-chunk-36-1.png" width="70%" /&gt;
+
+---
+
+## Paso a paso
+
+**Paso 3.** Repetir los pasos 1 y 2 varias veces para crear una distribución bootstrap 
+de medias de muestra:
+
+.pull-left[
+
+
+]
+
+.pull-right[
+
+
+
+]
+
+&lt;img src="tema4_files/figure-html/unnamed-chunk-41-1.png" width="80%" /&gt;
+
+---
+
+## Paso a paso
+
+**Paso 3.** En este gráfico, hemos tomado 500 muestras bootstrap, calculado la
+media de la muestra para cada una y las hemos representado en un histograma:
+
+&lt;img src="tema4_files/figure-html/unnamed-chunk-42-1.png" width="70%" /&gt;
+
+
+---
+
+**Aquí comparamos la distribución bootstrap de las medias de la muestra con la distribución de los datos originales. ¿Qué observas?**
+
+![](tema4_files/figure-html/unnamed-chunk-43-1.png)&lt;!-- --&gt;
+
+---
+
+## Paso a paso
+
+**Paso 4.** Calcula los límites del intervalo bootstrap utilizando percentiles de la distribución bootstrap
+
+&lt;img src="tema4_files/figure-html/unnamed-chunk-44-1.png" width="70%" /&gt;
+
+---
+
+class: center, middle
+
+# Bootstrapping en R
+
+---
+
+## Paquete `infer`
+
+.pull-left[
+![](img/infer.png)
+]
+
+.pull-right[
+&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;
+El objetivo del paquete infer es realizar inferencia estadística utilizando una
+gramática que se integra con el marco de diseño tidyverse.
+
+
+```r
+library(infer)
+```
+
+&lt;br&gt;&lt;br&gt;
+[infer.netlify.com](http://infer.netlify.com)
+]
+
+---
+
+## Elige una semilla
+
+
+
+```r
+set.seed(123)
+```
+
+La función `set.seed()` es una función base de R que nos permite controlar la generación de números aleatorios en R. Úsala para hacer que tu simulación sea reproducible.
+
+En otras palabras, asegura que obtendremos la misma muestra aleatoria cada vez que ejecutemos el código o compilemos.
+
+---
+
+## Generar medias bootstrap
+
+
+```r
+abb %&gt;%
+  # specify the variable of interest
+* specify(response = ppg)
+```
+
+- `specify()` se utiliza para especificar qué variable en nuestro dataset es la
+variable respuesta relevante (es decir, la variable que estamos sobre la que haremos
+bootstrap).
+
+
+---
+
+## Generar medias bootstrap
+
+
+```r
+abb %&gt;%
+  # specify the variable of interest
+  specify(response = ppg) %&gt;% 
+  # generate 15000 bootstrap samples
+* generate(reps = 15000, type = "bootstrap")
+```
+
+- `generate()` generar las medias bootstrap
+
+---
+
+## Generar medias bootstrap
+
+
+```r
+abb %&gt;%
+  # specify the variable of interest
+  specify(response = ppg) %&gt;% 
+  # generate 15000 bootstrap samples
+  generate(reps = 15000, type = "bootstrap") %&gt;% 
+  # calculate the statistic of each bootstrap sample
+* calculate(stat = "mean")
+```
+
+- `calculate()` calcula el estadístico muestra. En este caso usamos la media, pero podríamos calcular, por ejemplo,
+las medianas bootstrap.
+
+
+---
+
+## Generar medias bootstrap
+
+
+
+
+```r
+num_reps &lt;- 100
+```
+
+
+```r
+# save resulting bootstrap distribution
+*boot_dist &lt;- abb %&gt;%
+  # specify the variable of interest
+  specify(response = ppg) %&gt;% 
+  # generate 100 bootstrap samples
+  generate(reps = num_reps, type = "bootstrap") %&gt;% 
+  # calculate the statistic of each bootstrap sample
+  calculate(stat = "mean")
+```
+
+---
+
+## Medias muestrales
+
+
+¿Cuántas observaciones hay en `boot_dist`? ¿Qué representa cada observación?
+
+--
+
+
+```r
+boot_dist
+```
+
+```
+## Response: ppg (numeric)
+## # A tibble: 100 × 2
+##    replicate  stat
+##        &lt;int&gt; &lt;dbl&gt;
+##  1         1  72.5
+##  2         2  79.7
+##  3         3  63.0
+##  4         4  73.1
+##  5         5  67.1
+##  6         6  78.1
+##  7         7  92.1
+##  8         8  95.7
+##  9         9  88.5
+## 10        10  90.8
+## # … with 90 more rows
+```
+
+---
+
+## Visualizando la distribución
+
+![](tema4_files/figure-html/unnamed-chunk-54-1.png)&lt;!-- --&gt;
+
+---
+
+## Cálculo del intervalo de confianza
+
+Un intervalo de confianza del 95% contiene el 95% central de la distribución bootstrap. Para obtener el 95% central, queremos omitir el 2.5% en la izquierda y en la derecha.
+
+
+--
+
+Usando `dplyr`:
+
+
+```r
+ci &lt;- boot_dist %&gt;%
+  summarise(lower_b = quantile(stat, 0.025), 
+            upper_b = quantile(stat, 0.975))
+ci
+```
+
+```
+## # A tibble: 1 × 2
+##   lower_b upper_b
+##     &lt;dbl&gt;   &lt;dbl&gt;
+## 1    60.9    92.1
+```
+
+---
+
+## Visualizar un intervalo de confianza (Opción 1)
+
+Utilizando `geom_vline()` para marcar los límites del intervalo de confianza
+
+
+
+```r
+*ggplot(data = boot_dist, mapping = aes(x = stat)) +
+  geom_histogram(binwidth = 5, alpha = .5) +
+* geom_vline(xintercept = ci$lower_b,
+             color = "steelblue", lty = 2, size = 1) + 
+* geom_vline(xintercept = ci$upper_b,
+             color = "steelblue", lty = 2, size = 1) +
+  labs(title = "Distribución Bootstrap de la media de precio por cliente",
+       subtitle = "con IC de 95%",
+       x = "Medias", y = "Num") +
+  theme_minimal()
+```
+
+---
+
+## Visualizar un intervalo de confianza (Opción 1)
+
+
+&lt;img src="tema4_files/figure-html/unnamed-chunk-57-1.png" width="75%" /&gt;
+
+---
+
+## Visualizar un intervalo de confianza (Opción 2)
+
+
+```r
+*visualize(boot_dist) +
+* shade_confidence_interval(endpoints = ci)+
+  labs(title = "Distribución Bootstrap de la media de precio por cliente",
+       subtitle = "con IC de 95%",
+       x = "Medias", y = "Num") 
+```
+---
+
+## Visualizar un intervalo de confianza (Opción 2)
+
+&lt;img src="tema4_files/figure-html/unnamed-chunk-59-1.png" width="75%" /&gt;
+---
+
+
+## Interpretación de un intervalo de confianza
+
+Nuestro intervalo de confianza del 95% (IC) es 
+(60.9, 92.1).
+
+.question[
+¿Significa esto que hay un 95% de probabilidad de que la media del precio por noche en la población esté contenida en el intervalo (60.9, 92.1)? 
+]
+
+---
+
+class: center, middle
+
+.question[
+**¡No!**
+]
+
+---
+
+## Interpretación de un intervalo de confianza
+
+- El parámetro de la población está o no está en nuestro intervalo. No puede tener una "probabilidad del 95%" de estar en algún intervalo específico.
+
+--
+
+- La distribución bootstrap captura la variabilidad de la media de la muestra, pero se basa en nuestra muestra original. Si comenzáramos con una muestra diferente, tal vez nuestro intervalo de confianza estimado del 95%  fuese diferente.
+
+--
+
+- Todo lo que podemos decir es que, si tomáramos muestras repetidas de manera independiente de esta población y calculáramos un IC del 95% para la media de la misma manera, entonces *esperaríamos* que el 95% de estos intervalos contuvieran la media de la población.
+
+--
+
+- Sin embargo, ¡nunca sabemos si algún intervalo en particular realmente lo hace!
+
+---
+
+## Interpretación 
+
+.question[
+**Tenemos un 95% de confianza en que el precio medio por huésped por noche para Airbnbs en Asheville, NC está entre 60.9 y 92.1 dólares.**
+]
+
+---
+## Bibliografía
+
+Este tema está fundamentalmente basado en  [R for Data Science](https://r4ds.had.co.nz/), Wickham and Grolemund (2016)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": true,
+"highlightStyle": "github",
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+<style>
+.logo {
+  background-image: url(img/logo2.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  width: 110px;
+  height: 128px;
+  z-index: 0;
+}
+</style>
+
+<style>
+  .title-logo {
+    background-image: url(img/logo2.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 1em;
+    left: 20em;
+    width: 110px;
+    height: 128px;
+    z-index: 0;
+  }
+  </style>
+
+<script>
+document
+  .querySelectorAll(
+    '.remark-slide-content' +
+    ':not(.title-slide)' +
+    // add additional classes to exclude here, e.g.
+    // ':not(.inverse)' +
+    ':not(.hide-logo)' 
+
+  )
+  .forEach(el => {
+    el.innerHTML += '<div class="logo"></div>';
+  });
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
