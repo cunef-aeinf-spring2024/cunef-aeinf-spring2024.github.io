@@ -4,7 +4,7 @@
     <title>Tema 4</title>
     <meta charset="utf-8" />
     <meta name="author" content="Roi Naveiro" />
-    <script src="libs/header-attrs-2.17/header-attrs.js"></script>
+    <script src="libs/header-attrs-2.25/header-attrs.js"></script>
     <link rel="stylesheet" href="ds_slides.css" type="text/css" />
   </head>
   <body>
@@ -203,7 +203,6 @@ Un modelo estadístico es un modelo matemático que incorpora un conjunto de sup
 
 * Los modelos suelen ser paramétricos: d: `\(\mathcal {P}=\{F_{\theta }:\theta \in \Theta \}\)`
 
-
 * Dados unos datos, el objetivo es encontrar el valor de `\(\theta\)` que mejor se ajusta a los datos.
 
 
@@ -238,10 +237,32 @@ $$
 
 * También podemos escribirlo como `\(y = \beta_0 + \beta_1 x + \epsilon\)`, donde `\(\epsilon \sim \mathcal{N}(0, \sigma^2)\)`
 
+* Este modelo se conoce como **modelo de regresión lineal simple**.
+
 * ¿Cuáles son los parámetros de este modelo?
+
 
 ---
 ## ¿Qué son los modelos estadísticos?
+
+$$
+\mathcal{P} = \{y \sim \mathcal{N}(\beta_0 + \beta_1 x, \sigma^2)\}
+$$
+
+El modelo de regresión lineal simple hace, implíctamente, 4 asunciones
+
+1. **Linealidad**: el valor esperado de la variable respuesta corresponde con una función lineal de la covariable.
+
+2. Independencia de los errores.
+
+3. Homocedasticidad: la variance de los errores es constante.
+
+4. Normalidad 
+
+En este curso, no vamos a entrar en el estudio de estas asunciones, pero tened en cuenta que existen.
+
+---
+## Regresión lineal simple
 
 * Una vez observamos datos `\((x_i, y_i) \in \mathcal{S}\)`, podemos ajustar el modelo para encontrar los valores de los parámetros que mejor se ajustan a los datos.
 
@@ -252,7 +273,7 @@ $$
 simplificaciones de la realidad que nos sirven de algún propósito
 
 ---
-## ¿Qué son los modelos?
+## Regresión lineal simple
 
 &lt;img src="img/box.jpeg" width="100%" style="display: block; margin: auto;" /&gt;
 
@@ -263,7 +284,7 @@ simplificaciones de la realidad que nos sirven de algún propósito
 
 * **Variables explicativas**: otras variables que desea utilizar para explicar la variación en la respuesta. También llamadas variables independientes, covariables, predictores o *features*. Eje x.
 
-* **Valor predicho**: output del modelo para cierto valor de las covariables.
+* **Valor predicho**: output del **modelo** para cierto valor de las covariables.
 
 ---
 ## Vocabulario
@@ -295,9 +316,9 @@ ggplot(mtcars, aes(x=wt, y=mpg)) + geom_point() + theme_minimal()
 
 * Usaremos un modelo para capturar ese patrón y hacerlo explícito
 
-* Un modelo lineal parece razonable `\(y = \beta_0 + \beta_1 x + \epsilon\)` con `\(\epsilon \sim \mathcal{N}(0, \sigma^2)\)`.
+* Un modelo de regresión linea simple parece razonable `\(y = \beta_0 + \beta_1 x + \epsilon\)` con `\(\epsilon \sim \mathcal{N}(0, \sigma^2)\)`.
 
-* Vamos a asumir que `\(\sigma^2\)` es conocido.
+* Vamos a asumir que `\(\sigma^2\)` es conocido luego los parámetros de interés son `\(\hat{\beta}_0\)` y `\(\hat{\beta}_1\)`.
 
 * Existen infinitos modelos en esta familia
 
@@ -335,7 +356,7 @@ punto a la recta del modelo
 
 
 ---
-## Regresión lineal
+## Regresión lineal simple
 
 Para obtener el valor de los coeficientes usando R, hacemos
 
@@ -376,29 +397,29 @@ $$
 ---
 ## Regresión lineal
 
-Demostrar que los valores que minimizan la expresión anterior son los estimadores de maximá verosimilitud de `\(\beta_0\)` y `\(\beta_1\)`.
+1. Demostrar que los valores que minimizan la expresión anterior son los estimadores de maxima verosimilitud de `\(\beta_0\)` y `\(\beta_1\)`.
 
+2. Calcular expresiones para los estimadores de `\(\beta_0\)` y `\(\beta_1\)`.
+
+---
+## Regresión lineal
+
+* Los estimadores `\(\hat{\beta}_0\)` y `\(\hat{\beta}_1\)` tienen una distribución.
+
+* Podemos estudiar la distribución de estos estimadores para obtener sus propiedades: sesgo, varianza, etc.
+
+* Así como calcular intervalos de confianza para estos estimadores.
+
+* En este curso no nos centraremos en este aspecto. Únicamente trabajaremos con los estimadores puntuales y nos centraremos en cómo usar estos modelos para explorar los datos.
 
 ---
 ## Regresión lineal - Residuos
 
 Los residuos nos dicen cómo de lejos está cada valor predicho de su valore observado
 
-Residuo = Valor observado - valor predicho: `\(y - \hat{y}\)`
+`\(e_i = y_i - \hat{y}_i\)`
 
-
----
-## Regresión lineal
-
-* La recta de regresión es aquella que minimiza la suma de distancias verticales.
-
-* Esto es equivalente a minimizar la suma de los residuos al cuadrado
-
-`\begin{eqnarray}
-&amp;&amp;\sum_{i=1}^n [y_i-\hat{y}_i]^2 = \\
-&amp;&amp;\sum_{i=1}^n [y_i-(\beta_0 + \beta_1 x)]^2
-\end{eqnarray}`
-
+* Los estimadores `\(\hat{\beta}_0\)` y `\(\hat{\beta}_1\)` son aquellos valores que minimizan la suma de los residuos al cuadrado.
 
 ---
 ## Visualización de modelos
@@ -439,7 +460,7 @@ grid
 ##  8  2.46
 ##  9  2.62
 ## 10  2.77
-## # … with 19 more rows
+## # ℹ 19 more rows
 ```
 
 ---
@@ -471,7 +492,7 @@ grid
 ##  8  2.46  24.1
 ##  9  2.62  23.3
 ## 10  2.77  22.5
-## # … with 19 more rows
+## # ℹ 19 more rows
 ```
 
 ---
@@ -518,7 +539,6 @@ ggplot(mtcars, aes(wt, resid)) +
 
 * Los residuos indican qué patrón queda sin capturar
 
-
 ---
 ## ¿Qué hacer con los modelos?
 
@@ -554,7 +574,7 @@ tidy(mod_reg)
 El modelo de regresión lineal es
 
 $$
-\widehat{ \text{mpg} } = \beta_0 + \beta_1 \text{wt}
+\widehat{ \text{mpg} } = \beta_0 + \beta_1 \text{wt}  
 $$
 
 Aumentemos wt en una unidad
@@ -638,9 +658,9 @@ ggplot(teacher, aes(x=years, y=base)) + geom_point() +
 
 * Imaginemos que la `\(x\)` se refiere a género y toma dos valores: masculino y femenino.
 
-* `\(y = \beta_0 + \beta_1 x\)` no tendría sentido, `\(x\)` no es un número!
+* `\(y = \beta_0 + \beta_1 x + \epsilon\)` no tendría sentido, `\(x\)` no es un número!
 
-* Podemos hacer `\(y = \beta_0 +\beta_1 \text{gen}\_\text{masc}\)`, donde `\(\text{gen}\_\text{masc}\)` toma valor 1 para hombres y cero para mujeres
+* Podemos hacer `\(y = \beta_0 +\beta_1 \text{gen}\_\text{masc} + \epsilon\)`, donde `\(\text{gen}\_\text{masc}\)` toma valor 1 para hombres y cero para mujeres. 
 
 ---
 ## Regresión Lineal: Predictores Categóricos
@@ -739,10 +759,10 @@ Predecimos la media para cada grupo!
 * El modelo lineal más sencillo para este caso, es la **regresión lineal múltiple**
 
 $$
-y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \dots + \beta_p x_p
+y_i = \textbf{x}_i^\top\boldsymbol{\beta} + \epsilon = \beta_{0} + \beta_1 x_{i1} + \beta_2 x_{i2} + \dots + \beta_p x_{ip} + \epsilon
 $$
 
-* El efecto de cada variable se estima independientemente del resto de variables.
+* Los efectos de diferentes covariables sobre el valor esperado de la variable dependiente son aditivos.
 
 ---
 ## Regresión Lineal Múltiple - Interpretación
@@ -750,6 +770,10 @@ $$
 * ¿Cómo se interpreta `\(\beta_0\)`? 
 
 * ¿Cómo se interpreta `\(\beta_1\)`? 
+
+* ...
+
+* ¿Cómo se interpreta `\(\beta_p\)`?
 
 ---
 ## Regresión Lineal Múltiple 
@@ -798,7 +822,7 @@ grid
 ##  8     3 BA     44732.
 ##  9     4 MA     48110.
 ## 10     4 BA     45550.
-## # … with 66 more rows
+## # ℹ 66 more rows
 ```
 
 ---
@@ -814,6 +838,13 @@ ggplot(teacher, aes(years, base, colour = degree)) +
 ```
 
 ![](tema4_files/figure-html/unnamed-chunk-29-1.png)&lt;!-- --&gt;
+
+
+---
+## Regresión Lineal Múltiple
+
+¿Cómo interpretas los coeficientes?
+
 
 ---
 class: center, middle, inverse
@@ -1270,7 +1301,7 @@ boot_dist
 ##  8         8  95.7
 ##  9         9  88.5
 ## 10        10  90.8
-## # … with 90 more rows
+## # ℹ 90 more rows
 ```
 
 ---
