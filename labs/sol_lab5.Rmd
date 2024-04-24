@@ -132,9 +132,6 @@ invertir las coordenadas con `coord_flip()`.
 
 ### Solución
 
-```{r echo = F, fig.align="center", fig.width=6, fig.height=4}
-knitr::include_graphics("img/median_comp.png")
-```
 
 ```{r}
 ggplot(compensation_summary, aes(x=fct_reorder(Major,medianCompensation), y=medianCompensation)) + geom_bar(stat="identity") + labs(title="Salario mediano de científicos de datos", subtitle="2017 Kaggle Survey", x="Salario (USD)", y="") + coord_flip() + theme_minimal()
@@ -203,18 +200,19 @@ flights %>% filter( !(dest %in% c("ANC", "HNL")) ) %>% left_join(airports, by=c(
 
 ## Ejercicio 9
 
-Elabora una visualización similar a la anterior donde muestres la distribución espacial del retraso medio de los vuelos del día 13 de Junio. Compara esta distribución la de otro día, por ejemplo el 13 de Mayo. ¿Qué observas? Intenta determinar el origen del patrón (buscando en Google).
+Elabora una visualización similar a la anterior donde muestres la distribución espacial del retraso medio de los vuelos del día 13 de Junio. Compara esta distribución la de otro día, por ejemplo el 13 de Mayo. ¿Qué observas? Intenta determinar el origen del patrón (buscando en Google). Representa ambos mapas en el mismo gráfico.
 
 ### Solución
 
 ```{r}
 flights %>% filter( !(dest %in% c("ANC", "HNL")) ) %>% 
-  filter(month==6, day==13) %>% 
+  filter(month%in%c(5,6), day==13) %>%
+  mutate(tiempo = ifelse(month == 5, "13 Mayo", "13 Junio")) %>% 
   left_join(airports, by=c("dest"="faa")) %>% 
-  group_by(dest) %>% summarise(med_delay = mean(dep_delay, na.rm=T), lat=lat, lon=lon) %>% ggplot(aes(lon, lat)) +
+  group_by(dest, tiempo) %>% summarise(med_delay = mean(dep_delay, na.rm=T), lat=lat, lon=lon) %>% ggplot(aes(lon, lat)) +
     borders("state") +
     geom_point(aes(size=med_delay)) + theme_classic() +
-    coord_quickmap()
+    coord_quickmap() + facet_grid(tiempo~.)
 ```
 
 
@@ -226,7 +224,7 @@ Estudia la relación entre las condiciones climáticas en el origen y el retraso
 
 ```{r}
 flights %>% 
-  left_join(weather, by=c("year", "month", "day", "hour")) %>% 
+  left_join(weather, by=c("year", "month", "day", "hour", "origin")) %>% 
   mutate(visib_discrete = cut(visib, breaks=seq(0, 10, 1))) %>%
   group_by(visib_discrete) %>% summarise(med_delay = mean(dep_delay, na.rm=T))
 ```

@@ -155,7 +155,7 @@ ggplot(data, aes(lon, lat)) +
 
 ## Ejercicio 9
 
-Elabora una visualización similar a la anterior donde muestres la distribución espacial del retraso medio de los vuelos del día 13 de Junio. Compara esta distribución la de otro día, por ejemplo el 13 de Mayo. ¿Qué observas? Intenta determinar el origen del patrón (buscando en Google).
+Elabora una visualización similar a la anterior donde muestres la distribución espacial del retraso medio de los vuelos del día 13 de Junio. Compara esta distribución la de otro día, por ejemplo el 13 de Mayo. ¿Qué observas? Intenta determinar el origen del patrón (buscando en Google). Representa ambos mapas en el mismo gráfico para mayor claridad.
 
 ### Solución
 
