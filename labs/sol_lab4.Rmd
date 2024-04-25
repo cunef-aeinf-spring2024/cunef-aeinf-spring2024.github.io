@@ -151,7 +151,6 @@ parsed_d5 <- parse_date(d5, format = "%m/%d/%y")
 # Parsing times
 parsed_t1 <- parse_time(t1, format = "%H%M")
 parsed_t2 <- parse_time(t2, format = "%I:%M:%OS %p")
-
 ```
 
 

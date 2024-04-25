@@ -187,10 +187,8 @@ class: center, middle, inverse
 ---
 ## Modelización
 
-* En lo que resta de curso, introduciremos herramientas básicas de modelización, poniendo
+* En esta parte del curso, introduciremos herramientas básicas de modelización, poniendo
 el foco en su uso como **técnicas de exploración** de datos.
-
-* **No** vamos a estudiar cómo usar estas herramientas para determinar causalidad.
 
 * No hay nada malo con la exploración, pero nunca debes vender un análisis exploratorio como un análisis confirmatorio porque es **engañoso**.
 
@@ -212,7 +210,7 @@ Un modelo estadístico es un modelo matemático que incorpora un conjunto de sup
 ---
 ## ¿Qué son los modelos estadísticos?
 
-* Formalmente, un modelo estadísticos es un par $(S \mathcal{P})$: $S$ es el conjunto de posibles observaciones y $\mathcal{P}$ es una familia de distribuciones de probabilidad.
+* Formalmente, un modelo estadísticos es un par $(S, \mathcal{P})$: $S$ es el conjunto de posibles observaciones y $\mathcal{P}$ es una familia de distribuciones de probabilidad.
 
 * Asumimos que hay una distribución de probabilidad verdadera que gobierna la generación de datos.
 
@@ -223,7 +221,7 @@ Un modelo estadístico es un modelo matemático que incorpora un conjunto de sup
 ---
 ## ¿Qué son los modelos estadísticos?
 
-* Los modelos suelen ser paramétricos: d: $\mathcal {P}=\{F_{\theta }:\theta \in \Theta \}$
+* Los modelos suelen ser paramétricos: $\mathcal {P}=\{F_{\theta }:\theta \in \Theta \}$
 
 * Dados unos datos, el objetivo es encontrar el valor de $\theta$ que mejor se ajusta a los datos.
 
@@ -333,7 +331,7 @@ ggplot(mtcars, aes(x=wt, y=mpg)) + geom_point() + theme_minimal()
 
 * Un modelo de regresión linea simple parece razonable $y = \beta_0 + \beta_1 x + \epsilon$ con $\epsilon \sim \mathcal{N}(0, \sigma^2)$.
 
-* Vamos a asumir que $\sigma^2$ es conocido luego los parámetros de interés son $\hat{\beta}_0$ y $\hat{\beta}_1$.
+* Vamos a asumir que $\sigma^2$ es conocido luego los parámetros de interés son $\beta_0$ y $\beta_1$.
 
 * Existen infinitos modelos en esta familia
 
@@ -404,9 +402,10 @@ $$
 
 * $\hat{\beta}_0$ y $\hat{\beta}_1$ son aquellos valores que hacen que las distancias verticales vistas anteriormente sean mínimas
 
-$$
+\begin{equation}
 \arg \min_{\beta_0, \beta_1} \sum_{i=1}^n [y_i - (\beta_0 + \beta_1 x_i)]^2
-$$
+\end{equation}
+
 ---
 ## Regresión lineal
 
@@ -423,7 +422,7 @@ $$
 
 * Así como calcular intervalos de confianza para estos estimadores.
 
-* En este curso no nos centraremos en este aspecto. Únicamente trabajaremos con los estimadores puntuales y nos centraremos en cómo usar estos modelos para explorar los datos.
+* En este curso no nos centraremos en este aspecto. Únicamente trabajaremos con los estimadores puntuales y nos centraremos en cómo usarlos para explorar los datos.
 
 ---
 ## Regresión lineal - Residuos
@@ -682,9 +681,9 @@ Predecimos la media para cada grupo!
 
 * El modelo lineal más sencillo para este caso, es la **regresión lineal múltiple**
 
-$$
+\begin{equation}
 y_i = \textbf{x}_i^\top\boldsymbol{\beta} + \epsilon = \beta_{0} + \beta_1 x_{i1} + \beta_2 x_{i2} + \dots + \beta_p x_{ip} + \epsilon
-$$
+\end{equation}
 
 * Los efectos de diferentes covariables sobre el valor esperado de la variable dependiente son aditivos.
 
